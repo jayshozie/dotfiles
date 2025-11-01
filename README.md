@@ -6,7 +6,7 @@ Finally got the LSP working for good. Again, many thanks to
 [The Primeagen](https://github.com/theprimeagen) for their great videos that
 helped me a lot.
 
-[!IMPORTANT]
+> [!IMPORTANT]
 > Most remaps are for dvorak, I use dvorak btw.
 
 ## Info
