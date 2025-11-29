@@ -85,7 +85,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -117,6 +117,12 @@ alias ll='ls -lAh'
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
+alias g='git'
+alias gs='git status'
+alias ga='git add .'
+alias gcm='git commit -m'
+alias gco='git checkout'
+alias gv='git branch -vv'
 # tmp alias for ceng301 - delete when done
 alias test='~/ceng301/test.sh'
 alias metuvpn='~/scripts/metuvpn.sh'
@@ -124,10 +130,6 @@ alias metuvpn='~/scripts/metuvpn.sh'
 eval "$(starship init bash)"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-# Install Ruby Gems to ~/gems
-export GEM_HOME="$HOME/gems"
-export PATH="$HOME/gems/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
