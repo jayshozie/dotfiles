@@ -8,7 +8,7 @@ vim.opt.guicursor = ''
 --
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.colorcolumn = '80'
+vim.opt.colorcolumn = '81'
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -104,7 +104,7 @@ vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz')
 vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
 
--- Change the word under the cursor in all the file.
+-- Change the word under the cursor in the entire file.
 vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 -- Just amazing, thanks once again Primeagen.
 
@@ -133,7 +133,6 @@ end)
 
 -----------------------------------PLUGINS-------------------------------------
 -- And all that good stuff.
-
 
 -- Load Lazy
 require('jaysh.lazy_init')
