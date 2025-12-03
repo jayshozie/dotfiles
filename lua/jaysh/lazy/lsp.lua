@@ -17,6 +17,58 @@ return {
                 end,
                 { noremap = false, silent = true, desc = "Toggle Copilot" }
             )
+            local STATE_FILE = vim.fn.stdpath('data') .. "/copilot_error_month"
+            local NOTIF_TITLE = 'Copilot Limit Gate'
+            local function get_current_month()
+                return os.date('%Y%m')
+            end
+            local function get_stored_month()
+                local f = io.open(STATE_FILE, 'r')
+                if f then
+                    local stored_month = f:read("*a"):gsub("^%s*(.-)%s*$", "%1") -- Trim whitespace
+                    f:close()
+                    return stored_month
+                end
+                return "" -- return empty if file doesn't exist
+            end
+            local function set_stored_month(month)
+                local f = io.open(STATE_FILE, 'w')
+                if f then
+                    f:write(month)
+                    f:close()
+                end
+            end
+            local function conditionally_enable_copilot()
+                local current_month = get_current_month()
+                local stored_month = get_stored_month()
+
+                if current_month == stored_month then
+                    vim.g.copilot_filetypes = { ['*'] = false }
+                    vim.notify(
+                        "Limit reached last month. Copilot is disabled until " ..
+                        os.date("%B %Y", os.time() + 2592000) .. " to prevent popups.",
+                        vim.log.levels.INFO,
+                        { title = NOTIF_TITLE }
+                    )
+                    return
+                end
+                vim.notify('Copilot activated.', vim.log.levels.INFO, { title = NOTIF_TITLE })
+            end
+
+            vim.g.copilot_filetypes = { ['*'] = false }
+            conditionally_enable_copilot()
+            vim.api.nvim_create_user_command('MSSucks',
+                function()
+                    local current_month = get_current_month()
+                    set_stored_month(current_month)
+                    vim.g.copilot_filetypes = { ['*'] = false }
+                end,
+                {
+                    desc = 'Manually record a Copilot limit error for the current month and disable it.'
+                })
+            vim.keymap.set('n', "<leader>mss", vim.cmd('MSSucks'),
+                { desc = 'Keymap for MSSucks User Command' }
+            )
         end,
     },
     -- {
@@ -172,6 +224,7 @@ return {
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
             "saadparwaiz1/cmp_luasnip",
+            "hrsh7th/cmp-emoji",
             "L3MON4D3/LuaSnip",
             "onsails/lspkind.nvim", -- Optional but recommended for nice icons
         },
@@ -198,26 +251,27 @@ return {
 
                 -- Hover documentation (what you saw in the videos)
                 if client.server_capabilities.hoverProvider then
-                    vim.keymap.set("n", "K", function() vim.lsp.buf.hover({ border = "rounded", width = 60 }) end, opts)
+                    vim.keymap.set("n", "<C-k>", function() vim.lsp.buf.hover({ border = "rounded", width = 60 }) end, opts)
                 end
 
                 -- Signature help (shows function parameters)
                 if client.server_capabilities.signatureHelpProvider then
-                    vim.keymap.set("n", "<C-k>", function() vim.lsp.buf.signature_help({ border = "rounded", width = 60 }) end, opts)
+                    vim.keymap.set("n", "K",
+                        function() vim.lsp.buf.signature_help({ border = "rounded", width = 60 }) end, opts)
                     -- vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
                 end
 
                 -- Navigation
                 if client.server_capabilities.definitionProvider then
-                    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+                    vim.keymap.set("n", "<leader>d", function() vim.lsp.buf.definition() end, opts)
                 end
 
                 if client.server_capabilities.implementationProvider then
-                    vim.keymap.set("n", "gi", function() vim.lsp.buf.implementation() end, opts)
+                    vim.keymap.set("n", "<leader>i", function() vim.lsp.buf.implementation() end, opts)
                 end
 
                 if client.server_capabilities.referencesProvider then
-                    vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts)
+                    vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.references() end, opts)
                 end
 
                 -- Workspace
@@ -315,6 +369,7 @@ return {
                     { name = 'luasnip',  priority = 750 },
                     { name = 'buffer',   priority = 500 },
                     { name = 'path',     priority = 250 },
+                    { name = 'emoji',    priority = 249 },
                 }),
                 formatting = {
                     format = lspkind.cmp_format({
@@ -351,9 +406,14 @@ return {
             -- Set up mason-lspconfig with enhanced capabilities and on_attach
             require("mason-lspconfig").setup({
                 ensure_installed = {
-                    'clangd',  -- C/C++
-                    'lua_ls',  -- Lua
-                    'pyright', -- Python
+                    'clangd',         -- C/C++
+                    'lua_ls',         -- Lua
+                    'pyright',        -- Python
+                    'vtsls',          -- JS/TS
+                    'bashls',         -- Shell Scripts
+                    -- 'ltex-ls-plus',   -- LaTeX
+                    'marksman',       -- Markdown
+                    -- 'markdown-oxide', -- Markdown
                 },
                 handlers = {
                     function(server_name)
@@ -368,14 +428,97 @@ return {
                 -- virtual_lines = true,
                 virtual_text = true,
             })
-
+            vim.lsp.config['lua_ls'] = {
+                cmd = { 'lua-language-server' },
+                filetypes = { 'lua' },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            -- vim.lsp.config['pyright'] = {
+            --     cmd = { 'pyright' },
+            --     filetypes = { 'py' },
+            --     on_attach = on_attach,
+            --     capabilities = capabilities,
+            -- }
             vim.lsp.config['clangd'] = {
-                cmd = { 'clangd', '--background-index' },
+                cmd = {
+                    'clangd',
+                    '--background-index',
+                },
                 filetypes = { 'c', 'cpp', 'h', 'objc', 'objcpp' },
                 on_attach = on_attach,
                 capabilities = capabilities,
             }
-
+            vim.lsp.config['ltex-ls-plus'] = {
+                cmd = { 'ltex_plus' },
+                filetypes = { 'tex', 'md' },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['marksman'] = {
+                cmd = { 'marksman' },
+                filetypes = { 'md' },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['markdown-oxide'] = {
+                cmd = { 'markdown-oxide' },
+                filetypes = { 'md' },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['vtsls'] = {
+                cmd = { 'vtsls',
+                        '--stdio',
+                },
+                filetypes = {
+                        'javascript',
+                        'typescript',
+                        'javascriptreact',
+                        'typescriptreact',
+                        'js',
+                        'jsx',
+                        'ts',
+                        'tsx',
+                        'vue',
+                        'json', -- Vtsls often handles package.json/tsconfig.json
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+                root_markers =  { '.git' }
+            }
+            vim.lsp.config['css-lsp'] = {
+                cmd = {'vscode-css-language-server', },
+                filetypes = {
+                    'css',
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['html-lsp'] = {
+                cmd  = { 'vscode-html-language-server' },
+                filetypes = {
+                    'html',
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['intelephense'] = {
+                cmd = { 'intelephense' },
+                filetypes = {
+                    'php',
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
+            vim.lsp.config['bashls'] = {
+                cmd = { 'bash-language-server' },
+                filetypes = {
+                    'sh',
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+            }
             -- Optional: Any language-specific configurations
             -- vim.lsp.config.lua_ls.setup({
             --    settings = {
