@@ -11,7 +11,6 @@ return {
             'vim',
             'vimdoc',
             'query',
-
             'cpp',
             'cmake',
             'make',
@@ -24,7 +23,7 @@ return {
         },
         sync_install = false,
         auto_install = true,
-        ignore_install = { 'javascript' },
+        ignore_install = { '' },
         highlight = {
             enable = true,
 
