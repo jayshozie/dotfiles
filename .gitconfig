@@ -1,0 +1,17 @@
+[user]
+	name = jayshozie
+	mail = 143549527+jayshozie@users.noreply.github.com
+	email = 143549527+jayshozie@users.noreply.github.com
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[init]
+	defaultBranch = main
+[core]
+	editor = nvim
+[alias]
+	pr = pull --rebase
+    ss = status -s
