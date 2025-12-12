@@ -36,3 +36,8 @@ helped me a lot.
     solve the C/C++ LSP issue. I couldn't make `clangd` work without Mason, so
     until I figure that out, I'm stuck with Mason. When I fix that, I'll get
     rid of Mason completely.
+
+# License
+
+This repository is licensed under the GNU Public License v3. Please see the
+[LICENSE](./LICENSE) file located at the repository root.
