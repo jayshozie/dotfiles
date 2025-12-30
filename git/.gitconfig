@@ -2,6 +2,7 @@
 	name = jayshozie
 	mail = 143549527+jayshozie@users.noreply.github.com
 	email = 143549527+jayshozie@users.noreply.github.com
+	signingkey = 04B2F29DB07215ED
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
@@ -12,6 +13,10 @@
 	defaultBranch = main
 [core]
 	editor = nvim
+	excludefile = /home/jaysh/.gitignore
 [alias]
 	pr = pull --rebase
     ss = status -s
+    stag = tag -s
+[commit]
+	gpgsign = true

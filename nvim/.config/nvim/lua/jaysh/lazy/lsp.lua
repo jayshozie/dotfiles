@@ -15,6 +15,8 @@ return {
         },
 
         config = function()
+            vim.lsp.set_log_level("warn")
+
             ---------------------------------------------------------
             -- GENERAL DIAGNOSTICS
             ---------------------------------------------------------
@@ -253,6 +255,7 @@ return {
                     "clangd",
                     "--background-index",
                     "--clang-tidy",
+                    "--log=error",
                 },
                 filetypes = { "c", "cpp", "objc", "objcpp", "h" },
                 on_attach = on_attach,
@@ -286,6 +289,11 @@ return {
                 filetypes = { "sh", "bash" },
                 on_attach = on_attach,
                 capabilities = capabilities,
+                settings = {
+                    bashIde = {
+                        shellcheckpath = "",
+                    },
+                },
             }
             vim.lsp.enable("bashls")
 
@@ -304,12 +312,14 @@ return {
             -- ltex-plus (LaTeX)
             -----------------------
             vim.lsp.config["ltex-ls-plus"] = {
-                cmd = { "ltex_plus" },
+                cmd = { "ltex-ls" },
                 filetypes = { "tex", "markdown", "md" },
                 on_attach = on_attach,
                 capabilities = capabilities,
             }
-            vim.lsp.enable("ltex-ls-plus")
+            if vim.fn.executable("ltex-ls") == 1 then
+                vim.lsp.enable("ltex-ls-plus")
+            end
 
             -----------------------
             -- markdown-oxide (Markdown)
@@ -319,6 +329,7 @@ return {
                 filetypes = { "md" },
                 on_attach = on_attach,
                 capabilities = capabilities,
+                root_markers = { ".git" },
             }
             vim.lsp.enable("markdown-oxide")
 
@@ -326,12 +337,23 @@ return {
             -- Pyright (Python)
             -----------------------
             vim.lsp.config["pyright"] = {
-                cmd = { "pyright" },
-                filetypes = { "py" },
+                cmd = { "pyright-langserver", "--stdio" },
+                filetypes = { "py", "python" },
                 on_attach = on_attach,
                 capabilities = capabilities,
+                settings = {
+                    python = {
+                        analysis = {
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                            diagnosticMode = "workspace",
+                        }
+                    }
+                }
             }
-            vim.lsp.enable("pyright")
+            if vim.fn.executable("pyright-langserver") == 1 then
+                vim.lsp.enable("pyright")
+            end
         end,
     }
 }

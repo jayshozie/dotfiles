@@ -12,16 +12,15 @@ return {
             pickers = {
                 find_files = {
                     no_ignore = true,
+                    hidden = true,
                 },
                 grep_string = {
-                    additional_args = {
-                        '--no-ignore',
-                    },
+                    no_ignore = true,
+                    hidden = true,
                 },
                 live_grep = {
-                    additional_args = {
-                        '--no-ignore',
-                    },
+                    no_ignore = true,
+                    hidden = true,
                 },
             },
         })

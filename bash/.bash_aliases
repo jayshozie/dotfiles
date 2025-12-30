@@ -33,3 +33,6 @@ alias gitconf='nvim ~/.gitconfig'
 # easier access to stuff i'm constantly working on
 alias proj='cd ~/projects/'
 alias scri='cd ~/scripts && nvim ~/scripts'
+
+# waha-tui, to stay on the latest version
+alias wp='waha-tui'

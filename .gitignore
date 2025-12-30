@@ -1,2 +1,8 @@
 *.json
 
+# tmux plugins
+tmux/.config/tmux/plugins
+
+# utilities
+utils/
+utils.sh
