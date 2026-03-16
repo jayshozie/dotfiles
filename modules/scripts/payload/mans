@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+mans() {
+    local selection name section _
+    selection=$(man -k . | fzf)
+    [[ -z $selection ]] && return 0;
+    read -r name section _ <<< "$selection"
+    section="${section//[()]/}"
+    nvim -c "Man $section $name" -c 'bwipeout 1'
+}
+
+mans "$@"
