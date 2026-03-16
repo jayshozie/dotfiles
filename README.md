@@ -73,7 +73,7 @@ for Neovim features to work:
 |:-------------|:-----------------------------|------------------------:|
 | **C/C++**    | `clangd`                     |                `21.1.8` |
 | **Lua**      | `lua-language-server`        |                `3.15.0` |
-| **Python**   | `pyright-langserver`         |               `1.1.407` | 
+| **Python**   | `pyright-langserver`         |               `1.1.407` |
 | **TS/JS**    | `vtsls`                      |                   `IDK` |
 | **Bash**     | `bash-language-server`       |                 `5.6.0` |
 | **Markdown** | `marksman`, `markdown-oxide` | `2025-12-13`, `v0.25.9` |

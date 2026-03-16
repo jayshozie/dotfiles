@@ -20,19 +20,19 @@ vim.api.nvim_create_augroup('WhitespaceGroup', {
 vim.api.nvim_set_hl(0, 'WhitespaceHL', {
     bg = '#f7768e', -- background color will be tokyonight's red
 })
-vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter', 'InsertLeave' }, {
+vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave', 'TermOpen' }, {
     group = 'WhitespaceGroup',
     pattern = '*',
     callback = function()
-        local exists = false
+        local filetype = vim.bo.filetype
+        local buftype = vim.bo.buftype
         local matches = vim.fn.getmatches()
         for _, match_dict in ipairs(matches) do
             if match_dict.group == 'WhitespaceHL' then
-                exists = true
-                break
+                vim.fn.matchdelete(match_dict.id)
             end
         end
-        if not exists then
+        if filetype ~= 'diff' and buftype ~= 'terminal' then
             vim.fn.matchadd('WhitespaceHL', [[\s\+$\| \+\ze\t]])
         end
     end,

@@ -12,7 +12,10 @@
 	defaultBranch = main
 [core]
 	editor = nvim
+    pager = "nvim -c 'set ft=diff' -c 'set bt=nofile' -c 'set noma' -c 'set noswf' -c 'nnoremap q :q<CR>'"
 	excludefile = /home/jaysh/.gitignore
+[color]
+    diff = false
 [alias]
 	pr = pull --rebase
     ss = status -s

@@ -88,7 +88,7 @@ inst() {
 pacman -Syu --noconfirm
 
 # 2. System Stuff
-inst base linux-headers linux-firmware networkmanager sudo age man-db man-pages 
+inst base linux-headers linux-firmware networkmanager sudo age man-db man-pages
 inst less openssh stow snapper grub-btrfs inotify-tools
 
 # 3. Dev Stack
@@ -204,7 +204,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
         age -d "\$KEY_ARCHIVE" | tar -xv -C "$HOMEDIR"
 
         # CAPTURE EXIT CODE of the pipe
-        DECRYPT_STATUS=\${PIPESTATUS[0]} 
+        DECRYPT_STATUS=\${PIPESTATUS[0]}
 
         if [[ \$DECRYPT_STATUS -eq 0 ]]; then
             echo "[USER-CTX] Decryption successful. verifying permissions..."
@@ -222,7 +222,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
             enforce_perm "${HOMEDIR}/.gnupg/trustdb.gpg" "600"
             # Pubring usually 644 or 664, allowing existing state if safe, forcing 600 if paranoid.
             # We will force 600 for safety as GPG complains otherwise.
-            enforce_perm "${HOMEDIR}/.gnupg/pubring.kbx" "664" 
+            enforce_perm "${HOMEDIR}/.gnupg/pubring.kbx" "664"
 
             # 4. SWITCH GIT REMOTE
             echo "[USER-CTX] Trusting GitHub & Switching Remote..."
