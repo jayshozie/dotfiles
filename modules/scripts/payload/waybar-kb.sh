@@ -12,14 +12,10 @@ main() {
         text=${text%%\"}
 
         css_class='custom-kb'
+        tooltip=''
 
         printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
             "$text" "$css_class" "$tooltip"
-
-        # the main problem with this script is the time it takes to execute.
-        # since we're calling both hyprctl and jq, it takes 7 milliseconds on my
-        # machine, which is pretty beefed. that's the price we have to pay for
-        # safety i guess.
     done
 }
 

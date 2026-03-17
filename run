@@ -76,7 +76,8 @@ for m in modules/*; do
     # If you want to delete old configs, use the --delete flag cautiously,
     # but NEVER use --delete if DEST is HOME.
 
-    RSYNC_FLAGS="-avu"
+    # RSYNC_FLAGS="-avu"
+    RSYNC_FLAGS="-au"
 
     # Safety Logic: If we are targeting a subfolder (like alacritty), we can
     # clean old files. If we are targeting HOME, we MUST NOT delete extraneous
@@ -102,7 +103,6 @@ for m in modules/*; do
     else
         log "$RUN_CMD rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
     fi
-
 done
 
 popd > /dev/null
