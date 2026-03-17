@@ -19,11 +19,10 @@ alias crosscc='x86_64-elf-gcc'
 alias crossld='x86_64-elf-ld'
 alias linux-sync='git fetch && git reset --hard origin/master'
 alias project-tracker='systemctl enable postgresql.service || systemctl start postgresql.service && pgcli project_tracker'
-# alias mans="man -k . | fzf | awk '{print \$2, \$1}' | tr -d '()' | xargs -o -r -I{} nvim -c 'Man {}' -c 'bwipeout 1'"
 
 # i like it this way
 alias ll='eza -liah --git --total-size'
-alias grep='grep --color=auto'
+alias grep='grep --color=auto -C 2'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias fd='fd -uic always'
