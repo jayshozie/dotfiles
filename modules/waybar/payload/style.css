@@ -24,13 +24,13 @@ tooltip {
 #custom-rss, #custom-mpris, #wireplumber, #bluetooth, #battery, #custom-net, #tray, #bluetooth.off, #custom-stopped, #custom-rec {
     background-color: #24283b;
     color: #c0caf5;
-    
+
     /* Spacing INSIDE the pill */
     padding: 0 10px;
-    
+
     /* Spacing BETWEEN pills */
     margin-left: 4px;
-    
+
     /* Vertical alignment */
     margin-top: 4px;
     margin-bottom: 4px;
@@ -53,13 +53,14 @@ tooltip {
 #workspaces button {
     padding: 0 5px;
     color: #565f89;
-    border-radius: 4px;
+    border-radius: 0px;
 }
 
 #workspaces button.active {
     color: #7aa2f7;
     background-color: transparent;
-    border-bottom: 2px solid #7aa2f7;
+    border-top: 2px solid #7aa2f7;
+    /* border-bottom: 2px solid #7aa2f7; */
 }
 
 #workspaces button:hover {
