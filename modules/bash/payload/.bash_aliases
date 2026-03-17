@@ -19,6 +19,7 @@ alias crosscc='x86_64-elf-gcc'
 alias crossld='x86_64-elf-ld'
 alias linux-sync='git fetch && git reset --hard origin/master'
 alias project-tracker='systemctl enable postgresql.service || systemctl start postgresql.service && pgcli project_tracker'
+alias bat-update='bat cache --build'
 
 # i like it this way
 alias ll='eza -liah --git --total-size'

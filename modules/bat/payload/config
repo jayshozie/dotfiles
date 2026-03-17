@@ -23,5 +23,6 @@
 #   Example 2: Use ".gitignore"-style highlighting for ".ignore" files
 #--map-syntax "*.ino:C++"
 
+--theme="tokyonight_moon"
 --decorations never
 --map-syntax ".ignore:Git Ignore"

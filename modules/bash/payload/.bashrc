@@ -7,12 +7,8 @@ shopt -s histappend
 shopt -s checkwinsize
 shopt -s globstar
 
-if [[ -f "$HOME/.bash_env" ]]; then
-    source "$HOME/.bash_env"
-fi
-if [[ -f "$HOME/.bash_aliases" ]]; then
-    source "$HOME/.bash_aliases"
-fi
+[[ -f "$HOME/.bash_env" ]] && source "$HOME/.bash_env"
+[[ -f "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases"
 
 # tmux-sessionizer thanks to ThePrimeagen
 bind '"\C-f":"tmux neww tmux-sessionizer\n"'
