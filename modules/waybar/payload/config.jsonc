@@ -6,6 +6,7 @@
     "modules-left": ["hyprland/workspaces", "custom/mpris"],
     "modules-center": ["clock"],
     "modules-right": [
+        "hyprland/language",
         "custom/rec",
         "custom/rss",
         "wireplumber",
@@ -71,6 +72,14 @@
         "on-click-right": "playerctl --player=spotify next",
         "on-click-middle": "playerctl --player=spotify previous"
     },
+
+    /*
+    "custom/keyboard": {
+        "exec": "/home/jaysh/.local/scripts/waybar-kb.sh",
+        "return-type": "json",
+        "on-click": "hyprctl switchxkblayout all next",
+    },
+    */
 
     "custom/rec": {
         "format": "{}",

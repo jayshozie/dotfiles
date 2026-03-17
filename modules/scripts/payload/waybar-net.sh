@@ -45,7 +45,7 @@ while true; do
 
         # DEBUG:
         # echo $nmcli_output > ${HOME}/waybar-net-debug.log
-        
+
         if [[ "$wifi_ssid" == '' ]]; then
             wifi_text="󰖩  $wifi_bars"
         else
@@ -65,7 +65,7 @@ while true; do
         [[ "$iface" == "lo" ]] && continue
         [[ -d "/sys/class/net/${iface}/wireless" ]] && continue
         [[ ! -L "/sys/class/net/${iface}/device" ]] && continue
-        
+
         # check operstate
         state=$(cat "/sys/class/net/${iface}/operstate" 2>/dev/null)
         [[ "$state" == "down" ]] && continue
@@ -100,6 +100,6 @@ while true; do
 
     printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
         "$text" "$css_class" "$tooltip"
-    
+
     sleep 1
 done

@@ -287,11 +287,8 @@ return {
             vim.lsp.config.vtsls = {
                 cmd = { "vtsls", "--stdio" },
                 filetypes = {
-                    "javascript", "typescript",
-                    "javascriptreact", "typescriptreact",
-                    "js", "jsx", "ts", "tsx",
-                    "vue",
-                    "json",
+                    "javascript", "typescript", "javascriptreact",
+                    "typescriptreact", "vue", "json",
                 },
                 root_markers = { ".git" },
                 on_attach = on_attach,
