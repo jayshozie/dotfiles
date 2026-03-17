@@ -22,7 +22,7 @@ while true; do
         player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{title}};{{xesam:artist}}" | grep -m1 "Paused" || true)
         status="Paused"
     fi
-    
+
     if [[ -z "$player_status" ]]; then
         echo ""
         sleep 1
@@ -30,10 +30,10 @@ while true; do
     fi
 
     title=$(echo "$player_status" | cut -d';' -f4)
-    artist=$(echo "$player_status" | cut -d';' -f5) 
+    artist=$(echo "$player_status" | cut -d';' -f5)
     length=$(echo "$player_status" | cut -d';' -f2)
     position=$(echo "$player_status" | cut -d';' -f3)
-    
+
     if [[ -z "$length" ]]; then
         length=0
     fi
@@ -67,21 +67,21 @@ while true; do
     else
         output=''
     fi
-    
+
     if [[ "${#output}" -ge $max_title_width ]]; then
-        output="${output:0:$max_title_width}..." 
+        output="${output:0:$max_title_width}..."
     fi
 
     if [[ -z "$output" ]]; then
         echo ""
     else
         text="$output $time"
-        
+
         tooltip="$title by $artist"
-        
+
         printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
             "$text" "$css_class" "$tooltip"
     fi
 
-    sleep 1 
+    sleep 1
 done
