@@ -193,66 +193,67 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     fi
 
     # 2. KEY REHYDRATION PROTOCOL
-    KEY_ARCHIVE="${HOMEDIR}/dev/identity.tar.age.pass1"
+    # I learned my lesson. I won't copy keys over systems again.
+    # KEY_ARCHIVE="${HOMEDIR}/dev/identity.tar.age.pass1"
 
-    if [[ -f "\$KEY_ARCHIVE" ]]; then
-        echo '---------------------------------------------------'
-        echo '------- !!! DECRYPTING IDENTITY ARCHIVE !!! -------'
-        echo '---------------------------------------------------'
+    # if [[ -f "\$KEY_ARCHIVE" ]]; then
+    #     echo '---------------------------------------------------'
+    #     echo '------- !!! DECRYPTING IDENTITY ARCHIVE !!! -------'
+    #     echo '---------------------------------------------------'
 
-        # Interactive decryption
-        age -d "\$KEY_ARCHIVE" | tar -xv -C "$HOMEDIR"
+    #     # Interactive decryption
+    #     age -d "\$KEY_ARCHIVE" | tar -xv -C "$HOMEDIR"
 
-        # CAPTURE EXIT CODE of the pipe
-        DECRYPT_STATUS=\${PIPESTATUS[0]}
+    #     # CAPTURE EXIT CODE of the pipe
+    #     DECRYPT_STATUS=\${PIPESTATUS[0]}
 
-        if [[ \$DECRYPT_STATUS -eq 0 ]]; then
-            echo "[USER-CTX] Decryption successful. verifying permissions..."
+    #     if [[ \$DECRYPT_STATUS -eq 0 ]]; then
+    #         echo "[USER-CTX] Decryption successful. verifying permissions..."
 
-            # 3. VERIFY & ENFORCE PERMISSIONS (Based on your ls -l)
-            # SSH
-            enforce_perm "${HOMEDIR}/.ssh" "700"
-            enforce_perm "${HOMEDIR}/.ssh/id_ed25519" "600"
-            enforce_perm "${HOMEDIR}/.ssh/id_ed25519.pub" "644"
-            enforce_perm "${HOMEDIR}/.ssh/known_hosts" "600"
+    #         # 3. VERIFY & ENFORCE PERMISSIONS (Based on your ls -l)
+    #         # SSH
+    #         enforce_perm "${HOMEDIR}/.ssh" "700"
+    #         enforce_perm "${HOMEDIR}/.ssh/id_ed25519" "600"
+    #         enforce_perm "${HOMEDIR}/.ssh/id_ed25519.pub" "644"
+    #         enforce_perm "${HOMEDIR}/.ssh/known_hosts" "600"
 
-            # GPG
-            enforce_perm "${HOMEDIR}/.gnupg" "700"
-            enforce_perm "${HOMEDIR}/.gnupg/private-keys-v1.d" "700"
-            enforce_perm "${HOMEDIR}/.gnupg/trustdb.gpg" "600"
-            # Pubring usually 644 or 664, allowing existing state if safe, forcing 600 if paranoid.
-            # We will force 600 for safety as GPG complains otherwise.
-            enforce_perm "${HOMEDIR}/.gnupg/pubring.kbx" "664"
+    #         # GPG
+    #         enforce_perm "${HOMEDIR}/.gnupg" "700"
+    #         enforce_perm "${HOMEDIR}/.gnupg/private-keys-v1.d" "700"
+    #         enforce_perm "${HOMEDIR}/.gnupg/trustdb.gpg" "600"
+    #         # Pubring usually 644 or 664, allowing existing state if safe, forcing 600 if paranoid.
+    #         # We will force 600 for safety as GPG complains otherwise.
+    #         enforce_perm "${HOMEDIR}/.gnupg/pubring.kbx" "664"
 
-            # 4. SWITCH GIT REMOTE
-            echo "[USER-CTX] Trusting GitHub & Switching Remote..."
-            mkdir -p "${HOMEDIR}/.ssh"
-            # Prevent "Host key verification failed" by scanning github
-            ssh-keyscan -t ed25519 github.com >> "${HOMEDIR}/.ssh/known_hosts" 2>/dev/null
+    #         # 4. SWITCH GIT REMOTE
+    #         echo "[USER-CTX] Trusting GitHub & Switching Remote..."
+    #         mkdir -p "${HOMEDIR}/.ssh"
+    #         # Prevent "Host key verification failed" by scanning github
+    #         ssh-keyscan -t ed25519 github.com >> "${HOMEDIR}/.ssh/known_hosts" 2>/dev/null
 
-            pushd "${HOMEDIR}/dev"
-            git remote set-url origin git@github.com:jayshozie/dev.git
-            echo "[USER-CTX] Remote updated to SSH: git@github.com:jayshozie/dev.git"
-            popd
+    #         pushd "${HOMEDIR}/dev"
+    #         git remote set-url origin git@github.com:jayshozie/dev.git
+    #         echo "[USER-CTX] Remote updated to SSH: git@github.com:jayshozie/dev.git"
+    #         popd
 
-        else
-            echo ""
-            echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            echo "[CRITICAL] DECRYPTION FAILED (Wrong Passphrase?)"
-            echo "Skipping git remote switch to prevent errors."
-            echo ""
-            echo ">> TO FIX THIS MANUALLY AFTER REBOOT:"
-            echo "1. Run this to retry decryption:"
-            echo "   age -d ~/dev/identity.tar.age.pass1 | tar -xv -C ~"
-            echo ""
-            echo "2. Run this to switch the git remote:"
-            echo "   cd ~/dev && git remote set-url origin git@github.com:jayshozie/dev.git"
-            echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-            echo ""
-        fi
-    else
-        echo "[WARNING] Key archive not found at \$KEY_ARCHIVE"
-    fi
+    #     else
+    #         echo ""
+    #         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    #         echo "[CRITICAL] DECRYPTION FAILED (Wrong Passphrase?)"
+    #         echo "Skipping git remote switch to prevent errors."
+    #         echo ""
+    #         echo ">> TO FIX THIS MANUALLY AFTER REBOOT:"
+    #         echo "1. Run this to retry decryption:"
+    #         echo "   age -d ~/dev/identity.tar.age.pass1 | tar -xv -C ~"
+    #         echo ""
+    #         echo "2. Run this to switch the git remote:"
+    #         echo "   cd ~/dev && git remote set-url origin git@github.com:jayshozie/dev.git"
+    #         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    #         echo ""
+    #     fi
+    # else
+    #     echo "[WARNING] Key archive not found at \$KEY_ARCHIVE"
+    # fi
 
     # 5. PARU INSTALLATION
     if ! command -v paru &> /dev/null; then
