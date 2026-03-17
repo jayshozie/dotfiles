@@ -39,6 +39,7 @@ message {
     padding: 10px 10px;
     border: 1px 1px 1px 1px;
     border-color: @fg-col;
+    text-color: @fg-col;
 }
 
 textbox {
@@ -59,6 +60,7 @@ entry {
     placeholder: "Search...";
     placeholder-color: @fg-col;
     placeholder-markup: true;
+    text-color: @fg-col;
 }
 
 listview {

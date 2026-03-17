@@ -20,6 +20,7 @@ alias crossld='x86_64-elf-ld'
 alias linux-sync='git fetch && git reset --hard origin/master'
 alias project-tracker='systemctl enable postgresql.service || systemctl start postgresql.service && pgcli project_tracker'
 alias bat-update='bat cache --build'
+alias test-gpg='gpg-connect-agent reloadagent /bye && echo "test" | gpg --clearsign > /dev/null'
 
 # i like it this way
 alias ll='eza -liah --git --total-size'
