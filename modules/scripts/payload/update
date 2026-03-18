@@ -4,7 +4,7 @@ export DEV_ENV="/home/jaysh/dev"
 source "${DEV_ENV}/lib/log"
 source "${DEV_ENV}/lib/term-colors"
 export -f log
-DRY_RUN='0'
+export DRY_RUN='0'
 
 main() {
     local recent_critical should_reboot
