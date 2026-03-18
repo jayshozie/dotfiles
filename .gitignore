@@ -1,5 +1,4 @@
 *.json
-lsp-update-draft.sh
 
 # tmux plugins
 env/tmux/.config/tmux/plugins

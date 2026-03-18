@@ -38,8 +38,14 @@ A module is a directory within `modules/` containing:
 `${XDG_CONFIG_HOME}/nvim`).
 * `.check`: An executable bash script that validates if the module's
 requirements are met.
-* `.sudo` (Optional): An empty file indicating the module requires `sudo` for
+* `.sudo`: An empty file indicating the module requires `sudo` for
 deployment (e.g., `/etc/` configs).
+All of them, except the .dest file, are optional. For example, the module
+`bulletty` doesn't contain a payload because of its internal structure; the
+`clang-format` module doesn't contain a `.sudo` file because it's not necessary;
+the module `asm-lsp` doesn't contain a `.dest` file because I don't use it
+anymore, so the files in its `payload/` directory are completely ignored during
+sync.
 
 ### Automation: `gen-module`
 To maintain architectural consistency, the `gen-module` script facilitates the
@@ -52,18 +58,25 @@ scaffolding of new modules. It interactively prompts for:
 
 ## System Bootstrapping
 
-1.  **`PISS.sh`**: The Post-Install Setup Script. Handles initial Arch Linux
+1. **`PISS.sh`**: The Post-Install Setup Script. Handles initial Arch Linux
 configuration, including user creation (UID/GID 1000), package installation, and
-system-level environment setup.
-2.  **`dev` script**: A custom build script to compile and install core tools
+system-level environment setup. It's incredibly opinionated and completely
+written for me and myself only. I do recommend you checking it out if you're
+writing something similar, because it handles a lot of edge-cases of an
+automated post-installation script.
+2. **`dev` script**: A custom build script to compile and install core tools
 from source (Neovim, Tmux, Alacritty). This ensures bleeding-edge features and
-specific compile-time flags.
+specific compile-time flags, not that I use any, but it allows me to specify a
+version and use that version for a longer time. The reason behind this script's
+existence is the fact that I switched to Arch Linux and immediately ran into
+issues regarding Neovim and Neovim's Treesitter, so I decided to write a script
+that would lock its version as long as I want it to be locked.
 
 ## Usage
 
 ### Deployment
 ```bash
-# Perform a dry-run to see what would change
+# Perform a dry-run to see what commands would be run
 ./run --dry-run
 
 # Execute full deployment
@@ -72,15 +85,17 @@ specific compile-time flags.
 
 ### Creating a New Module
 ```bash
+# This is an interactive script
 ./gen-module
+# Note: It lacks a dry-run currently but it's in progress
 ```
 
 ### System Maintenance
 * **`update`**: A custom script located in `modules/scripts/payload/` that runs
 `paru` and performs a post-update analysis to determine if a kernel or
 system-level reboot is required.
-* **`lsp-update.sh`**: A draft script (to be finalized) for manually fetching
-and updating language server binaries into `~/.local/bin`.
+* **`lsp-update-draft.sh`**: A draft script (to be finalized) for manually
+fetching and updating language server binaries into `~/.local/bin`.
 
 ## Libraries (`lib/`)
 Shared utilities used by `run`, `gen-module`, and `.check` scripts:
