@@ -113,7 +113,8 @@ create_check_file() {
     log "[GEN-MODULE] What is the name of the binary to be used in the module's check script?"
     read -r binary_name
     if [[ -z $binary_name ]]; then
-        log "${WARN}[GEN-MODULE] [WARN] You didn't provide a name for the binary. Skipping the check script...${RESET}"
+        log "${WARN}[GEN-MODULE] [WARN] You didn't provide a name for the binary. Copying an empty .check script...${RESET}"
+        cp "${DEV_ENV}/lib/.check-empty" "${module_dir}/.check"
         return 0
     fi
     log "${WARN}[GEN-MODULE] Is this binary name correct? binary_name: $binary_name (Y/n)${RESET}"
