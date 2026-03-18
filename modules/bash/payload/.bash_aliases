@@ -6,9 +6,6 @@ alias src='source ~/.bashrc && hash -r'
 # netrw
 alias nv='nvim .'
 
-# update
-alias update='paru'
-
 # programs
 alias img='imv'
 alias vid='mpv'
