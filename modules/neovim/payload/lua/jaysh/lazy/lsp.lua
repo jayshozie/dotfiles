@@ -278,6 +278,40 @@ return {
       if vim.fn.executable("clangd") == 1 then
         vim.lsp.enable("clangd")
       end
+      -----------------------
+      -- rust-analyzer (Rust)
+      -----------------------
+      vim.lsp.config["rust-analyzer"] = {
+        cmd = { "rust-analyzer" },
+        filetypes = { "rust" },
+        on_attach = on_attach,
+        capabilities = capabilities,
+        root_markers = { "Cargo.toml", "rust-project.json", ".git" },
+        settings = {
+          ["rust-analyzer"] = {
+            checkOnSave = {
+              command = "clippy", -- Use clippy for linting on save
+            },
+            imports = {
+              granularity = {
+                group = "module",
+              },
+              prefix = "self",
+            },
+            cargo = {
+              buildScripts = {
+                enable = true,
+              },
+            },
+            procMacro = {
+              enable = true,
+            },
+          },
+        },
+      }
+      if vim.fn.executable("rust-analyzer") == 1 then
+        vim.lsp.enable("rust-analyzer")
+      end
 
       -----------------------
       -- asm-lsp (Assembly)

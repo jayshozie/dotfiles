@@ -17,6 +17,9 @@ check_binaries() {
     if ! command -v gcc &> /dev/null && ! command -v clang &> /dev/null; then
         log "${WARN}[RUN] [WARNING] No C compiler found (gcc/clang). Treesitter will fail to build parsers.${RESET}"
     fi
+    if ! command -v rust-analyzer &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] rust-analyzer is not installed!.${RESET}"
+    fi
 }
 
 check_binaries "$@"
