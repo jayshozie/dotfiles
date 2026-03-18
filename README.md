@@ -4,6 +4,12 @@ This repository represents a modular, "no-magic" dotfile management system
 tailored for Arch Linux and Dvorak-optimized workflows. It prioritizes absolute
 predictability, manual control over core tool versions, and minimal abstraction.
 
+> [!NOTE]
+> A thank you to a few incredible people:
+> [ThePrimeagen](https://github.com/ThePrimeagen) and [TJ DeVries](https://github.com/tjdevries) thank you guys. I wouldn't have been using
+> Linux, Neovim, Tmux, or would've been write this repository if it weren't for
+> you.
+
 ## Philosophy
 
 * **Absolute Control**: Avoid "magic" managers (like Mason for LSP). Core tools
