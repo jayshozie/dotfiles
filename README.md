@@ -6,9 +6,10 @@ predictability, manual control over core tool versions, and minimal abstraction.
 
 > [!NOTE]
 > A thank you to a few incredible people: \
-> [ThePrimeagen](https://github.com/ThePrimeagen) and [TJ DeVries](https://github.com/tjdevries) thank you guys. I wouldn't have been using
-> Linux, Neovim, Tmux, or would've been write this repository if it weren't for
-> you.
+> [ThePrimeagen](https://github.com/ThePrimeagen) and
+> [TJ DeVries](https://github.com/tjdevries) thank you guys. I wouldn't have
+> been using Linux, Neovim, Tmux, or would've been write this repository if it
+> weren't for you.
 
 ## Philosophy
 
