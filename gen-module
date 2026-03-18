@@ -30,7 +30,7 @@ create_dirs() {
     # will there be a payload?
     log "[GEN-MODULE] Will there be a payload? [Y/n]"
     read is_payload
-    [[ -z $is_payload ]] && is_payload='y'
+    is_payload=${is_payload:-'y'}
     if [[ $is_payload == 'y' || $is_payload == 'Y' ]]; then
         mkdir -p "${DEV_ENV}/modules/${module_name}/payload"
     elif [[ $is_payload == 'n' || $is_payload == 'N' ]]; then
@@ -54,7 +54,7 @@ check_sudo() {
     # does this module require sudo priveleges?
     log "[GEN-MODULE] Does this module require sudo priveleges? [y/N]"
     read is_sudo
-    [[ -z $is_sudo ]] && is_sudo='n'
+    is_sudo=${is_sudo:-'n'}
     if [[ $is_sudo == 'y' || $is_sudo == 'Y' ]]; then
         touch "${module_dir}/.sudo"
     elif [[ $is_sudo == 'n' || $is_sudo == 'N' ]]; then
@@ -88,7 +88,7 @@ create_dest_file() {
     fi
     log "${WARN}[GEN-MODULE] Is this destination correct? dest: $dest_dir (Y/n)${RESET}"
     read answer
-    [[ -z $answer ]] && answer='y'
+    answer=${answer:-'y'}
     if [[ $answer == 'y' || $answer == 'Y' ]]; then
         printf "%s" "$dest_dir" > "${module_dir}/.dest"
     elif [[ $answer == 'n' || $answer == 'N' ]]; then
@@ -120,7 +120,7 @@ create_check_file() {
     fi
     log "${WARN}[GEN-MODULE] Is this binary name correct? binary_name: $binary_name (Y/n)${RESET}"
     read answer
-    [[ -z $answer ]] && answer='y'
+    answer=${answer:-'y'}
     if [[ $answer == 'y' || $answer == 'Y' ]]; then
         cp "${DEV_ENV}/lib/.check" "${module_dir}/.check"
         sed -i "s/BINARY_NAME/$binary_name/g" "${module_dir}/.check"
