@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
+export DRY_RUN='0'
 source "${DEV_ENV}/lib/log"
 source "${DEV_ENV}/lib/term-colors"
 export -f log
-export DRY_RUN='0'
 
 SRCS="${HOME}/src/upstream"
 log "${INFO}[DEV] This script requires sudo priveleges:${RESET}"
