@@ -1,14 +1,15 @@
 GREEN  := $(shell tput -Txterm setaf 2)
 RESET  := $(shell tput -Txterm sgr0)
 LUA_TARGETS := modules/neovim/payload/
+STYLUA_TOML := modules/lua-stuff/.stylua.toml
 
 lua_fmt_check:
 	@echo "===> Checking"
-	stylua $(LUA_TARGETS) --config-path=.stylua.toml --check
+	stylua $(LUA_TARGETS) --config-path=$(STYLUA_TOML) --check
 
 lua_fmt:
 	@echo "===> Formatting"
-	stylua $(LUA_TARGETS) --config-path=.stylua.toml
+	stylua $(LUA_TARGETS) --config-path=$(STYLUA_TOML)
 
 lua_lint:
 	@echo "===> Linting"

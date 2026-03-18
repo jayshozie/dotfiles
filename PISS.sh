@@ -89,7 +89,7 @@ pacman -Syu --noconfirm
 
 # 2. System Stuff
 inst base linux-headers linux-firmware networkmanager sudo age man-db man-pages
-inst less openssh stow snapper grub-btrfs inotify-tools
+inst less openssh snapper grub-btrfs inotify-tools
 
 # 3. Dev Stack
 inst base-devel git github-cli gcc tree-sitter-cli gdb valgrind clang
@@ -266,7 +266,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
         popd
     fi
 
-    paru -S rofi-polkit-agent-git pinentry-rofi jellyfin-desktop asm-lsp
+    paru -S rofi-polkit-agent-git pinentry-rofi jellyfin-desktop
 
     # 6. CLONE REPOSITORIES
 
