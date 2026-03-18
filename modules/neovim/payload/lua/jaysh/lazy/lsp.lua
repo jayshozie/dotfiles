@@ -104,6 +104,12 @@ return {
                     vim.diagnostic.open_float({ border = "rounded" })
                 end, opts)
 
+                vim.keymap.set("n", "<leader>th", function()
+                    local is_enabled = vim.diagnostic.is_enabled({ bufnr = 0 })
+                    vim.diagnostic.enable(not is_enabled, { bufnr = 0 })
+                    print("Diagnostics " .. (is_enabled and "Hiding" or "Showing"))
+                end, opts)
+
                 vim.keymap.set("n", "[d", function()
                     vim.diagnostic.jump({ count = -1, float = true, buffer = bufnr })
                 end, opts)
