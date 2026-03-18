@@ -5,7 +5,7 @@ source "${DEV_ENV}/lib/log"
 source "${DEV_ENV}/lib/term-colors"
 export -f log
 
-# implement dry run
+# @TODO: implement dry run
 export DRY_RUN='0'
 
 create_dirs() {
