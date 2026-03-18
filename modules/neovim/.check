@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v nvim &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] neovim (nvim) is not installed!${RESET}"
+        exit 1
+    fi
+    if ! command -v wl-copy &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] wl-clipboard is missing. Neovim clipboard sync will fail.${RESET}"
+    fi
+    if ! command -v rg &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] ripgrep (rg) is missing. Telescope live_grep will fail.${RESET}"
+    fi
+    if ! command -v fd &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] fd is missing. Telescope find_files will be slow/fallback.${RESET}"
+    fi
+    if ! command -v gcc &> /dev/null && ! command -v clang &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] No C compiler found (gcc/clang). Treesitter will fail to build parsers.${RESET}"
+    fi
+}
+
+check_binaries "$@"
+
+exit 0

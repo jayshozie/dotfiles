@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v tmux &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] tmux is not installed!${RESET}"
+        exit 1
+    fi
+
+    local tpm_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
+    if [[ ! -d "$tpm_dir" ]]; then
+        log "${WARN}[RUN] [WARNING] TPM is not installed at $tpm_dir. Tmux plugins will fail to load!${RESET}"
+    fi
+}
+
+check_binaries "$@"
+
+exit 0

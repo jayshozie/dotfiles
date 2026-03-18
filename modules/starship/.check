@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v starship &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] starship is not installed!${RESET}"
+        exit 1
+    fi
+}
+
+check_binaries "$@"
+
+exit 0

@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+
+export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
+source "${DEV_ENV}/lib/log"
+source "${DEV_ENV}/lib/term-colors"
+export -f log
+
+# implement dry run
+export DRY_RUN='0'
+
+create_dirs() {
+    local module_name is_payload existing_module_names
+
+    # module name
+    log "[GEN-MODULE] What will the new module be named?"
+    read -r module_name
+    if [[ -z $module_name ]]; then
+        log "${ERR}[GEN-MODULE] [ERROR] Module name can't be empty!${RESET}"
+        return 1
+    fi
+    # check whether a module with the same name exists
+    for m in modules/*; do
+        m=$(basename "$m")
+        if [[ $module_name == $m ]]; then
+            log "${ERR}[GEN-MODULE] [ERROR] Module with name $module_name exists!${RESET}"
+            return 1
+        fi
+    done
+
+    # will there be a payload?
+    log "[GEN-MODULE] Will there be a payload? [Y/n]"
+    read is_payload
+    [[ -z $is_payload ]] && is_payload='y'
+    if [[ $is_payload == 'y' || $is_payload == 'Y' ]]; then
+        mkdir -p "${DEV_ENV}/modules/${module_name}/payload"
+    elif [[ $is_payload == 'n' || $is_payload == 'N' ]]; then
+        mkdir -p "${DEV_ENV}/modules/${module_name}"
+    else
+        log "${ERR}[GEN-MODULE] [ERROR] Unknown option!${RESET}"
+        return 1
+    fi
+    REPLY="${DEV_ENV}/modules/${module_name}"
+    return 0
+}
+
+check_sudo() {
+    local is_sudo module_dir
+    module_dir="$1"
+    if [[ -z $module_dir ]]; then
+        log "${ERR}[GEN-MODULE] [ERROR] No module directory supplied!${RESET}"
+        return 1
+    fi
+
+    # does this module require sudo priveleges?
+    log "[GEN-MODULE] Does this module require sudo priveleges? [y/N]"
+    read is_sudo
+    [[ -z $is_sudo ]] && is_sudo='n'
+    if [[ $is_sudo == 'y' || $is_sudo == 'Y' ]]; then
+        touch "${module_dir}/.sudo"
+    elif [[ $is_sudo == 'n' || $is_sudo == 'N' ]]; then
+        :
+    else
+        log "${ERR}[GEN-MODULE] [ERROR] Unknown option!${RESET}"
+        return 1
+    fi
+    REPLY="$module_dir"
+    return 0
+}
+
+create_dest_file() {
+    local module_dir answer
+    module_dir="$1"
+    if [[ -z $module_dir ]]; then
+        log "${ERR}[GEN-MODULE] [ERROR] No module directory supplied!${RESET}"
+        return 1
+    fi
+    if [[ ! -d "${module_dir}/payload" ]]; then
+        log "${INFO}[GEN-MODULE] This module is configured to not have a payload. Skipping the dest file...${RESET}"
+        return 0
+    fi
+
+    # get destination
+    log "[GEN-MODULE] Where is the module's configuration located? (e.g. \${XDG_CONFIG_HOME}/bat)"
+    read -r dest_dir
+    if [[ -z $dest_dir ]]; then
+        log "${ERR}[GEN-MODULE] [ERROR] No destination directory supplied!${RESET}"
+        return 1
+    fi
+    log "${WARN}[GEN-MODULE] Is this destination correct? dest: $dest_dir (Y/n)${RESET}"
+    read answer
+    [[ -z $answer ]] && answer='y'
+    if [[ $answer == 'y' || $answer == 'Y' ]]; then
+        printf "%s" "$dest_dir" > "${module_dir}/.dest"
+    elif [[ $answer == 'n' || $answer == 'N' ]]; then
+        :
+    else
+        log "${ERR}[GEN-MODULE] [ERROR] Unknown option!${RESET}"
+        return 1
+    fi
+    REPLY="$module_dir"
+    return 0
+}
+
+create_check_file() {
+    local module_dir answer binary_name
+    module_dir="$1"
+    recursed="$2"
+    if [[ -z $module_dir ]]; then
+        log "${ERR}[GEN-MODULE] [ERROR] No module directory supplied!${RESET}"
+        return 1
+    fi
+
+    log "[GEN-MODULE] What is the name of the binary to be used in the module's check script?"
+    read -r binary_name
+    if [[ -z $binary_name ]]; then
+        log "${WARN}[GEN-MODULE] [WARN] You didn't provide a name for the binary. Skipping the check script...${RESET}"
+        return 0
+    fi
+    log "${WARN}[GEN-MODULE] Is this binary name correct? binary_name: $binary_name (Y/n)${RESET}"
+    read answer
+    [[ -z $answer ]] && answer='y'
+    if [[ $answer == 'y' || $answer == 'Y' ]]; then
+        cp "${DEV_ENV}/lib/.check" "${module_dir}/.check"
+        sed -i "s/BINARY_NAME/$binary_name/g" "${module_dir}/.check"
+        log "${INFO}[GEN-MODULE] You're strongly recommended to check/customize the check script located at [${module_dir}/.check].${RESET}"
+    elif [[ $answer == 'n' || $answer == 'N' ]]; then
+        if [[ $recursed == 'y' ]]; then
+            return 1
+        elif ! create_check_file $module_dir 'y'; then
+            return 1
+        fi
+    else
+        log "${ERR}[GEN-MODULE] [ERROR] Unknown option!${RESET}"
+        return 1
+    fi
+}
+
+main() {
+    log "${SUCC}[GEN-MODULE] Welcome to module auto-generator gen-module.${RESET}"
+    local module_dir
+
+    if ! create_dirs; then
+        exit 1
+    fi
+    if ! check_sudo $REPLY; then
+        exit 1
+    fi
+    if ! create_dest_file $REPLY; then
+        exit 1
+    fi
+    if ! create_check_file $REPLY 'n'; then
+        exit 1
+    fi
+}
+
+main "$@"

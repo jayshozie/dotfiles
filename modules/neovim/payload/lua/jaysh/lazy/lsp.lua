@@ -15,7 +15,7 @@ return {
         },
 
         config = function()
-            vim.lsp.set_log_level("warn")
+            vim.lsp.set_log_level("error")
 
             -------------------------
             -- GENERAL DIAGNOSTICS --
@@ -333,7 +333,7 @@ return {
             vim.lsp.config['harper-ls'] = {
                 cmd = { "harper-ls", "--stdio" },
                 on_attach = on_attach,
-                capabilites = capabilities,
+                capabilities = capabilities,
                 filetypes = {
                     "tex",
                     "markdown",

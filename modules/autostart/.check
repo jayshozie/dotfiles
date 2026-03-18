@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    # Autostart configs usually don't need a binary check, but you can add logic here if needed.
+    :
+}
+
+check_binaries "$@"
+
+exit 0

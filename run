@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
-# Usage: ./run [-dry|--dry-run]
+# Usage: ./run [-dry|--dry-run|-d]
+
 export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
-dry_run="0"
+export DRY_RUN='0'
+source "${DEV_ENV}/lib/log"
+source "${DEV_ENV}/lib/term-colors"
+export -f log
 
 # --- Safety Check: Prevent suicide ---
 # We explicitly forbid the DEST from being root or HOME to prevent accidents.
@@ -26,17 +30,9 @@ fi
 pushd "$DEV_ENV" > /dev/null
 
 # Parse arguments
-if [[ $1 == "-dry" || $1 == "--dry-run" ]]; then
-    dry_run="1"
+if [[ $1 == '-dry' || $1 == '--dry-run' || $1 == '-d' ]]; then
+    export DRY_RUN='1'
 fi
-
-log() {
-    if [[ $dry_run == "0" ]]; then
-        echo "$1"
-    else
-        echo "[DRY]: $1"
-    fi
-}
 
 # Iterate over directories in modules/
 for m in modules/*; do
@@ -46,8 +42,16 @@ for m in modules/*; do
 
     # Skip if no .dest file
     if [[ ! -f "${m}/.dest" ]]; then
-        log "[RUN] $module_name: No .dest file found."
+        log "${ERR}[RUN] $module_name: No .dest file found.${RESET}"
         continue
+    fi
+
+    if [[ ! -f "${m}/.check" ]]; then
+        log "${ERR}[RUN] [$module_name] No .check script found.${RESET}"
+    else
+        if ! "${m}/.check"; then
+            log "${ERR}[RUN] There has been an issue with the .check script of $module_name!${RESET}"
+        fi
     fi
 
     # Check sudo requirement
@@ -94,14 +98,18 @@ for m in modules/*; do
 
     log "[RUN] $module_name -> $DEST"
 
-    if [[ $dry_run == "0" ]]; then
+    if [[ $DRY_RUN == "0" ]]; then
         # Ensure parent directory exists
         $RUN_CMD mkdir -p "$DEST"
 
         # RSYNC syntax note: Source must end in slash to copy CONTENTS
         $RUN_CMD rsync $RSYNC_FLAGS "${m}/payload/" "$DEST/"
     else
-        log "$RUN_CMD rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
+        if [[ -z $RUN_CMD ]]; then
+            log "rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
+        else
+            log "$RUN_CMD rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
+        fi
     fi
 done
 

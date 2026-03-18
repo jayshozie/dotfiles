@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v clang-format &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] clang-format is not installed!${RESET}"
+        exit 1
+    fi
+}
+
+check_binaries "$@"
+
+exit 0

@@ -52,9 +52,9 @@ alias dev-commit="git add . && git commit -m 'wip: automated dev-commit' && git 
 # you wouldn't even believe how much i make changes to these files
 alias dev='cd ~/dev && nv'
 alias lsp='pushd ~/dev/modules/neovim/payload && nvim ./lua/jaysh/lazy/lsp.lua && popd'
-alias bashrc='nvim ~/dev/modules/bash/.bashrc'
-alias aliases='nvim ~/dev/modules/bash/.bash_aliases'
-alias gitconfig='nvim ~/dev/modules/git/.gitconfig'
+alias bashrc='nvim ~/dev/modules/bash/payload/.bashrc'
+alias aliases='nvim ~/dev/modules/bash/payload/.bash_aliases'
+alias gitconfig='nvim ~/dev/modules/git/payload/.gitconfig'
 
 # easier access to stuff i'm constantly working on
 alias jayshell='pushd ~/projects/c-mastery-projects/jayshell && nv'

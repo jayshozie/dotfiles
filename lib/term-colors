@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+export ERR='\033[0;31m'
+export SUCC='\033[0;32m'
+export WARN='\033[0;33m'
+export INFO='\033[0;34m'
+export RESET='\033[0m'

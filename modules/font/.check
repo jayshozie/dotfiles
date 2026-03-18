@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v fc-cache &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] fontconfig (fc-cache) is not installed!${RESET}"
+        exit 1
+    fi
+}
+
+check_binaries "$@"
+
+exit 0
