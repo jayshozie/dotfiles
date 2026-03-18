@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-SRCS="${HOME}/src/upstream"
-echo "[DEV] This script requires sudo priveleges:"
-sudo -v
+export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
+source "${DEV_ENV}/lib/log"
+source "${DEV_ENV}/lib/term-colors"
+export -f log
+export DRY_RUN='0'
 
+SRCS="${HOME}/src/upstream"
+log "${INFO}[DEV] This script requires sudo priveleges:${RESET}"
+sudo -v
 
 ################################################################################
 ################################# N E O V I M ##################################
@@ -18,7 +23,7 @@ build_neovim() {
         pushd "${SRCS}/nvim-treesitter"
         git fetch
     else
-        echo "[DEV] Treesitter is not cloned. Cloning..."
+        log "${INFO}[DEV] Treesitter is not cloned. Cloning...${RESET}"
         pushd "${SRCS}"
         git clone git@github.com:nvim-treesitter/nvim-treesitter.git
         popd
@@ -28,7 +33,7 @@ build_neovim() {
     popd
 
     if [[ ! -d "${SRCS}/neovim" ]]; then
-        echo "[DEV] Neovim is not cloned. Cloning..."
+        log "${INFO}[DEV] Neovim is not cloned. Cloning...${RESET}"
         pushd "$SRCS"
         git clone git@github.com:neovim/neovim.git
         popd
@@ -76,7 +81,7 @@ build_tmux() {
     popd
 
     if [[ ! -d "${SRCS}/tmux" ]]; then
-        echo "[DEV] Tmux is not cloned. Cloning..."
+        log "${INFO}[DEV] Tmux is not cloned. Cloning...${RESET}"
         pushd "$SRCS"
         git clone git@github.com:tmux/tmux.git
         popd
@@ -113,7 +118,7 @@ ALACRITTY_VERSION="v0.16.1"
 build_alacritty() {
     # source
     if [[ ! -d "${SRCS}/alacritty" ]]; then
-        echo "[DEV] Alacritty is not cloned. Cloning..."
+        log "${INFO}[DEV] Alacritty is not cloned. Cloning...${RESET}"
         pushd "$SRCS"
         git clone git@github.com:alacritty/alacritty.git
         popd
@@ -148,7 +153,7 @@ build_alacritty() {
 
 program="$1"
 while [[ $# -gt 0 ]]; do
-    echo "ARG: \"$1\""
+    log "[DEV] ARG: \"$1\""
     case $program in
         "neovim")
             build_neovim
@@ -172,7 +177,7 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         *)
-            echo "[DEV] Unknown option '$program'. Skipping"
+            log "${ERROR}[DEV] Unknown option '$program'. Skipping${RESET}"
             shift
             program="$1"
             ;;
