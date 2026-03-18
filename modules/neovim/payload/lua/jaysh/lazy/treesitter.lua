@@ -1,6 +1,6 @@
 return {
-    dir = "~/src/upstream/nvim-treesitter", -- Point to your local clone
-    name = "nvim-treesitter", -- Explicitly name it so other plugins find it
+    dir = "~/src/upstream/nvim-treesitter",
+    name = "nvim-treesitter",
     lazy = false,
     build = ":TSUpdate",
     config = function()
