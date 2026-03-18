@@ -14,7 +14,6 @@ lua_lint:
 	@echo "===> Linting"
 	luacheck $(LUA_TARGETS) --globals vim
 
-
 # i think i'll use it for building/rebuilding stuff
 run:
 
