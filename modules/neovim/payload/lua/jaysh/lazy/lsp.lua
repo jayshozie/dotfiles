@@ -282,17 +282,70 @@ return {
       -----------------------
       -- asm-lsp (Assembly)
       -----------------------
-      -- vim.lsp.config['asm-lsp'] = {
-      --     cmd = {
-      --         "asm-lsp",
-      --     },
-      --     filetypes = { "asm" },
-      --     on_attach = on_attach,
-      --     capabilities = capabilities,
-      -- }
-      -- if vim.fn.executable("asm-lsp") == 1 then
-      --     vim.lsp.enable("asm-lsp")
-      -- end
+      vim.lsp.config["asm-lsp"] = {
+        cmd = { "asm-lsp" },
+        filetypes = { "asm" },
+        capabilities = capabilities,
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
+
+          client.handlers["window/showMessage"] = function() end
+          client.handlers["textDocument/publishDiagnostics"] = function(
+            err,
+            result,
+            ctx,
+            config
+          )
+            if err then
+              return
+            end
+            return vim.lsp.handlers["textDocument/publishDiagnostics"](
+              err,
+              result,
+              ctx,
+              config
+            )
+          end
+        end,
+        handlers = {
+          ["textDocument/signatureHelp"] = function(err, result, ctx, config)
+            if err then
+              return
+            end
+            return vim.lsp.handlers["textDocument/signatureHelp"](
+              err,
+              result,
+              ctx,
+              config
+            )
+          end,
+          ["textDocument/hover"] = function(err, result, ctx, config)
+            if err then
+              return
+            end
+            return vim.lsp.handlers["textDocument/hover"](
+              err,
+              result,
+              ctx,
+              config
+            )
+          end,
+          ["textDocument/diagnostic"] = function(err, result, ctx, config)
+            if err then
+              return
+            end
+            return vim.lsp.handlers["textDocument/diagnostic"](
+              err,
+              result,
+              ctx,
+              config
+            )
+          end,
+        },
+      }
+      if vim.fn.executable("asm-lsp") == 1 then
+        vim.lsp.enable("asm-lsp")
+      end
 
       -----------------------
       -- vtsls (TS/JS)
