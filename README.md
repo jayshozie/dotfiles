@@ -101,8 +101,6 @@ that would lock its version as long as I want it to be locked.
 * **`update`**: A custom script located in `modules/scripts/payload/` that runs
 `paru` and performs a post-update analysis to determine if a kernel or
 system-level reboot is required.
-* **`lsp-update-draft.sh`**: A draft script (to be finalized) for manually
-fetching and updating language server binaries into `~/.local/bin`.
 
 ## Libraries (`lib/`)
 Shared utilities used by `run`, `gen-module`, and `.check` scripts:
