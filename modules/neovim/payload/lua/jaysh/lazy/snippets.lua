@@ -25,7 +25,7 @@ return {
         -----------------
         -- Snippets --
         -----------------
-        local debugc = {
+        local debug_c_cpp = {
             ls.snippet('dberr', {
                 ls.function_node(prepend_include, {}),
                 ls.text_node('fprintf(stderr, "[DEBUG] '),
@@ -37,8 +37,8 @@ return {
             })
         }
 
-        ls.add_snippets('c', debugc)
-        ls.add_snippets('cpp', debugc)
+        ls.add_snippets('c', debug_c_cpp)
+        ls.add_snippets('cpp', debug_c_cpp)
 
         -------------
         -- Keymaps --
