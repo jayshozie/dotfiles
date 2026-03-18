@@ -3,15 +3,15 @@ RESET  := $(shell tput -Txterm sgr0)
 LUA_TARGETS := modules/neovim/payload/
 
 lua_fmt_check:
-	echo "===> Checking"
+	@echo "===> Checking"
 	stylua $(LUA_TARGETS) --config-path=.stylua.toml --check
 
 lua_fmt:
-	echo "===> Formatting"
+	@echo "===> Formatting"
 	stylua $(LUA_TARGETS) --config-path=.stylua.toml
 
 lua_lint:
-	echo "===> Linting"
+	@echo "===> Linting"
 	luacheck $(LUA_TARGETS) --globals vim
 
 
