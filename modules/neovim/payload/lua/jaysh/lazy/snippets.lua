@@ -8,7 +8,7 @@ return {
   config = function()
     local ls = require("luasnip")
 
-    local function prepend_include(args, snip, old_state)
+    local function prepend_include()
       local header = "#include <stdio.h>"
       local lines = vim.api.nvim_buf_get_lines(0, 0, 50, false)
 

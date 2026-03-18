@@ -1,9 +1,102 @@
+# [Jayshozie](https://github.com/jayshozie)'s Development Environment
+
+This repository represents a modular, "no-magic" dotfile management system
+tailored for Arch Linux and Dvorak-optimized workflows. It prioritizes absolute
+predictability, manual control over core tool versions, and minimal abstraction.
+
+## Philosophy
+
+* **Absolute Control**: Avoid "magic" managers (like Mason for LSP). Core tools
+are often built from source to ensure specific versioning.
+* **Modular Architecture**: Configurations are isolated into self-contained
+modules.
+* **XDG Compliance**: Forcefully adheres to the XDG Base Directory
+Specification.
+* **Predictable Deployment**: Uses a custom `rsync`-based engine rather than
+symlink-heavy tools like GNU Stow to allow for clean directory merges.
+
+## Core Architecture
+
+### Deployment Engine: `run`
+The `run` script is the primary entry point for deploying configurations. It
+iterates through all directories in `modules/` and performs the following for
+each:
+
+1. **Validation**: Executes the module's `.check` script to verify system
+dependencies (e.g., binaries, fonts, libraries).
+2. **Privilege Check**: Checks for the existence of a `.sudo` file to determine
+if root access is required for deployment.
+3. **Destination Resolution**: Reads the `.dest` file (supporting environment
+variables via `envsubst`) to determine the target path.
+4. **Syncing**: Uses `rsync -cau` to sync the `payload/` directory into the
+destination. This ensures a strict merge without the volatility of symlinks.
+
+### Module Structure
+A module is a directory within `modules/` containing:
+* `payload/`: The actual configuration files to be deployed.
+* `.dest`: A single line containing the target path (e.g.,
+`${XDG_CONFIG_HOME}/nvim`).
+* `.check`: An executable bash script that validates if the module's
+requirements are met.
+* `.sudo` (Optional): An empty file indicating the module requires `sudo` for
+deployment (e.g., `/etc/` configs).
+
+### Automation: `gen-module`
+To maintain architectural consistency, the `gen-module` script facilitates the
+scaffolding of new modules. It interactively prompts for:
+* Module name.
+* Payload requirement.
+* Destination path.
+* Sudo requirements.
+* Primary binary for the `.check` script.
+
+## System Bootstrapping
+
+1.  **`PISS.sh`**: The Post-Install Setup Script. Handles initial Arch Linux
+configuration, including user creation (UID/GID 1000), package installation, and
+system-level environment setup.
+2.  **`dev` script**: A custom build script to compile and install core tools
+from source (Neovim, Tmux, Alacritty). This ensures bleeding-edge features and
+specific compile-time flags.
+
+## Usage
+
+### Deployment
+```bash
+# Perform a dry-run to see what would change
+./run --dry-run
+
+# Execute full deployment
+./run
+```
+
+### Creating a New Module
+```bash
+./gen-module
+```
+
+### System Maintenance
+* **`update`**: A custom script located in `modules/scripts/payload/` that runs
+`paru` and performs a post-update analysis to determine if a kernel or
+system-level reboot is required.
+* **`lsp-update.sh`**: A draft script (to be finalized) for manually fetching
+and updating language server binaries into `~/.local/bin`.
+
+## Libraries (`lib/`)
+Shared utilities used by `run`, `gen-module`, and `.check` scripts:
+* `log`: Standardized logging with support for `$DRY_RUN` prefixes.
+* `term-colors`: Consistent terminal color definitions (`ERR`, `WARN`, `SUCC`,
+`INFO`).
+* `.check`: The standard template for module validation scripts.
+
+---
+
+<!--
 # jayshozie's Development Environment
 
 - **WIP:** A lot has changed since this README was last updated, I'll rewrite it
 soon.
 
-<!--
 This is the modularized system configuration for my development environment. I
 changed it from a simple Neovim config to a full XDG-compliant setup managed by
 `GNU Stow`. Thank you [The Primeagen](https://github.com/theprimeagen) and
