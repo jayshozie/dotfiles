@@ -10,6 +10,7 @@ main() {
         # get rid of the quotes around the layout name
         text=${text##\"}
         text=${text%%\"}
+        [[ $text == "English (Dvorak)" ]] && text="Dvorak"
 
         css_class='custom-kb'
         tooltip=''

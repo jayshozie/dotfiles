@@ -1,4 +1,4 @@
 return {
-    'tpope/vim-fugitive',
-    branch = 'master',
+  "tpope/vim-fugitive",
+  branch = "master",
 }

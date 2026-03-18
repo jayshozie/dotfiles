@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    if ! command -v stylua &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] stylua is not installed!${RESET}"
+        exit 1
+    fi
+    if ! command -v luacheck &> /dev/null; then
+        log "${ERR}[RUN] [ERROR] luacheck is not installed!${RESET}"
+        exit 1
+    fi
+}
+
+check_binaries "$@"
+
+exit 0

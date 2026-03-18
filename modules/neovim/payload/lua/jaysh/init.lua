@@ -1,12 +1,12 @@
 -------------------------------------SETS---------------------------------------
 
 -- I hate the slim cursor, this looks much better.
-vim.opt.guicursor = ''
+vim.opt.guicursor = ""
 
 --
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.colorcolumn = '81'
+vim.opt.colorcolumn = "81"
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -14,28 +14,28 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 -- whitespace stuff
-vim.api.nvim_create_augroup('WhitespaceGroup', {
-    clear = true
+vim.api.nvim_create_augroup("WhitespaceGroup", {
+  clear = true,
 })
-vim.api.nvim_set_hl(0, 'WhitespaceHL', {
-    bg = '#f7768e', -- background color will be tokyonight's red
+vim.api.nvim_set_hl(0, "WhitespaceHL", {
+  bg = "#f7768e", -- background color will be tokyonight's red
 })
-vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave', 'TermOpen' }, {
-    group = 'WhitespaceGroup',
-    pattern = '*',
-    callback = function()
-        local filetype = vim.bo.filetype
-        local buftype = vim.bo.buftype
-        local matches = vim.fn.getmatches()
-        for _, match_dict in ipairs(matches) do
-            if match_dict.group == 'WhitespaceHL' then
-                vim.fn.matchdelete(match_dict.id)
-            end
-        end
-        if filetype ~= 'diff' and filetype ~= 'lazy' and buftype ~= 'terminal' then
-            vim.fn.matchadd('WhitespaceHL', [[\s\+$\| \+\ze\t]])
-        end
-    end,
+vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "TermOpen" }, {
+  group = "WhitespaceGroup",
+  pattern = "*",
+  callback = function()
+    local filetype = vim.bo.filetype
+    local buftype = vim.bo.buftype
+    local matches = vim.fn.getmatches()
+    for _, match_dict in ipairs(matches) do
+      if match_dict.group == "WhitespaceHL" then
+        vim.fn.matchdelete(match_dict.id)
+      end
+    end
+    if filetype ~= "diff" and filetype ~= "lazy" and buftype ~= "terminal" then
+      vim.fn.matchadd("WhitespaceHL", [[\s\+$\| \+\ze\t]])
+    end
+  end,
 })
 
 vim.opt.smartindent = true
@@ -51,7 +51,7 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = "yes"
 
 vim.opt.updatetime = 50
 
@@ -86,39 +86,39 @@ vim.g.netrw_liststyle = 0
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
-vim.opt.clipboard = 'unnamedplus'
-vim.opt.winborder = 'rounded'
+vim.opt.clipboard = "unnamedplus"
+vim.opt.winborder = "rounded"
 
 -------------------------------------REMAPS-------------------------------------
 
 -- <space> is the superior leader.
-vim.g.mapleader = ' '
-vim.g.localleader = ' '
+vim.g.mapleader = " "
+vim.g.localleader = " "
 -- I use this a lot, helps a lot too.
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 -- I hate using Ctrl for that, and got used to this to switch windows.
-vim.keymap.set('n', '<leader>w', '<C-w>')
+vim.keymap.set("n", "<leader>w", "<C-w>")
 
-vim.keymap.set('n', '<leader>g', ':Git<CR>')
+vim.keymap.set("n", "<leader>g", ":Git<CR>")
 
 -- Thanks a lot Primeagen. These are amazing.
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- I forgot this existed, will use more.
-vim.keymap.set('n', 'J', 'mzJ`z')
+vim.keymap.set("n", "J", "mzJ`z")
 
 -- I just love these. Thanks again, Prime.
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
 
 -- Split resizing, makes it a lot faster.
-vim.keymap.set('n', '<M-,>', '<c-w>5>')
-vim.keymap.set('n', '<M-.>', '<c-w>5<')
-vim.keymap.set('n', '<M-t>', '<c-w>5+')
-vim.keymap.set('n', '<M-s>', '<c-w>5-')
+vim.keymap.set("n", "<M-,>", "<c-w>5>")
+vim.keymap.set("n", "<M-.>", "<c-w>5<")
+vim.keymap.set("n", "<M-t>", "<c-w>5+")
+vim.keymap.set("n", "<M-s>", "<c-w>5-")
 
 -- tmux-sessionizer thanks to ThePrimeagen
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
@@ -128,16 +128,19 @@ vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 -- vim.keymap.set("n", "<M-s>", "<cmd>silent !tmux neww tmux-sessionizer -s 3<CR>")
 
 -- Highlight when yanking, thanks TJ.
-vim.api.nvim_create_autocmd('TextYankPost', {
-    desc     = 'Highlight when yanking (copying) text',
-    group    = vim.api.nvim_create_augroup('kicstart-hightlight-yank', { clear = true }),
-    callback = function()
-        vim.hl.on_yank()
-    end,
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup(
+    "kicstart-hightlight-yank",
+    { clear = true }
+  ),
+  callback = function()
+    vim.hl.on_yank()
+  end,
 })
 
 -- To get out of terminal mode in a terminal window, thanks again TJ.
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>")
 
 -- Never actually use these, but you never know.
 -- greatest remap ever
@@ -148,17 +151,21 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
 -- vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
 -- I don't use it, so begone Q.
-vim.keymap.set('n', 'Q', '<nop>')
+vim.keymap.set("n", "Q", "<nop>")
 -- I'll use it more now that I have an actually working LSP config.
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format)
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
-vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>zz')
-vim.keymap.set('n', '<leader>k', '<cmd>lprev<CR>zz')
-vim.keymap.set('n', '<leader>j', '<cmd>lnext<CR>zz')
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lprev<CR>zz")
+vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>zz")
 
 -- Change the word under the cursor in the entire file.
-vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set(
+  "n",
+  "<leader>s",
+  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
+)
 -- Just amazing, thanks once again Primeagen.
 
 -- Thanks Prime
@@ -169,11 +176,11 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 -- I use this more than I'd like to admit.
 
 -- Helps a lot when rewriting the config.
-vim.keymap.set('n', '<leader><leader>', function()
-    vim.cmd('so')
+vim.keymap.set("n", "<leader><leader>", function()
+  vim.cmd("so")
 end)
 
 -----------------------------------PLUGINS--------------------------------------
 
 -- Load Lazy
-require('jaysh.lazy_init')
+require("jaysh.lazy_init")
