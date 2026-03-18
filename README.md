@@ -111,6 +111,8 @@ Shared utilities used by `run`, `gen-module`, and `.check` scripts:
 `INFO`).
 * `.check`: The standard template for module validation scripts.
 
+---
+
 # License
 
 This repository is licensed under the GNU Public License v3.0. Please see the
