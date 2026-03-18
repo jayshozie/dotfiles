@@ -76,7 +76,7 @@ from source (Neovim, Tmux, Alacritty). This ensures bleeding-edge features and
 specific compile-time flags, not that I use any, but it allows me to specify a
 version and use that version for a longer time. The reason behind this script's
 existence is the fact that I switched to Arch Linux and immediately ran into
-issues regarding Neovim and Neovim's Treesitter, so I decided to write a script
+issues regarding Neovim and Neovim's Treesitter. So I decided to write a script
 that would lock its version as long as I want it to be locked.
 
 ## Usage
