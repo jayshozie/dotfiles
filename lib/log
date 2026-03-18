@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 log() {
-    if [[ $DRY_RUN == "0" ]]; then
+    if [[ $DRY_RUN == '0' ]]; then
         echo -e "$1"
+    elif [[ $RUN_AUDIT == '1' ]]; then
+        echo -e "[AUDIT]: $1"
     else
         echo -e "[DRY]: $1"
     fi

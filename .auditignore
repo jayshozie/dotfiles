@@ -1,0 +1,25 @@
+# Global Audit Ignores
+# Patterns apply to files relative to the module destination.
+
+# --- Tooling & Meta ---
+.git/*
+node_modules/*
+__pycache__/*
+
+# --- App Specific Artifacts ---
+tmp/*
+history/*
+chats/*
+*.json
+installation_id
+plugins/*
+tmux_resurrect_*
+resurrect/*
+lazy-lock.json
+
+# --- Editor/System Artifacts ---
+*.swp
+*~
+.DS_Store
+*.pacnew
+*.pacsave
