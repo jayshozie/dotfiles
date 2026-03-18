@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave', 'TermOpen' }, {
                 vim.fn.matchdelete(match_dict.id)
             end
         end
-        if filetype ~= 'diff' and buftype ~= 'terminal' then
+        if filetype ~= 'diff' and filetype ~= 'lazy' and buftype ~= 'terminal' then
             vim.fn.matchadd('WhitespaceHL', [[\s\+$\| \+\ze\t]])
         end
     end,
@@ -94,10 +94,10 @@ vim.opt.winborder = 'rounded'
 -- <space> is the superior leader.
 vim.g.mapleader = ' '
 vim.g.localleader = ' '
--- I use this a lot, help a lot too.
+-- I use this a lot, helps a lot too.
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 -- I hate using Ctrl for that, and got used to this to switch windows.
--- vim.keymap.set('n', '<leader>w', '<C-w>')
+vim.keymap.set('n', '<leader>w', '<C-w>')
 
 vim.keymap.set('n', '<leader>g', ':Git<CR>')
 
