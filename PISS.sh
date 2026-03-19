@@ -259,18 +259,31 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     if ! command -v paru &> /dev/null; then
         echo "[USER-CTX] Installing Paru..."
         pushd "${HOMEDIR}/src/aur"
-        [[ ! -d paru ]] && git clone https://aur.archlinux.org/paru.git
-        popd
-        pushd "${HOMEDIR}/src/aur/paru"
-        makepkg -si --noconfirm
+        status='0'
+        if [[ ! -d paru ]]; then
+            git clone https://aur.archlinux.org/paru.git
+            pushd "${HOMEDIR}/src/aur/paru"
+            makepkkg -si --noconfirm
+            popd
+        fi
         popd
     fi
 
-    paru -S rofi-polkit-agent-git pinentry-rofi jellyfin-desktop
-    paru -S rose-pine-hyprcursor
+    if [[ -d "${HOMEDIR}/src/aur/paru" && command -v paru ]]; then
+        paru -S rofi-polkit-agent-git pinentry-rofi jellyfin-desktop
+        paru -S rose-pine-hyprcursor
+    else
+        echo '[WARNING] Skipping packages:'
+        echo 'rofi-polkit-agent-git'
+        echo 'pinentry-rofi'
+        echo 'jellyfin-desktop'
+        echo 'rose-pine-hyprcursor'
+        echo '[WARNING] This happened because Paru is not installed and/or could not be installed! Please install these packages after installing Paru!'
+    fi
 
     # 6. CLONE REPOSITORIES
 
+    # dev/ and projects/
     pushd "$HOMEDIR"
     git clone --recursive git@github.com:jayshozie/projects.git
     popd
@@ -278,6 +291,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     git submodule foreach --recursive 'git switch main'
     pushd
 
+    # uni
     pushd "${HOMEDIR}/uni"
     git clone git@github.com:jayshozie/ceng240.git
     git clone git@github.com:jayshozie/ceng301.git
@@ -285,13 +299,29 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     git clone git@github.com:jayshozie/ce241.git
     popd
 
+    # src/refs
     pushd "${HOMEDIR}/src/refs"
+    git clone https://git.savannah.gnu.org/git/bash.git bash
+    git clone https://github.com/fish-shell/fish-shell.git fish
+    git clone https://gcc.gnu.org/git/gcc.git gcc
+    git clone https://gitlab.freedesktop.org/libevdev/hid-tools.git hid-tools
+    git clone git@github.com:limine-bootloader/limine.git limine
+    git clone git@github.com:limine-bootloader/limine-protocol/ limine-protocol
+    git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux
     git clone git@github.com:ThePrimeagen/dev.git prime-dev
+    pushd "${HOMEDIR}/src/refs/prime-dev"
+    git submodule update --init --recursive
+    popd
+    git clone git@github.com:mit-pdos/xv6-riscv.git xv6-riscv
+    git clone git://git.code.sf.net/p/zsh/code zsh
     popd
 
+    # src/upstream
     pushd "${HOMEDIR}/src/upstream"
-    git clone git@github.com:nvim-treesitter/nvim-treesitter.git
+    git clone git@github.com:alacritty/alacritty.git alacritty
+    git clone https://github.com/atusy/kakehashi.git kakehashi
     git clone git@github.com:neovim/neovim.git
+    git clone git@github.com:nvim-treesitter/nvim-treesitter.git
     git clone git@github.com:tmux/tmux.git
     git clone git@github.com:ThePrimeagen/tmux-sessionizer.git
     popd
