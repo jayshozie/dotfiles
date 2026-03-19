@@ -289,7 +289,7 @@ return {
         root_markers = { "Cargo.toml", "rust-project.json", ".git" },
         settings = {
           ["rust-analyzer"] = {
-            checkOnSave = {
+            check = {
               command = "clippy", -- Use clippy for linting on save
             },
             imports = {
