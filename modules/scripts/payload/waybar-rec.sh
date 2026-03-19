@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.*/
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Hi, Bread. I'm technically breaching your license because I can't actually put
 # the correct copyright notice. If you would like for me to adjust the copyright
@@ -88,8 +88,8 @@ while true; do
         class="recstop"
     fi
 
-    printf '{"text": "%s", "tooltip": "%s", "class": "%s"}\n' \
-        "$text" "$tooltip" "$class"
+    printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
+        "$text" "$class" "$tooltip"
 
     sleep 1
 done

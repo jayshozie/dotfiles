@@ -3,7 +3,7 @@ RESET  := $(shell tput -Txterm sgr0)
 LUA_TARGETS := modules/neovim/payload/
 STYLUA_TOML := modules/lua-stuff/.stylua.toml
 
-lua_fmt_check:
+lua_check_fmt:
 	@echo "===> Checking"
 	stylua $(LUA_TARGETS) --config-path=$(STYLUA_TOML) --check
 

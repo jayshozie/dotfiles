@@ -1,7 +1,21 @@
+# Copyright (C)  2026  Emir Baha YILDIRIM
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 [terminal]
 vt = 1
 
 [default_session]
 command = "tuigreet --cmd start-hyprland --time --time-format '%I:%M %p | %a • %h | %F' --greeting 'Welcome to the ARCH OMEN, Jayshozie' --asterisks --window-padding 2 --container-padding 3 --remember --kb-power 12 --kb-sessions 1"
-# command = "tuigreet --cmd start-hyprland --time --time-format '%I:%M %p | %a • %h | %F' --greeting 'Welcome to the ARCH OMEN, Jayshozie' --asterisks --window-padding 2 --container-padding 3 --remember --theme 'border=magenta;text=cyan;prompt=green;time=red;action=blue;button=white;container=black;input=white' --kb-power 12 --kb-sessions 1"
 user = "greeter"

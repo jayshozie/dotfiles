@@ -1,7 +1,21 @@
 #!/bin/sh
+# Copyright (C)  2026  Emir Baha YILDIRIM
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# TODO: Check if Kernel 6.20+ fixes this and remove this hack.
-# See: https://bugzilla.kernel.org/show_bug.cgi?id=XXXXX (Your future bug report)
+# TODO: Check if Kernel 7.0+ fixes this and remove this hack.
+# See: https://bugzilla.kernel.org/show_bug.cgi?id=XXXXX
 
 # Target: Intel Wi-Fi 7 (BE200) at 03:00.0
 PCI_ADDR="0000:03:00.0"
@@ -9,19 +23,19 @@ PCI_ADDR="0000:03:00.0"
 case $1/$2 in
   pre/*)
     echo "[wifi-reset] Physically removing Wi-Fi card..." > /dev/kmsg
-    # 1. Kill the driver stack first to be clean
+    # kill the driver stack first to be clean
     modprobe -r iwlmld
     modprobe -r iwlwifi
-    # 2. Remove the device from the PCI bus (The nuclear option)
+    # remove the device from the pci bus (the nuclear option)
     echo 1 > /sys/bus/pci/devices/$PCI_ADDR/remove
     ;;
   post/*)
     echo "[wifi-reset] Rescanning PCI bus for Wi-Fi card..." > /dev/kmsg
-    # 1. Force the kernel to look for hardware changes
+    # force the kernel to look for hardware changes
     echo 1 > /sys/bus/pci/rescan
-    # 2. Wait a split second for the bus to stabilize
+    # wait a split second for the bus to stabilize
     sleep 1
-    # 3. Load the drivers (if they didn't auto-load)
+    # load the drivers (if they didn't auto-load)
     modprobe iwlwifi
     modprobe iwlmld
     ;;
