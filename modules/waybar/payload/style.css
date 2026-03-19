@@ -71,12 +71,12 @@ tooltip {
 }
 
 /* --- WORKSPACES --- */
-#workspaces {
+#workspaces, #window {
     background-color: transparent;
     margin-left: 4px;
 }
 
-#workspaces button {
+#workspaces button, #window {
     padding: 0 5px;
     color: #565f89;
     border-radius: 0px;
