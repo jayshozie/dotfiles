@@ -319,11 +319,11 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     # src/upstream
     pushd "${HOMEDIR}/src/upstream"
     git clone git@github.com:alacritty/alacritty.git alacritty
-    git clone https://github.com/atusy/kakehashi.git kakehashi
-    git clone git@github.com:neovim/neovim.git
-    git clone git@github.com:nvim-treesitter/nvim-treesitter.git
-    git clone git@github.com:tmux/tmux.git
-    git clone git@github.com:ThePrimeagen/tmux-sessionizer.git
+    git clone git@github.com:atusy/kakehashi.git kakehashi
+    git clone git@github.com:neovim/neovim.git neovim
+    git clone git@github.com:nvim-treesitter/nvim-treesitter.git nvim-treesitter
+    git clone git@github.com:tmux/tmux.git tmux
+    git clone git@github.com:ThePrimeagen/tmux-sessionizer.git tmux-sessionizer
     popd
     # now build/install dev stuff
     pushd "${HOMEDIR}/dev"
