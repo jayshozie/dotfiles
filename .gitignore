@@ -7,3 +7,4 @@ env/tmux/.config/tmux/resurrect
 # utilities
 utils/
 utils.sh
+license-helper.md
