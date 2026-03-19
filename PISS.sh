@@ -267,6 +267,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     fi
 
     paru -S rofi-polkit-agent-git pinentry-rofi jellyfin-desktop
+    paru -S rose-pine-hyprcursor
 
     # 6. CLONE REPOSITORIES
 

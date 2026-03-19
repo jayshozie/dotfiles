@@ -3,7 +3,10 @@
     "position": "top",
     "height": 34,
     "spacing": 0,
-    "modules-left": ["hyprland/workspaces", "custom/mpris"],
+    "modules-left": [
+        "hyprland/workspaces",
+        "custom/mpris",
+    ],
     "modules-center": ["clock"],
     "modules-right": [
         "custom/kb",
@@ -124,8 +127,8 @@
         "tooltip-format-connected": "Host:\n{controller_alias}\t{controller_address}\n\nConnected Devices: {num_connections}\n{device_enumerate}",
         "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
         /* That doesn't work for some reason, crashes waybar. Need to check. */
-        /* "format-icons": ["", "", "", "", ""] */
         /* crusher anc 2 : 8C:0D:D9:19:43:B3 */
+        /* "format-icons": ["", "", "", "", ""], */
         "on-click": "alacritty -e bluetoothctl",
         "on-click-middle": "bluetoothctl power off",
         "on-click-right": "bluetoothctl power on",
