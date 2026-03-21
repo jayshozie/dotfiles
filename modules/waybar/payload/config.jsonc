@@ -16,7 +16,7 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 30,
+    "height": 32,
     "spacing": 0,
     "modules-left": [
         "hyprland/workspaces",
@@ -41,17 +41,17 @@
         "on-click": "activate"
     },
 
-    "hyprland/window": {
-        "format": "|  {class} ",
-        "expand": false,
-        "rewrite": {
-            "(.*)librewolf(.*)": "|  Librewolf",
-            "(.*)Spotify(.*)": "|  Spotify",
-            "(.*)org.qbittorrent.qBittorrent(.*)": "|  qBittorrent",
-            // "(.*)org.(.*)": "|  $1",
-        },
-        "icon": false,
-    },
+    // "hyprland/window": {
+    //     "format": "|  {class} ",
+    //     "expand": false,
+    //     "rewrite": {
+    //         "(.*)librewolf(.*)": "|  Librewolf",
+    //         "(.*)Spotify(.*)": "|  Spotify",
+    //         "(.*)org.qbittorrent.qBittorrent(.*)": "|  qBittorrent",
+    //         // "(.*)org.(.*)": "|  $1",
+    //     },
+    //     "icon": false,
+    // },
 
     /* OLD CLOCK BLOCK
     "clock": {

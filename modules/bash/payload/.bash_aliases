@@ -31,7 +31,7 @@ alias linux-sync='git fetch && git reset --hard origin/master'
 alias project-tracker='systemctl enable postgresql.service || systemctl start postgresql.service && pgcli project_tracker'
 alias bat-update='bat cache --build'
 alias test-gpg='gpg-connect-agent reloadagent /bye && echo "test" | gpg --clearsign > /dev/null'
-alias restart-waybar='pkill waybar; waybar 2>/dev/null 1>/dev/null & disown'
+alias restart-waybar='pkill waybar; /home/jaysh/src/upstream/waybar/build/waybar 2>/dev/null 1>/dev/null & disown'
 
 # i like it this way
 alias ll='eza -liah --git --total-size'
