@@ -78,7 +78,7 @@ text = "CellForeground"
 background = "#515c7e"
 
 [colors.normal]
-black = "#363b54"
+black = "#1b1d2b"
 red = "#f7768e"
 green = "#41a6b5"
 yellow = "#e0af68"
@@ -88,7 +88,7 @@ cyan = "#7dcfff"
 white = "#c0caf5"
 
 [colors.bright]
-black = "#363b54"
+black = "#1b1d2b"
 red = "#f7768e"
 green = "#41a6b5"
 yellow = "#e0af68"
