@@ -18,8 +18,8 @@
     border: none;
     border-radius: 0;
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 10px;
+    font-weight: 600;
     min-height: 0;
 }
 
@@ -61,6 +61,7 @@ tooltip {
     margin-top: 4px;
     margin-bottom: 4px;
     border-radius: 6px;
+    font-weight: 600;
 }
 
 /* Reset internal label margins to prevent double-spacing issues */
@@ -85,7 +86,7 @@ tooltip {
 #workspaces button.active {
     color: #7aa2f7;
     background-color: transparent;
-    border-top: 2px solid #7aa2f7;
+    border-top: 1px solid #7aa2f7;
     /* border-bottom: 2px solid #7aa2f7; */
 }
 
@@ -98,8 +99,8 @@ tooltip {
 #clock {
     background-color: transparent;
     color: #7aa2f7;
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 /* --- SPECIFIC MODULE OVERRIDES --- */

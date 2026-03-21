@@ -18,7 +18,7 @@
 [font]
 normal.family = "JetBrainsMono NerdFont Mono"
 normal.style = "ExtraLight"
-size = 11
+size = 10
 
 [window]
 opacity = 0.2
