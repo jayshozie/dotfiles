@@ -34,7 +34,8 @@ alias test-gpg='gpg-connect-agent reloadagent /bye && echo "test" | gpg --clears
 alias restart-waybar='pkill waybar; /home/jaysh/src/upstream/waybar/build/waybar 2>/dev/null 1>/dev/null & disown'
 
 # i like it this way
-alias ll='eza -liah --git --total-size'
+alias ll='eza -liah --git'
+alias sd='eza -liah --git --total-size' # size + dir = sd
 alias grep='grep --color=auto -C 2'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
