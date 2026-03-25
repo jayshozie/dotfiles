@@ -28,14 +28,8 @@ while true; do
         continue
     fi
 
-    player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{title}};{{xesam:artist}}" | grep -m1 "Playing" || true)
-    status="Playing"
+    player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{xesam:title}};{{xesam:artist}};{{xesam:album}}")
     max_title_width=30
-
-    if [[ -z "$player_status" ]]; then
-        player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{title}};{{xesam:artist}}" | grep -m1 "Paused" || true)
-        status="Paused"
-    fi
 
     if [[ -z "$player_status" ]]; then
         echo ""
@@ -43,28 +37,30 @@ while true; do
         continue
     fi
 
+    status=$(echo "$player_status" | cut -d';' -f1)
+    duration=$(echo "$player_status" | cut -d';' -f2)
+    position=$(echo "$player_status" | cut -d';' -f3)
     title=$(echo "$player_status" | cut -d';' -f4)
     artist=$(echo "$player_status" | cut -d';' -f5)
-    length=$(echo "$player_status" | cut -d';' -f2)
-    position=$(echo "$player_status" | cut -d';' -f3)
+    album=$(echo "$player_status" | cut -d';' -f6)
 
-    if [[ -z "$length" ]]; then
-        length=0
+    if [[ -z "$duration" ]]; then
+        duration=0
     fi
     if [[ -z "$position" ]]; then
         position=0
     fi
 
-    length=$((length / 1000000))
+    duration=$((duration / 1000000))
     position=$((position / 1000000))
 
-    if [[ "$length" -eq 0 ]]; then
-        length=-1
+    if [[ "$duration" -eq 0 ]]; then
+        duration=-1
         position=0
     fi
 
-    if [[ "$length" -gt 0 ]] && [[ "$length" -lt 3600 ]]; then
-        time="[$(date -d@$position -u +%M:%S) / $(date -d@$length -u +%M:%S)]"
+    if [[ "$duration" -gt 0 ]] && [[ "$duration" -lt 3600 ]]; then
+        time="[$(date -d@$position -u +%M:%S) / $(date -d@$duration -u +%M:%S)]"
     else
         time="[--:--]"
     fi
@@ -91,7 +87,7 @@ while true; do
     else
         text="$output $time"
 
-        tooltip="$title by $artist"
+        tooltip="$title by $artist in album $album $album_test2"
 
         printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
             "$text" "$css_class" "$tooltip"
