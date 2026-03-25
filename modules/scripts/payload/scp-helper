@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# scp foundation format:
+# scp 001-999: https://scp-wiki.wikidot.com/xxx
+# rest         https://scp-wiki.wikidot.com/xxxx

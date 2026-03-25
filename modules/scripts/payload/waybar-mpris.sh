@@ -21,6 +21,11 @@
 
 # 1 s = 1M us
 
+export DEV_ENV="/home/jaysh/dev"
+export SCRIPTS="${DEV_ENV}/modules/scripts/payload"
+source "${SCRIPTS}/waybar-lyrics.sh"
+export -f get_lyrics
+
 while true; do
     if [[ ! $(pgrep -x "spotify") ]]; then
         echo ""
@@ -43,6 +48,9 @@ while true; do
     title=$(echo "$player_status" | cut -d';' -f4)
     artist=$(echo "$player_status" | cut -d';' -f5)
     album=$(echo "$player_status" | cut -d';' -f6)
+    lyrics=
+
+    get_lyrics $title $artist $album $duration $lyrics
 
     if [[ -z "$duration" ]]; then
         duration=0
