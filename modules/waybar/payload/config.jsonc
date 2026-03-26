@@ -21,7 +21,7 @@
     "modules-left": [
         "hyprland/workspaces",
         // "hyprland/window",
-        "custom/mpris",
+        "custom/spotify",
     ],
     "modules-center": ["clock"],
     "modules-right": [
@@ -95,9 +95,8 @@
         }
     },
 
-    "custom/mpris": {
-        "format": "{}",
-        "exec": "/home/jaysh/.local/bin/scripts/waybar-mpris.sh",
+    "custom/spotify": {
+        "exec": "/home/jaysh/.local/bin/scripts/waybar-spotify.sh",
         "return-type": "json",
         "on-click": "playerctl --player=spotify play-pause",
         "on-click-right": "playerctl --player=spotify next",

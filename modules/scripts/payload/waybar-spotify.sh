@@ -23,8 +23,8 @@
 
 export DEV_ENV="/home/jaysh/dev"
 export SCRIPTS="${DEV_ENV}/modules/scripts/payload"
-source "${SCRIPTS}/waybar-lyrics.sh"
-export -f get_lyrics
+source "${SCRIPTS}/waybar-lyrics.sh" && export -f get_lyrics
+source "${DEV_ENV}/lib/log" && export -f log && export DEBUG_RUN='1'
 
 while true; do
     if [[ ! $(pgrep -x "spotify") ]]; then
@@ -48,9 +48,24 @@ while true; do
     title=$(echo "$player_status" | cut -d';' -f4)
     artist=$(echo "$player_status" | cut -d';' -f5)
     album=$(echo "$player_status" | cut -d';' -f6)
-    lyrics=
 
-    get_lyrics $title $artist $album $duration $lyrics
+    # str get_lyrics(str artist_name, str title, str album, int duration)
+    # duration is in seconds
+    # Example values and what they'll be converted into:
+    #   artist_name  = Avenged Sevenfold = Avenged+Sevenfold
+    #   title        = Bat Country       = Bat+Country
+    #   album        = City of Evil      = City+of+Evil
+    #   duration (s) = 311               = 311
+    duration=$((duration / 1000000))
+    position=$((position / 1000000))
+    lyrics_file="/tmp/${title}"
+    if [[ -f "$lyrics_file" ]]; then
+        lyrics=$(cat "$lyrics_file")
+    else
+        get_lyrics "$artist" "$title" "$album" "$duration"
+        lyrics=${REPLY}
+        echo -E "$lyrics" > "$lyrics_file"
+    fi
 
     if [[ -z "$duration" ]]; then
         duration=0
@@ -58,9 +73,6 @@ while true; do
     if [[ -z "$position" ]]; then
         position=0
     fi
-
-    duration=$((duration / 1000000))
-    position=$((position / 1000000))
 
     if [[ "$duration" -eq 0 ]]; then
         duration=-1
@@ -94,12 +106,25 @@ while true; do
         echo ""
     else
         text="$output $time"
-
-        tooltip="$title by $artist in album $album $album_test2"
-
-        printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
-            "$text" "$css_class" "$tooltip"
     fi
+
+    if [[ ! -z $title ]]; then
+        tooltip="$title"
+    fi
+    if [[ ! -z $artist ]]; then
+        tooltip+=" by $artist"
+    fi
+    if [[ ! -z $lyrics ]]; then
+        tooltip+="
+
+$lyrics"
+    fi
+
+    jq -n -c \
+        --arg txt "$text" \
+        --arg ttip "$tooltip" \
+        --arg cls "$css_class" \
+        '{text: $txt, class: $cls, tooltip: $ttip}'
 
     sleep 1
 done
