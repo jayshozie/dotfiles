@@ -100,7 +100,7 @@
         "return-type": "json",
         "on-click": "playerctl --player=spotify play-pause",
         "on-click-right": "playerctl --player=spotify next",
-        "on-click-middle": "playerctl --player=spotify previous"
+        "on-click-middle": "playerctl --player=spotify previous",
     },
 
 

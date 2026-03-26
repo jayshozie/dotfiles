@@ -55,12 +55,33 @@ get_lyrics() {
     local album_name=$(urlencode "$3")
     local duration=$4 # this is already given in seconds
     local uri="https://lrclib.net/api/get?artist_name=${artist_name}&track_name=${track_name}&album_name=${album_name}&duration=${duration}"
-    local api_resp=$(curl -s ${uri})
-    lyrics=$(echo "$api_resp" | jq -r '.plainLyrics // ""')
-    # remove the `"` characters around the text
-    # lyrics=${lyrics:1:${#lyrics}}
-    # lyrics=${lyrics:0:-1}
-    REPLY="$lyrics"
+    local api_pid_file="/tmp/waybar-lyrics-api-pid"
+    local lyrics_file="/tmp/${track_name}-${artist_name}"
+    local api_pid
+    if [[ -f "$api_pid_file" ]]; then
+        api_pid=$(cat "$api_pid_file")
+        if ps -p "$api_pid" > /dev/null; then
+            echo "Fetching lyrics..." > "$lyrics_file"
+            return
+        else
+            rm -f "$api_pid_file"
+        fi
+    fi
+    if [[ -f "$lyrics_file" ]]; then
+        lyrics=$(cat "$lyrics_file")
+        return
+    fi
+    echo "Fetching lyrics..." > "$lyrics_file"
+    curl -s "${uri}" | \
+        jq -r '.plainLyrics // ""' | \
+        iconv -t ASCII//TRANSLIT | \
+        sed 's/^[ \t]*//' | \
+        sed '/./,$!d' | \
+        cat -s - | \
+        fold -s -c -w 34 - | \
+        pr -t -T -c2 -w 71 -l 100 -S" | " - > "$lyrics_file" &
+    api_pid=$!
+    echo "$api_pid" > "$api_pid_file"
 }
 
 # DEV_ENV="/home/jaysh/dev"

@@ -23,8 +23,9 @@
 
 export DEV_ENV="/home/jaysh/dev"
 export SCRIPTS="${DEV_ENV}/modules/scripts/payload"
-source "${SCRIPTS}/waybar-lyrics.sh" && export -f get_lyrics
-source "${DEV_ENV}/lib/log" && export -f log && export DEBUG_RUN='1'
+source "${SCRIPTS}/waybar-lyrics.sh" && export -f get_lyrics && export -f urlencode
+# source "${DEV_ENV}/lib/log" && export -f log && export DEBUG_RUN='1'
+max_title_width=30
 
 while true; do
     if [[ ! $(pgrep -x "spotify") ]]; then
@@ -34,7 +35,6 @@ while true; do
     fi
 
     player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{xesam:title}};{{xesam:artist}};{{xesam:album}}")
-    max_title_width=30
 
     if [[ -z "$player_status" ]]; then
         echo ""
@@ -45,9 +45,15 @@ while true; do
     status=$(echo "$player_status" | cut -d';' -f1)
     duration=$(echo "$player_status" | cut -d';' -f2)
     position=$(echo "$player_status" | cut -d';' -f3)
-    title=$(echo "$player_status" | cut -d';' -f4)
-    artist=$(echo "$player_status" | cut -d';' -f5)
     album=$(echo "$player_status" | cut -d';' -f6)
+
+    title=$(echo "$player_status" | cut -d';' -f4)
+    title_url=$(urlencode "$title")
+    artist=$(echo "$player_status" | cut -d';' -f5)
+    artist_url=$(urlencode "$artist")
+
+    lyrics_file="/tmp/${title_url}-${artist_url}"
+    tooltip=''
 
     # str get_lyrics(str artist_name, str title, str album, int duration)
     # duration is in seconds
@@ -58,14 +64,8 @@ while true; do
     #   duration (s) = 311               = 311
     duration=$((duration / 1000000))
     position=$((position / 1000000))
-    lyrics_file="/tmp/${title}"
-    if [[ -f "$lyrics_file" ]]; then
-        lyrics=$(cat "$lyrics_file")
-    else
-        get_lyrics "$artist" "$title" "$album" "$duration"
-        lyrics=${REPLY}
-        echo -E "$lyrics" > "$lyrics_file"
-    fi
+    get_lyrics "$artist" "$title" "$album" "$duration"
+    lyrics=$(cat "$lyrics_file")
 
     if [[ -z "$duration" ]]; then
         duration=0
@@ -115,9 +115,14 @@ while true; do
         tooltip+=" by $artist"
     fi
     if [[ ! -z $lyrics ]]; then
+############################## SINGLE EXPRESSION ##############################
         tooltip+="
 
+
+Lyrics:
+-------
 $lyrics"
+############################## SINGLE EXPRESSION ##############################
     fi
 
     jq -n -c \
