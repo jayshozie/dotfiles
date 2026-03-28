@@ -3,8 +3,6 @@
 log() {
     if [[ $DRY_RUN == '1' ]]; then
         echo -e "[DRY] $1"
-    elif [[ $RUN_AUDIT == '1' ]]; then
-        echo -e "[AUDIT] $1"
     elif [[ $DEBUG_RUN == '1' ]]; then
         echo -e "[DEBUG] $1"
     else

@@ -1,7 +1,8 @@
 # Refactor TODOs
 
-- [ ] (MAYBE) distro-agnostic post-installation script
-    - one main post-install script that calls distro-specific scripts??
+- [ ] (STRONG MAYBE) git accepts **ANY** URL as the remote. so, technically
+speaking we could use git to sync the files. it auto-detects renaming, deletion,
+changes in both sides, conflicts etc. it's the perfect sync system.
 - [x] Rewrite README.md to document the current `run` script instead of `stow`.
 - [x] Setup a formatter for Lua files (e.g., Stylua) and integrate it like
 `clang-format` for Neovim config.

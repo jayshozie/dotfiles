@@ -65,7 +65,11 @@ while true; do
         else
             wifi_text="󰖩  $wifi_ssid  $wifi_bars"
         fi
-        tooltip="Wi-Fi: $wifi_ssid"
+        if [[ "$wifi_ssid" == '' ]]; then
+            tooltip=''
+        else
+            tooltip="Wi-Fi: $wifi_ssid"
+        fi
     else
         wifi_text=""
         tooltip=""

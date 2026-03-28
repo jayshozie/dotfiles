@@ -21,20 +21,37 @@
 
 # 1 s = 1M us
 
-export DEV_ENV="/home/jaysh/dev"
+export LYRICS_D='/tmp/lyrics.d'
+export DEV_ENV='/home/jaysh/dev'
 export SCRIPTS="${DEV_ENV}/modules/scripts/payload"
-source "${SCRIPTS}/waybar-lyrics.sh" && export -f get_lyrics && export -f urlencode
-# source "${DEV_ENV}/lib/log" && export -f log && export DEBUG_RUN='1'
-max_title_width=30
+
+source "${DEV_ENV}/lib/urlencode" && \
+        export -f urlencode
+source "${SCRIPTS}/waybar-lyrics.sh" && \
+    export -f get_lyrics
+# source "${DEV_ENV}/lib/log" && \
+#     export -f log && \
+#     export DEBUG_RUN='1'
+
+max_title_width=32
+
+if ! command -v 'spotify-launcher' >& /dev/null; then
+    exit 1
+fi
 
 while true; do
-    if [[ ! $(pgrep -x "spotify") ]]; then
-        echo ""
-        sleep 2
-        continue
-    fi
+    coproc 'IS_SPOTIFY_RUNNING' {
+        if ! pidof 'spotify' > /dev/null 2>&1; then
+            echo ''
+            sleep 3
+            continue
+        fi
+    }
 
-    player_status=$(playerctl --player=spotify metadata --format "{{status}};{{mpris:length}};{{position}};{{xesam:title}};{{xesam:artist}};{{xesam:album}}")
+    player_status=$(\
+        playerctl --player=spotify metadata --format \
+        '{{status}};{{mpris:length}};{{position}};{{xesam:title}};{{xesam:artist}};{{xesam:album}}' \
+    )
 
     if [[ -z "$player_status" ]]; then
         echo ""
@@ -42,58 +59,54 @@ while true; do
         continue
     fi
 
-    status=$(echo "$player_status" | cut -d';' -f1)
-    duration=$(echo "$player_status" | cut -d';' -f2)
-    position=$(echo "$player_status" | cut -d';' -f3)
-    album=$(echo "$player_status" | cut -d';' -f6)
+    IFS=';' read -r stat dur pos track artist album <<< "$player_status"
 
-    title=$(echo "$player_status" | cut -d';' -f4)
-    title_url=$(urlencode "$title")
-    artist=$(echo "$player_status" | cut -d';' -f5)
-    artist_url=$(urlencode "$artist")
+    if [[ -z "$dur" ]]; then
+        dur=0
+    else
+        dur=$((dur / 1000000)) # from microseconds to seconds
+    fi
+    if [[ -z "$pos" ]]; then
+        pos=0
+    else
+        pos=$((pos / 1000000)) # from microseconds to seconds
+    fi
+    if [[ "$dur" -eq 0 ]]; then
+        dur=-1
+        pos=0
+    fi
 
-    lyrics_file="/tmp/${title_url}-${artist_url}"
-    tooltip=''
-
-    # str get_lyrics(str artist_name, str title, str album, int duration)
+    # str get_lyrics(str artist_name, str track, str album, int duration)
     # duration is in seconds
-    # Example values and what they'll be converted into:
-    #   artist_name  = Avenged Sevenfold = Avenged+Sevenfold
-    #   title        = Bat Country       = Bat+Country
-    #   album        = City of Evil      = City+of+Evil
-    #   duration (s) = 311               = 311
-    duration=$((duration / 1000000))
-    position=$((position / 1000000))
-    get_lyrics "$artist" "$title" "$album" "$duration"
+    # return is in /tmp/${artist_url}-${album_url}-${track_url}.lyrics"
+    get_lyrics "$artist" "$track" "$album" "$dur"
+    track_url=$(urlencode "$track")
+    artist_url=$(urlencode "$artist")
+    album_url=$(urlencode "$album")
+    if [[ ! -d "$LYRICS_D" ]]; then
+        mkdir -p "$LYRICS_D"
+    fi
+    lyrics_file="${LYRICS_D}/${artist_url}-${album_url}-${track_url}.lyrics"
     lyrics=$(cat "$lyrics_file")
 
-    if [[ -z "$duration" ]]; then
-        duration=0
-    fi
-    if [[ -z "$position" ]]; then
-        position=0
-    fi
-
-    if [[ "$duration" -eq 0 ]]; then
-        duration=-1
-        position=0
-    fi
-
-    if [[ "$duration" -gt 0 ]] && [[ "$duration" -lt 3600 ]]; then
-        time="[$(date -d@$position -u +%M:%S) / $(date -d@$duration -u +%M:%S)]"
+    if [[ "$dur" -gt 0 ]] && [[ "$dur" -lt 3600 ]]; then
+        time="[$(date -d@$pos -u +%M:%S) / $(date -d@$dur -u +%M:%S)]"
     else
-        time="[--:--]"
+        time='[--:--]'
     fi
 
-    if [[ -n "$title" ]]; then
-        if [[ "$status" = "Playing" ]]; then
-            play_state=" "
-            css_class="playing"
+    if [[ -n "$track" ]]; then
+        if [[ "$stat" = 'Playing' ]]; then
+            play_state=' '
+            css_class='playing'
+        elif [[ "$stat" = 'Paused' ]]; then
+            play_state=' '
+            css_class='paused'
         else
-            play_state=" "
-            css_class="paused"
+            play_state=''
+            css_class='paused'
         fi
-        output="$play_state $title - $artist"
+        output="$play_state $track - $artist"
     else
         output=''
     fi
@@ -102,22 +115,25 @@ while true; do
         output="${output:0:$max_title_width}..."
     fi
 
-    if [[ -z "$output" ]]; then
-        echo ""
-    else
+    if [[ -n "$output" ]]; then
         text="$output $time"
+    else
+        text="$time"
     fi
 
-    if [[ ! -z $title ]]; then
-        tooltip="$title"
+    tooltip=''
+    if [[ -n $track ]]; then
+        tooltip="$track"
     fi
-    if [[ ! -z $artist ]]; then
+    if [[ -n $artist ]]; then
         tooltip+=" by $artist"
+    fi
+    if [[ -n $album ]]; then
+        tooltip+=" in album $album"
     fi
     if [[ ! -z $lyrics ]]; then
 ############################## SINGLE EXPRESSION ##############################
         tooltip+="
-
 
 Lyrics:
 -------
@@ -131,5 +147,5 @@ $lyrics"
         --arg cls "$css_class" \
         '{text: $txt, class: $cls, tooltip: $ttip}'
 
-    sleep 1
+    sleep .1
 done

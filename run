@@ -8,6 +8,7 @@ export RUN_AUDIT='0'
 source "${DEV_ENV}/lib/log"
 source "${DEV_ENV}/lib/term-colors"
 export -f log
+declare -a AUDIT_IGNORE
 
 # --- Safety Check: Prevent suicide ---
 # We explicitly forbid the DEST from being root or HOME to prevent accidents.
@@ -26,12 +27,12 @@ is_ignored() {
     local ignore_file="${DEV_ENV}/.auditignore"
     [[ ! -f "$ignore_file" ]] && return 1
 
-    while read -r pattern || [[ -n "$pattern" ]]; do
+    for pattern in "${AUDIT_IGNORE[@]}"; do
         [[ -z "$pattern" || "$pattern" == "#"* ]] && continue
         if [[ "$rel_file" == $pattern ]]; then
             return 0
         fi
-    done < "$ignore_file"
+    done
     return 1
 }
 
@@ -42,31 +43,60 @@ audit_module() {
     [[ ! -d "$m/payload" ]] && return
 
     local module_name=$(basename "$m")
+    [[ "$module_name" == *mime* ]] && return
     local DEST=$(envsubst < "$m/.dest")
-    local check_dest="${DEST%/}"
 
-    # Skip unsafe paths or high-traffic shared directories
-    if ! is_safe_path "$DEST" || \
-        [[ "$check_dest" == "$HOME/.config" ]] || \
-        [[ "$check_dest" == "/etc" ]] || \
-        [[ "$check_dest" == "/etc/systemd" ]] || \
-        [[ "$check_dest" == "/etc/bluetooth" ]] || \
-        [[ "$check_dest" == "/usr/lib/systemd/system-sleep" ]]; then
+    if ! is_safe_path "$DEST"; then
         return
     fi
 
     [[ ! -d "$DEST" ]] && return
 
-    pushd "$DEST" > /dev/null
-    while IFS= read -r -d '' file; do
-        local rel_file="${file#./}"
-        is_ignored "$rel_file" && continue
+    local temp_payload=$(mktemp)
+    local temp_actual=$(mktemp)
 
-        if [[ ! -e "${DEV_ENV}/${m}/payload/${rel_file}" ]]; then
-            log "${WARN}[AUDIT] [$module_name] Stale file found: $DEST/$rel_file${RESET}"
+    find "$m/payload" -type f -printf '%P\n' | while read -r file; do
+        if ! is_ignored "$file"; then
+            echo "$file"
         fi
-    done < <(find . -type f -print0)
+    done | sort > "$temp_payload"
+
+    pushd "$DEST" > /dev/null
+    find . -type f -printf '%P\n' | while read -r file; do
+        if ! is_ignored "$file"; then
+            echo "$file"
+        fi
+    done | sort > "$temp_actual"
     popd > /dev/null
+
+    # Deleted files
+    local deleted=$(comm -23 "$temp_actual" "$temp_payload")
+    if [[ -n "$deleted" ]]; then
+        log "${ERR}[AUDIT] [$module_name] Deleted files:${RESET}"
+        log "${ERR}$deleted${RESET}" | sed 's/^/  /'
+    fi
+
+    # New files in payload
+    local new=$(comm -13 "$temp_actual" "$temp_payload")
+    if [[ -n "$new" ]]; then
+        log "${SUCC}[AUDIT] [$module_name] New files to deploy:${RESET}"
+        log "${SUCC}$new${RESET}" | sed 's/^/  /'
+    fi
+
+    # Modified files
+    local modified=$(comm -12 "$temp_actual" "$temp_payload" | \
+        while read -r file; do \
+            if ! cmp -s "${m}/payload/${file}" "${DEST}/${file}"; then \
+                echo "    ${file}"
+            fi
+        done
+    )
+    if [[ -n "$modified" ]]; then
+        log "${INFO}[AUDIT] [$module_name] Modified files:${RESET}"
+        log "${INFO}${modified}${RESET}"
+    fi
+
+    rm "$temp_payload" "$temp_actual"
 }
 
 if [[ -v XDG_CONFIG_HOME ]]; then
@@ -87,11 +117,20 @@ if [[ $1 == '--audit' || $1 == '-a' ]]; then
 fi
 
 if [[ $RUN_AUDIT == '1' ]]; then
-    log "${INFO}[RUN] Starting audit of configuration directories...${RESET}"
+    log "${WARN}[AUDIT] Starting audit of configuration directories...${RESET}"
+    tmp=$(cat "${DEV_ENV}/.auditignore")
+
+    i=0
+    while read -r pattern || [[ -n "$pattern" ]]; do
+        [[ -z "$pattern" || "$pattern" == "#"* ]] && continue
+        AUDIT_IGNORE[i]="${pattern%$'\r'}"
+        (( i++ ))
+    done <<< "$tmp"
+
     for m in modules/*; do
         audit_module "$m"
     done
-    log "${INFO}[RUN] Audit complete.${RESET}"
+    log "${WARN}[AUDIT] Audit complete.${RESET}"
     exit 0
 fi
 

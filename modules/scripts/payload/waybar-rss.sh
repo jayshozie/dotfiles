@@ -21,10 +21,10 @@
 # CONFIGURATION
 # Bulletty stores feeds in XDG_DATA_HOME/bulletty/categories
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}/bulletty/categories"
-STATE_FILE="/tmp/rss-state"
+STATE_FILE='/tmp/rss-unread-count'
 
 if [[ -d "$DATADIR" ]]; then
-    curr_unread=$(grep -r "seen = false" "$DATADIR" 2>/dev/null | wc -l)
+    curr_unread=$(grep -r 'seen = false' "$DATADIR" 2>/dev/null | wc -l)
 else
     curr_unread=0
 fi
@@ -43,11 +43,11 @@ fi
 echo "$curr_unread" > "$STATE_FILE"
 
 if [[ "$curr_unread" -gt 0 ]]; then
-    css_class="unread"
+    css_class='unread'
     tooltip="You have $curr_unread unread articles."
 else
-    css_class="read"
-    tooltip="All caught up."
+    css_class='read'
+    tooltip='All caught up.'
 fi
 
 printf '{"text": "%s", "class": "%s", "tooltip": "%s"}\n' \
