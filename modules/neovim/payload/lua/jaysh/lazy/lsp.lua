@@ -30,7 +30,7 @@ return {
     },
 
     config = function()
-        vim.lsp.log.set_level(vim.log.levels.ERROR)
+      vim.lsp.log.set_level(vim.log.levels.ERROR)
 
       -------------------------
       -- GENERAL DIAGNOSTICS --
