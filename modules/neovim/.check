@@ -5,6 +5,9 @@ check_binaries() {
         log "${ERR}[RUN] [ERROR] neovim (nvim) is not installed!${RESET}"
         exit 1
     fi
+    if ! command -v tree-sitter &> /dev/null; then
+        log "${WARN}[RUN] [WARNING] tree-sitter is missing. Parsers won't be built correctly.${RESET}"
+    fi
     if ! command -v wl-copy &> /dev/null; then
         log "${WARN}[RUN] [WARNING] wl-clipboard is missing. Neovim clipboard sync will fail.${RESET}"
     fi

@@ -99,10 +99,14 @@ audit_module() {
     rm "$temp_payload" "$temp_actual"
 }
 
+log "${INFO}============================ Jayshozie's Run Script ============================${RESET}"
+echo
+log "${INFO}================================= SCRIPT START =================================${RESET}"
+
 if [[ -v XDG_CONFIG_HOME ]]; then
-    echo "[RUN] XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+    log "${WARN}[RUN] XDG_CONFIG_HOME: $XDG_CONFIG_HOME${RESET}"
 else
-    echo "[RUN] XDG_CONFIG_HOME not set. Defaulting to $HOME/.config"
+    log "[RUN] XDG_CONFIG_HOME not set. Defaulting to $HOME/.config"
     export XDG_CONFIG_HOME="${HOME}/.config"
 fi
 
@@ -114,6 +118,9 @@ if [[ $1 == '-dry' || $1 == '--dry-run' || $1 == '-d' ]]; then
 fi
 if [[ $1 == '--audit' || $1 == '-a' ]]; then
     export RUN_AUDIT='1'
+fi
+if [[ $1 == '--verbose' || $1 == '-v' ]]; then
+    export VERBOSE='1'
 fi
 
 if [[ $RUN_AUDIT == '1' ]]; then
@@ -140,9 +147,13 @@ for m in modules/*; do
 
     module_name=$(basename "$m")
 
+    echo
+    log "${INFO}==== ${SUCC}${module_name}${INFO} START ====${RESET}"
+
     # Skip if no .dest file
     if [[ ! -f "${m}/.dest" ]]; then
         log "${ERR}[RUN] $module_name: No .dest file found.${RESET}"
+        log "${INFO}==== ${SUCC}${module_name}${INFO} END ====${RESET}"
         continue
     fi
 
@@ -157,7 +168,7 @@ for m in modules/*; do
     # Check sudo requirement
     RUN_CMD=""
     if [[ -f "${m}/.sudo" ]]; then
-        log "[RUN] $module_name requires sudo."
+        log "${WARN}[RUN]${RESET} ${INFO}$module_name${RESET} ${WARN}requires sudo${RESET}."
         sudo -v
         RUN_CMD="sudo"
     fi
@@ -181,7 +192,11 @@ for m in modules/*; do
     # but NEVER use --delete if DEST is HOME.
 
     # RSYNC_FLAGS="-avu"
-    RSYNC_FLAGS="-cau"
+    if [[ "$VERBOSE" == '1' ]]; then
+        RSYNC_FLAGS="-vacu"
+    else
+        RSYNC_FLAGS="-acu"
+    fi
 
     # Safety Logic: If we are targeting a subfolder (like alacritty), we can
     # clean old files. If we are targeting HOME, we MUST NOT delete extraneous
@@ -196,9 +211,9 @@ for m in modules/*; do
        :
     fi
 
-    log "[RUN] $module_name -> $DEST"
+    log "[RUN] ${INFO}${module_name} .dest:${RESET} ${SUCC}${DEST}${RESET}"
 
-    if [[ $DRY_RUN == "0" ]]; then
+    if [[ $DRY_RUN == '0' ]]; then
         # Ensure parent directory exists
         $RUN_CMD mkdir -p "$DEST"
 
@@ -206,11 +221,15 @@ for m in modules/*; do
         $RUN_CMD rsync $RSYNC_FLAGS "${m}/payload/" "$DEST/"
     else
         if [[ -z $RUN_CMD ]]; then
-            log "rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
+            log "${INFO}WOULD RUN:${RESET} rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
         else
-            log "$RUN_CMD rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
+            log "${INFO}WOULD RUN:${RESET} $RUN_CMD rsync $RSYNC_FLAGS ${m}/payload/ $DEST/"
         fi
     fi
+    log "${INFO}==== ${SUCC}${module_name}${INFO} END ====${RESET}"
 done
+
+echo
+log "${INFO}================================= SCRIPT DONE ==================================${RESET}"
 
 popd > /dev/null

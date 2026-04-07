@@ -1,9 +1,19 @@
+.PHONY: help install run dry nvim_lua_check nvim_lua_fmt
+
 GREEN  := $(shell tput -Txterm setaf 2)
 RESET  := $(shell tput -Txterm sgr0)
 RED    := \033[0;31m
 RST    := \033[0m
 LUA_TARGETS := modules/neovim/payload/
 STYLUA_TOML := modules/lua-stuff/.stylua.toml
+
+help:
+	@echo -e 'Usage:'
+	@echo -e '  ${GREEN}make lua_check_fmt${RESET}   use stylua to check the format of lua code in the neovim module'
+	@echo -e '  ${GREEN}make lua_fmt${RESET}         use stylua to format lua code in the neovim module'
+	@echo -e '  ${GREEN}make lua_lint${RESET}        use luacheck to lint lua code in the neovim module'
+	@echo -e '  ${GREEN}make help${RESET}            show this help'
+	@echo
 
 lua_check_fmt:
 	@echo "===> Checking"
@@ -23,16 +33,3 @@ run:
 install:
 
 dry:
-
-help:
-	@echo -e '${RED}'
-	@echo -e '!!! OUTDATED !!!'
-	@echo -e '!!! DO NOT USE !!!${RST}'
-	@echo -e 'Usage:'
-	@echo -e "  ${GREEN}make run [module]${RESET}   copy module's config files"
-	@echo -e "  ${GREEN}make dry [module]${RESET}   test config files (for available modules)"
-	@echo -e '  ${GREEN}make install${RESET}        install/update all modules'
-	@echo -e '  ${GREEN}make help${RESET}           show this help'
-	@echo -e ''
-
-.PHONY: help install run dry nvim_lua_check nvim_lua_fmt

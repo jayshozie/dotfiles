@@ -406,7 +406,7 @@ return {
           "plaintex",
           "gitcommit",
         },
-        settings = {},
+        -- settings = {},
       }
       if vim.fn.executable("harper-ls") == 1 then
         vim.lsp.enable("harper-ls")

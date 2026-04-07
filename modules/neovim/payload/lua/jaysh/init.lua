@@ -28,28 +28,21 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
--- whitespace stuff
-vim.api.nvim_create_augroup("WhitespaceGroup", {
-  clear = true,
-})
-vim.api.nvim_set_hl(0, "WhitespaceHL", {
-  bg = "#f7768e", -- background color will be tokyonight's red
-})
-vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "TermOpen" }, {
-  group = "WhitespaceGroup",
-  pattern = "*",
+-- C Stuff
+vim.opt.exrc = true
+vim.api.nvim_create_augroup("CStuff", {})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = "CStuff",
+  pattern = "c",
   callback = function()
-    local filetype = vim.bo.filetype
-    local buftype = vim.bo.buftype
-    local matches = vim.fn.getmatches()
-    for _, match_dict in ipairs(matches) do
-      if match_dict.group == "WhitespaceHL" then
-        vim.fn.matchdelete(match_dict.id)
-      end
-    end
-    if filetype ~= "diff" and filetype ~= "lazy" and buftype ~= "terminal" then
-      vim.fn.matchadd("WhitespaceHL", [[\s\+$\| \+\ze\t]])
-    end
+    vim.bo.commentstring = "/* %s */"
+  end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = "CStuff",
+  pattern = "progress",
+  callback = function()
+    vim.bo.filetype = "c"
   end,
 })
 
@@ -65,7 +58,7 @@ vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
 
-vim.opt.scrolloff = 8
+vim.opt.scrolloff = 10
 vim.opt.signcolumn = "yes"
 
 vim.opt.updatetime = 50
@@ -103,6 +96,31 @@ vim.opt.splitbelow = true
 
 vim.opt.clipboard = "unnamedplus"
 vim.opt.winborder = "rounded"
+
+-- whitespace stuff
+vim.api.nvim_create_augroup("WhitespaceGroup", {
+  clear = true,
+})
+vim.api.nvim_set_hl(0, "WhitespaceHL", {
+  bg = "#f7768e", -- background color will be tokyonight's red
+})
+vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "TermOpen" }, {
+  group = "WhitespaceGroup",
+  pattern = "*",
+  callback = function()
+    local filetype = vim.bo.filetype
+    local buftype = vim.bo.buftype
+    local matches = vim.fn.getmatches()
+    for _, match_dict in ipairs(matches) do
+      if match_dict.group == "WhitespaceHL" then
+        vim.fn.matchdelete(match_dict.id)
+      end
+    end
+    if filetype ~= "diff" and filetype ~= "lazy" and buftype ~= "terminal" then
+      vim.fn.matchadd("WhitespaceHL", [[\s\+$\| \+\ze\t]])
+    end
+  end,
+})
 
 -------------------------------------REMAPS-------------------------------------
 
