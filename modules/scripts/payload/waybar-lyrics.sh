@@ -14,6 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# @TODO: Fix the overflow problem.
+#        This could possibly be achieved by switching to C, or finding a tool
+#        that can do the same thing.
+
 export DEV_ENV='/home/jaysh/dev'
 source "${DEV_ENV}/lib/urlencode" && \
     export -f urlencode

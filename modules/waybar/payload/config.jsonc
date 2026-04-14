@@ -26,7 +26,7 @@
     "modules-center": ["clock"],
     "modules-right": [
         "custom/kb",
-        "custom/rec",
+        // "custom/rec",
         "custom/rss",
         "wireplumber",
         "custom/net",
@@ -116,13 +116,13 @@
     },
     */
 
-    "custom/rec": {
-        "format": "{}",
-        "exec": "/home/jaysh/.local/bin/scripts/waybar-rec.sh",
-        "return-type": "json",
-        "on-click": "/home/jaysh/.local/bin/scripts/waybar-rec.sh toggle",
-        "restart-interval": 1
-    },
+    // "custom/rec": {
+    //     "format": "{}",
+    //     "exec": "/home/jaysh/.local/bin/scripts/waybar-rec.sh",
+    //     "return-type": "json",
+    //     "on-click": "/home/jaysh/.local/bin/scripts/waybar-rec.sh toggle",
+    //     "restart-interval": 1
+    // },
 
     "custom/rss": {
         "format": "󰑫 {}",

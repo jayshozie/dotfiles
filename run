@@ -124,6 +124,7 @@ if [[ $1 == '--verbose' || $1 == '-v' ]]; then
 fi
 
 if [[ $RUN_AUDIT == '1' ]]; then
+    echo
     log "${WARN}[AUDIT] Starting audit of configuration directories...${RESET}"
     tmp=$(cat "${DEV_ENV}/.auditignore")
 
@@ -138,6 +139,8 @@ if [[ $RUN_AUDIT == '1' ]]; then
         audit_module "$m"
     done
     log "${WARN}[AUDIT] Audit complete.${RESET}"
+    echo
+    log "${INFO}================================= SCRIPT DONE ==================================${RESET}"
     exit 0
 fi
 

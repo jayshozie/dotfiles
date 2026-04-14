@@ -22,12 +22,12 @@ image/webp=imv.desktop
 image/svg+xml=imv.desktop
 
 # Videos
-video/mp4=vlc.desktop
-video/mkv=vlc.desktop
-video/x-matroska=vlc.desktop
-video/webm=vlc.desktop
-video/quicktime=vlc.desktop
-video/x-msvideo=vlc.desktop
+video/mp4=mpv.desktop
+video/mkv=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-msvideo=mpv.desktop
 
 [Added Associations]
 image/jpeg=imv.desktop;
