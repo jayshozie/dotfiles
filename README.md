@@ -105,8 +105,9 @@ system-level reboot is required.
 ## Libraries (`lib/`)
 Shared utilities used by `run`, `gen-module`, and `.check` scripts:
 * `log`: Standardized logging with support for `$DRY_RUN` prefixes.
-* `term-colors`: Consistent terminal color definitions (`ERR`, `WARN`, `SUCC`,
-`INFO`).
+* `ansi-escapes`: Consistent terminal color definitions (all 256 colors,
+bold/italic/underline/dim etc., clear screen/line etc., and some definitions for
+backwards compatibility, `ERR`, `WARN`, `SUCC`, `INFO`).
 * `.check`: The standard template for module validation scripts.
 
 ---

@@ -2,7 +2,7 @@
 
 export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
 source "${DEV_ENV}/lib/log"
-source "${DEV_ENV}/lib/term-colors"
+source "${DEV_ENV}/lib/ansi-escapes"
 export -f log
 
 # @TODO: implement dry run

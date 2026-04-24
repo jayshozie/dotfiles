@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+export DEV_ENV="/home/jaysh/dev"
+source "${DEV_ENV}/lib/progress_bar"
+source "${DEV_ENV}/lib/log"
+source "${DEV_ENV}/lib/ansi-escapes"
+export -f log && export -f progress_bar
+
+log "${SUCC}==================================== AFPCD =====================================${RESET}"
+log "${INFO}[AFPCD] Welcome to AnyFlip PDF Creator/Downloader${RESET}"
+log "${WARN}[AFPCD] Please make sure the format is like this: https://online.anyflip.com/uxmrl/tnef/files/mobile/*.{jpg,webp}${RESET}"
+log "${INFO}[AFPCD] Provide the AnyFlip Link: (e.g.: https://online.anyflip.com/uxmrl/tnef)${RESET}"
+read -r link
+log "${INFO}[AFPCD] Provide the total amount of pages: (e.g.: 430)${RESET}"
+read -r total_pages
+log "${INFO}[AFPCD] Provide the name of the book: (e.g.: v5-core-book)${RESET}"
+read -r book_name
+log "${INFO}[AFPCD] Provide the location to place the book: (e.g.: /home/user/books)${RESET}"
+read -r location
+log "${INFO}[AFPCD] Provide the filetype: (e.g.: jpg, webp, png, etc.)${RESET}"
+read -r filetype
+if [[ ! -d "$location" ]]; then
+    log "${ERR}[AFPCD] Directory [$location] not found!${RESET}"
+    exit 1
+fi
+
+payload="/tmp/afpcd-book-${RANDOM}"
+
+mkdir "$payload"
+pushd "$payload"
+
+link="${link}/files/mobile"
+
+magick_args=()
+i=0
+for (( curr_page=1; curr_page <= total_pages; curr_page++)); do
+    filename="${curr_page}.${filetype}"
+    magick_args[$i]="$filename"
+    (( i++ ))
+    down_link="${link}/${filename}"
+
+    wget --tries=10 -q "$down_link"
+
+    progress_bar "$curr_page" "$total_pages"
+    sleep .25
+done
+
+magick "${magick_args[@]}" "$book_name"
+cp "${payload}/${book_name}" "${location}/${book_name}"
+
+popd
+rm -rf "$payload"
+log "${SUCC}==================================== AFPCD =====================================${RESET}"

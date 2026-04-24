@@ -16,7 +16,7 @@
 
 export DEV_ENV="/home/jaysh/dev"
 source "${DEV_ENV}/lib/log"
-source "${DEV_ENV}/lib/term-colors"
+source "${DEV_ENV}/lib/ansi-escapes"
 export -f log
 export DRY_RUN='0'
 
