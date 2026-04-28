@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Copyright (C)  2026  Emir Baha YILDIRIM
 #
 # This program is free software: you can redistribute it and/or modify
@@ -73,8 +74,9 @@ alias gitconfig='nvim ~/dev/modules/git/payload/.gitconfig'
 alias jayshell='pushd ~/projects/c-mastery-projects/jayshell && nv'
 alias scripts='pushd ~/dev/modules/scripts && nv && popd'
 # alias docs='pushd ~/Documents' # became irrelevant when i switched to arch
-alias downs='cd ~/Downloads'
-alias uni='cd ~/uni'
+alias downs='pushd ~/Downloads'
+alias uni='pushd ~/uni'
+alias 111='pushd ~/uni/ceng111'
 alias 240='pushd ~/uni/ceng240'
 alias 301='pushd ~/uni/ceng301'
 alias 302='pushd ~/uni/ceng302'

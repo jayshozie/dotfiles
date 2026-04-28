@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Copyright (C)  2026  Emir Baha YILDIRIM
 #
 # This program is free software: you can redistribute it and/or modify
@@ -13,20 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-[[ $- != *i* ]] && return
-
-HISTCONTROL=ignoreboth
-HISTSIZE=1000
-HISTFILESIZE=2000
-shopt -s histappend
-shopt -s checkwinsize
-shopt -s globstar
-
-export XDG_CONFIG_HOME='/home/jaysh/.config'
-export BASH_CONFIG="${XDG_CONFIG_HOME}/bash"
-
-# every other sourced file is sourced in .bash_source
-[[ -f "${BASH_CONFIG}/.bash_source" ]] && source "${BASH_CONFIG}/.bash_source"
-
-# tmux-sessionizer thanks to ThePrimeagen
-bind '"\C-f":"tmux neww tmux-sessionizer\n"'
+# source every file in here with the same syntax
+[[ -f "${BASH_CONFIG}/.bash_env" ]] && source "${BASH_CONFIG}/.bash_env"
+[[ -f "${BASH_CONFIG}/.bash_aliases" ]] && source "${BASH_CONFIG}/.bash_aliases"

@@ -23,11 +23,20 @@ path_prepend() {
     fi
 }
 
+# --------------------------- #
+#  2. XDG Base Specification  #
+# --------------------------- #
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_CACHE_HOME="${HOME}/.cache"
+# The rest are either already implemented on Arch, or simply not needed in my
+# case.
+
 # -------------------------- #
-#  2. Environment Variables  #
+#  3. Environment Variables  #
 # -------------------------- #
 export CLONES_DIR="$HOME/src"
-export XDG_CONFIG_HOME="$HOME/.config"
 export MOZ_ENABLE_WAYLAND=1
 export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/$(id -u)/hypr/ | head -n 1)
 # export DISPLAY=:1 # uncomment if needed
@@ -41,7 +50,7 @@ export CLONES_DIR=$HOME/src
 export GEMINI_SYSTEM_MD='~/.gemini/system.md'
 
 # -------------------- #
-#  3. Path Management  #
+#  4. Path Management  #
 # -------------------- #
 # NVM (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
@@ -68,14 +77,14 @@ path_prepend "$HOME/.local/bin/scripts"
 path_prepend "$HOME/.local/bin"
 
 # -------------- #
-#  4. Linuxbrew  #
+#  5. Linuxbrew  #
 # -------------- #
 if [[ ":$PATH:" != *":/home/linuxbrew/.linuxbrew/bin:"* ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # ----------------------------------- #
-#  5. Interactive Shell Integrations  #
+#  6. Interactive Shell Integrations  #
 # ----------------------------------- #
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 eval "$(starship init bash)"

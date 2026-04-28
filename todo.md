@@ -1,6 +1,6 @@
 # Refactor TODOs
 
-- [ ] (STRONG MAYBE) git accepts **ANY** URL as the remote. so, technically
+- [ ] (probably not) git accepts **ANY** URL as the remote. so, technically
 speaking we could use git to sync the files. it auto-detects renaming, deletion,
 changes in both sides, conflicts etc. it's the perfect sync system. (something
 like `file:///home/jaysh/path/to/files`)

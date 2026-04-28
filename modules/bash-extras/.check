@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+check_binaries() {
+    :
+}
+
+check_binaries "$@"
+
+exit 0

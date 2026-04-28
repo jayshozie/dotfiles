@@ -18,6 +18,9 @@
 -- I hate the slim cursor, this looks much better.
 vim.opt.guicursor = ""
 
+-- why the fuck
+vim.opt.shell = '/usr/bin/bash'
+
 --
 vim.opt.number = true
 vim.opt.relativenumber = true
