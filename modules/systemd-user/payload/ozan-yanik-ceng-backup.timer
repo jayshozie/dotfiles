@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily timer of the ozan-yanik-ceng-backup.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

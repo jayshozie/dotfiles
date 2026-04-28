@@ -1,0 +1,7 @@
+[Unit]
+Description=Backup the repo yanik-ozan-ceng since GitHub rejects it.
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env bash -S -c 'pushd /home/jaysh/uni/yanik-ozan-ceng/ceng && ./backup.sh && popd'
+User=jaysh
