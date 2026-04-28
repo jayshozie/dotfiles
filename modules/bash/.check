@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
 check_binaries() {
-    if ! command -v bash &> /dev/null; then
-        log "${ERR}[RUN] [ERROR] bash is not installed!${RESET}"
-        exit 1
-    fi
+    :
 }
 
 check_binaries "$@"
