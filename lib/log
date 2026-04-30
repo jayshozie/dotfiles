@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# log(str msg)
 log() {
     if [[ $DRY_RUN == '1' ]]; then
         echo -e "[DRY] $1"
@@ -7,5 +8,65 @@ log() {
         echo -e "[DEBUG] $1"
     else
         echo -e "$1"
+    fi
+}
+
+# logp(str prog_name: 'LOG', ...)
+logp() {
+    local prog_name="$1"
+    if [[ -z "$prog_name" ]]; then
+        prog_name='LOG'
+    else
+        prog_name="${prog_name^^}"
+    fi
+
+    if [[ $LOG_DRY_RUN == '1' ]]; then
+        i=1
+        for msg in "$@"; do
+            if (( i == 1 )); then
+                echo -en "[$prog_name] [DRY] "
+            elif (( i >= $# )); then
+                echo -e "$msg"
+            else
+                echo -en "$msg "
+            fi
+            (( i++ ))
+        done
+    elif [[ $LOG_DEBUG == '1' ]]; then
+        i=1
+        for msg in "$@"; do
+            if (( i == 1 )); then
+                echo -en "[$prog_name] [DEBUG] "
+            elif (( i >= $# )); then
+                echo -e "$msg"
+            else
+                echo -en "$msg "
+            fi
+            (( i++ ))
+        done
+    elif [[ $LOG_VERBOSE == '1' ]]; then
+        i=1
+        for msg in "$@"; do
+            if (( i == 1 )); then
+                echo -en "[$prog_name] [VERBOSE] "
+            elif (( i >= $# )); then
+                echo -e "$msg"
+            else
+                echo -en "$msg "
+            fi
+            (( i++ ))
+        done
+    else
+        i=1
+        for msg in "$@"; do
+            if (( i == 1 )); then
+                echo -en "[$prog_name] "
+            elif (( i >= $# )); then
+                echo -e "$msg"
+            else
+                echo -en "$msg "
+            fi
+            (( i++ ))
+        done
     fi
 }

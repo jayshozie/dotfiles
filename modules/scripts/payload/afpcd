@@ -1,53 +1,229 @@
 #!/usr/bin/env bash
+# Copyright (C)  2026  Emir Baha YILDIRIM
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-export DEV_ENV="/home/jaysh/dev"
-source "${DEV_ENV}/lib/progress_bar"
-source "${DEV_ENV}/lib/log"
+export DEV_ENV='/home/jaysh/dev'
+source "${DEV_ENV}/lib/log" && export -f log
+source "${DEV_ENV}/lib/progress_bar" && export -f progress_bar
 source "${DEV_ENV}/lib/ansi-escapes"
-export -f log && export -f progress_bar
 
-log "${SUCC}==================================== AFPCD =====================================${RESET}"
-log "${INFO}[AFPCD] Welcome to AnyFlip PDF Creator/Downloader${RESET}"
-log "${WARN}[AFPCD] Please make sure the format is like this: https://online.anyflip.com/uxmrl/tnef/files/mobile/*.{jpg,webp}${RESET}"
-log "${INFO}[AFPCD] Provide the AnyFlip Link: (e.g.: https://online.anyflip.com/uxmrl/tnef)${RESET}"
-read -r link
-log "${INFO}[AFPCD] Provide the total amount of pages: (e.g.: 430)${RESET}"
-read -r total_pages
-log "${INFO}[AFPCD] Provide the name of the book: (e.g.: v5-core-book)${RESET}"
-read -r book_name
-log "${INFO}[AFPCD] Provide the location to place the book: (e.g.: /home/user/books)${RESET}"
-read -r location
-log "${INFO}[AFPCD] Provide the filetype: (e.g.: jpg, webp, png, etc.)${RESET}"
-read -r filetype
-if [[ ! -d "$location" ]]; then
-    log "${ERR}[AFPCD] Directory [$location] not found!${RESET}"
-    exit 1
-fi
+help() {
+    local prog_name="${0##*/}"
+    log
+    log "$prog_name - AnyFlip PDF Creator/Downloader"
+    log
+    log "Usage: $prog_name [-v|--verbose]"
+    log '                  [-D|-d|--debug]'
+    log '                  [-h|--help]'
+    log '                  [--license]'
+    log
+    log 'Options:'
+    log '--debug    -d/-D    Runs the script in debug mode and shows the debug messages'
+    log '--verbose  -v       Shows extra info, runs all commands in verbose mode if applicable'
+    log '--help     -h       Shows this message'
+    log "--license           Shows the program's license"
+    log
+}
 
-payload="/tmp/afpcd-book-${RANDOM}"
+license() {
+    echo 'Copyright (C)  2026  Emir Baha YILDIRIM
 
-mkdir "$payload"
-pushd "$payload"
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-link="${link}/files/mobile"
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-magick_args=()
-i=0
-for (( curr_page=1; curr_page <= total_pages; curr_page++)); do
-    filename="${curr_page}.${filetype}"
-    magick_args[$i]="$filename"
-    (( i++ ))
-    down_link="${link}/${filename}"
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'
+}
 
-    wget --tries=10 -q "$down_link"
+intro() {
+    log ""
+    log ' ==================== AFPCD ===================='
+    log '    Welcome to AnyFlip PDF Creator/Downloader'
+    log ' ==============================================='
+    log 'Please make sure the link format is like this:'
+    log '    E.g.: https://online.anyflip.com/uxmrl/tnef/files/mobile/10.{jpg,webp}'
+}
 
-    progress_bar "$curr_page" "$total_pages"
-    sleep .25
-done
+outro() {
+    log '            Thank you for using AFPCD!'
+    log ' ==================== AFPCD ===================='
+}
 
-magick "${magick_args[@]}" "$book_name"
-cp "${payload}/${book_name}" "${location}/${book_name}"
+check_link() {
+    local link="$1"
+    if [[ ! $link == 'https://online.anyflip.com/'*'/'* ]]; then
+        logp 'AFPCD' "[ERROR] Invalid link! Please check the link you entered for errors: <${REPLY##*,}>"
+        exit 1
+    fi
+}
 
-popd
-rm -rf "$payload"
-log "${SUCC}==================================== AFPCD =====================================${RESET}"
+check_pages() {
+    local pages="$1"
+    if [[ ! "$pages" =~ ^[0-9]+$ ]]; then
+        logp 'AFPCD' "[ERROR] Please provide a valid integer. <$pages>"
+        exit 1
+    fi
+}
+
+check_location() {
+    local location="$1"
+    if [[ ! -d "$location" ]]; then
+        logp 'AFPCD' "[ERROR] Directory [$location] not found!"
+        exit 1
+    fi
+}
+
+create_book() {
+    local link total book_name location filetype payload down_link
+
+    link="$1"
+    total="$2"
+    book_name="${3}.pdf"
+    location="$4"
+    filetype="$5"
+    payload="/tmp/afpcd-book-${RANDOM}"
+
+    mkdir "$payload"
+    pushd "$payload"
+
+    link="${link}/files/mobile"
+
+    wget_args='--tries=10'
+    if [[ $AFPCD_VERBOSE != '1' ]]; then
+        wget_args="${wget_args} -q"
+    fi
+
+    magick_args=()
+    i=0
+    for (( curr=1; curr <= total; curr++ )); do
+        img_file="${curr}.${filetype}"
+        magick_args[$i]="$img_file"
+        (( i++ ))
+        down_link="${link}/${img_file}"
+
+        [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
+            logp 'AFPCD' "[INFO] Will run: wget $wget_args $down_link"
+
+        if ! wget $wget_args "$down_link"; then
+            local reason="$?"
+            logp 'AFPCD' "[ERROR] wget failed! [Exit Code: $reason]"
+            popd
+            rm -rf "$payload"
+            exit 1
+        fi
+
+        [[ $AFPCD_VERBOSE != '1' ]] && progress_bar "$curr" "$total"
+        sleep .25
+    done
+    [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
+        logp 'AFPCD' "[INFO] Download is complete. Constructing the PDF."
+
+    if ! magick "${magick_args[@]}" "${book_name}"; then
+        local reason="$?"
+        logp 'AFPCD' "[ERROR] Magick failed! [Exit Code: $reason]"
+        popd
+        rm -rf "$payload"
+        exit 1
+    fi
+    [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
+        logp 'AFPCD' "[INFO] PDF constructed. Located at <${payload}/${book_name}>"
+
+    if ! cp "${payload}/${book_name}" "${location}/${book_name}"; then
+        local reason="$?"
+        logp 'AFPCD' "[ERROR] cp failed! [Exit Code: $reason]"
+        logp 'AFPCD' "[WARN] You're highly recommended to copy the book to" \
+             'somewhere else since it will be deleted after a reboot.' \
+             "Book is located at <${payload}/${book_name}>."
+        popd
+        exit 1
+    fi
+
+    popd
+    rm -rf "$payload"
+}
+
+main() {
+    local short_flags='vhDd'
+    local long_flags='verbose,help,debug,license'
+    local flags=$(getopt -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
+    [[ "$AFPCD_DEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AFPCD' "args: [$flags]"
+    eval set -- "$flags"
+    while true; do
+        case "$1" in
+            '--')
+                shift
+                break # we have to assume that we're out of cli args
+                ;;
+            '-v'|'--verbose')
+                export AFPCD_VERBOSE='1'
+                shift
+                continue
+                ;;
+            '-d'|'-D'|'--debug')
+                export AFPCD_DEBUG='1'
+                shift
+                continue
+                ;;
+            '-h'|'--help')
+                help
+                exit 0
+                ;;
+            '--license')
+                license
+                exit 0
+                ;;
+            *)
+                logp 'AFPCD' "[ERROR] Unknown option [$1]!" >&2
+                help >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    intro
+
+    log 'Provide the AnyFlip Link: (e.g.: https://online.anyflip.com/uxmrl/tnef)'
+    read -r link
+    check_link $link
+
+    log 'Provide the total amount of pages: (e.g.: 430)'
+    read -r total_pages
+    check_pages $total_pages
+
+    log 'Provide the string to save the PDF as: (e.g.: v5-core-book)'
+    read -r book_name
+
+    log 'Provide the location on your PC to save the book (e.g.: /home/user/books)'
+    read -r location
+    check_location $location
+
+    log 'Provide the filetype of the images that will be downloaded from AnyFlip: (e.g.: jpg, webp, png, etc.)'
+    read -r filetype
+
+    create_book $link $total_pages $book_name $location $filetype
+    log "Your file is ready. It's stored at <$location/${book_name}.pdf>"
+
+    outro
+}
+
+main "$@"
