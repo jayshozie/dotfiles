@@ -27,11 +27,11 @@ main() {
         log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
     fi
 
-    # This looks at the pacman log for specific heavy-hitters
-    recent_critical=$(grep -E "$(date +'%Y-%m-%d %H')" /var/log/pacman.log | \
-                      grep -E "upgraded (glibc|systemd|dbus|wayland|hyprland)")
+    # this looks at the pacman log for specific heavy-hitters
+    recent_critical=$(grep -e "$(date +'%y-%m-%d %h')" /var/log/pacman.log | \
+                      grep -e "upgraded (glibc|systemd|dbus|wayland|hyprland)")
 
-    # If /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
+    # if /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
     if [[ ! -d "/usr/lib/modules/$(uname -r)" ]]; then
         should_reboot='y'
         log "${WARN}[SYS] Kernel has been updated. A reboot is REQUIRED.${RESET}"
