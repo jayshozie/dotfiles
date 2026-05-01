@@ -15,35 +15,35 @@ BAR_CHAR='#'
 EMPTY_CHAR=' '
 
 fatal() {
-	echo '[FATAL]' "$@" >&2
-	exit 1
+    echo '[FATAL]' "$@" >&2
+    exit 1
 }
 
 progress_bar() {
-	local current=$1
-	local len=$2
+    local current=$1
+    local len=$2
 
-	local perc_done=$((current * 100 / len))
+    local perc_done=$((current * 100 / len))
 
-	local suffix=" $current/$len ($perc_done%)"
+    local suffix=" $current/$len ($perc_done%)"
 
-	local length=$((COLUMNS - ${#suffix} - 2))
-	local num_bars=$((perc_done * length / 100))
+    local length=$((COLUMNS - ${#suffix} - 2))
+    local num_bars=$((perc_done * length / 100))
 
-	local i
-	local s='['
-	for ((i = 0; i < num_bars; i++)); do
-		s+=$BAR_CHAR
-	done
-	for ((i = num_bars; i < length; i++)); do
-		s+=$EMPTY_CHAR
-	done
-	s+=']'
-	s+=$suffix
+    local i
+    local s='['
+    for ((i = 0; i < num_bars; i++)); do
+        s+=$BAR_CHAR
+    done
+    for ((i = num_bars; i < length; i++)); do
+        s+=$EMPTY_CHAR
+    done
+    s+=']'
+    s+=$suffix
 
-	printf '\e7' # save the cursor location
-	  printf '\e[%d;%dH' "$LINES" 0 # move cursor to the bottom line
-	  printf '\e[0K' # clear the line
-	  printf '%s' "$s" # print the progress bar
-	printf '\e8' # restore the cursor location
+    printf '\e7'                  # save the cursor location
+    printf '\e[%d;%dH' "$LINES" 0 # move cursor to the bottom line
+    printf '\e[0K'                # clear the line
+    printf '%s' "$s"              # print the progress bar
+    printf '\e8'                  # restore the cursor location
 }

@@ -21,24 +21,24 @@ source "${DEV_ENV}/lib/ansi-escapes"
 
 help() {
     local prog_name="${0##*/}"
-    log
-    log "$prog_name - AnyFlip PDF Creator/Downloader"
-    log
-    log "Usage: $prog_name [-v|--verbose]"
-    log '                  [-D|-d|--debug]'
-    log '                  [-h|--help]'
-    log '                  [--license]'
-    log
-    log 'Options:'
-    log '--debug    -d/-D    Runs the script in debug mode and shows the debug messages'
-    log '--verbose  -v       Shows extra info, runs all commands in verbose mode if applicable'
-    log '--help     -h       Shows this message'
-    log "--license           Shows the program's license"
-    log
+    cat <<EOF
+$prog_name - AnyFlip PDF Creator/Downloader
+Usage: $prog_name [-v|--verbose]
+                  [-D|-d|--debug]
+                  [-h|--help]
+                  [-l|--license]
+
+Options:
+  -[d|D] --debug    Runs the script in debug mode and shows the debug messages
+  -v     --verbose  Shows extra info, runs all commands in verbose modes if applicable
+  -h     --help     Shows this message
+  -l     --license  Shows the program's license
+EOF
 }
 
 license() {
-    echo 'Copyright (C)  2026  Emir Baha YILDIRIM
+    cat <<EOF
+Copyright (C)  2026  Emir Baha YILDIRIM
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,21 +52,32 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-'
+EOF
 }
 
 intro() {
-    log ""
-    log ' ==================== AFPCD ===================='
-    log '    Welcome to AnyFlip PDF Creator/Downloader'
-    log ' ==============================================='
-    log 'Please make sure the link format is like this:'
-    log '    E.g.: https://online.anyflip.com/uxmrl/tnef/files/mobile/10.{jpg,webp}'
+    cat <<EOF
+==================== AFPCD ====================
+   Welcome to AnyFlip PDF Creator/Downloader
+===============================================
+
+Please make sure the link format is like this:
+E.g.: https://online.anyflip.com/uxmrl/tnef/files/mobile/10.{jpg,webp}
+EOF
 }
 
 outro() {
-    log '            Thank you for using AFPCD!'
-    log ' ==================== AFPCD ===================='
+    cat <<EOF
+           Thank you for using AFPCD!
+==================== AFPCD ====================
+EOF
+}
+
+clean_prog_bar() {
+    printf '\e7'   # save the cursor location
+    printf '\n'    # move cursor to the line below
+    printf '\e[0K' # clear the line
+    printf '\e8'   # restore the cursor location
 }
 
 check_link() {
@@ -104,7 +115,7 @@ create_book() {
     payload="/tmp/afpcd-book-${RANDOM}"
 
     mkdir "$payload"
-    pushd "$payload"
+    pushd "$payload" > /dev/null 2>&1
 
     link="${link}/files/mobile"
 
@@ -115,10 +126,10 @@ create_book() {
 
     magick_args=()
     i=0
-    for (( curr=1; curr <= total; curr++ )); do
+    for ((curr = 1; curr <= total; curr++)); do
         img_file="${curr}.${filetype}"
         magick_args[$i]="$img_file"
-        (( i++ ))
+        ((i++))
         down_link="${link}/${img_file}"
 
         [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
@@ -127,7 +138,7 @@ create_book() {
         if ! wget $wget_args "$down_link"; then
             local reason="$?"
             logp 'AFPCD' "[ERROR] wget failed! [Exit Code: $reason]"
-            popd
+            popd > /dev/null 2>&1
             rm -rf "$payload"
             exit 1
         fi
@@ -141,7 +152,7 @@ create_book() {
     if ! magick "${magick_args[@]}" "${book_name}"; then
         local reason="$?"
         logp 'AFPCD' "[ERROR] Magick failed! [Exit Code: $reason]"
-        popd
+        popd > /dev/null 2>&1
         rm -rf "$payload"
         exit 1
     fi
@@ -152,51 +163,47 @@ create_book() {
         local reason="$?"
         logp 'AFPCD' "[ERROR] cp failed! [Exit Code: $reason]"
         logp 'AFPCD' "[WARN] You're highly recommended to copy the book to" \
-             'somewhere else since it will be deleted after a reboot.' \
-             "Book is located at <${payload}/${book_name}>."
-        popd
+            'somewhere else since it will be deleted after a reboot.' \
+            "Book is located at <${payload}/${book_name}>."
+        popd > /dev/null 2>&1
         exit 1
     fi
 
-    popd
+    popd > /dev/null 2>&1
     rm -rf "$payload"
 }
 
 main() {
-    local short_flags='vhDd'
+    local short_flags='vhDdl'
     local long_flags='verbose,help,debug,license'
     local flags=$(getopt -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
     [[ "$AFPCD_DEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AFPCD' "args: [$flags]"
     eval set -- "$flags"
     while true; do
         case "$1" in
-            '--')
-                shift
-                break # we have to assume that we're out of cli args
-                ;;
-            '-v'|'--verbose')
-                export AFPCD_VERBOSE='1'
-                shift
-                continue
-                ;;
-            '-d'|'-D'|'--debug')
-                export AFPCD_DEBUG='1'
-                shift
-                continue
-                ;;
-            '-h'|'--help')
-                help
-                exit 0
-                ;;
-            '--license')
-                license
-                exit 0
-                ;;
-            *)
-                logp 'AFPCD' "[ERROR] Unknown option [$1]!" >&2
-                help >&2
-                exit 1
-                ;;
+        '--')
+            shift
+            break
+            ;; # we have to assume that we're out of cli args
+        '-v' | '--verbose')
+            export AFPCD_VERBOSE='1'
+            shift
+            continue
+            ;;
+        '-d' | '-D' | '--debug')
+            export AFPCD_DEBUG='1'
+            shift
+            continue
+            ;;
+        '-h' | '--help')
+            help
+            exit 0
+            ;;
+        '-l' | '--license')
+            license
+            exit 0
+            ;;
+        *) logp 'AFPCD' "[ERROR] Unknown option [$1]!" help exit 1 >&2 >&2 ;;
         esac
     done
 
@@ -221,6 +228,8 @@ main() {
     read -r filetype
 
     create_book $link $total_pages $book_name $location $filetype
+
+    [[ $AFPCD_VERBOSE != '1' ]] && clean_prog_bar
     log "Your file is ready. It's stored at <$location/${book_name}.pdf>"
 
     outro

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+export DEV_ENV='/home/jaysh/dev'
+source "${DEV_ENV}/lib/spinner" && export -f spinner
+
+# spinner 'sleep 5'
+# cleanup
+# 
+# spinner -t default 'sleep 5'
+# cleanup
+# 
+# spinner -t dots 'sleep 5'
+# cleanup
+# 
+# spinner -t pong 'sleep 5'
+# cleanup
+# 
+# spinner -t pong 'sleep 5'
+# cleanup
+# 
+# spinner -t upanddown 'sleep 5'
+# cleanup
+
+# spinner -d -t upanddown 'sleep 5'
+# cleanup
+
+spinner -l
+echo
+spinner -h
