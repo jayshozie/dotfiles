@@ -23,7 +23,9 @@ export DRY_RUN='0'
 main() {
     local recent_critical should_reboot
     should_reboot='n'
-    paru
+    if ! paru; then
+        log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+    fi
 
     # This looks at the pacman log for specific heavy-hitters
     recent_critical=$(grep -E "$(date +'%Y-%m-%d %H')" /var/log/pacman.log | \
@@ -32,16 +34,16 @@ main() {
     # If /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
     if [[ ! -d "/usr/lib/modules/$(uname -r)" ]]; then
         should_reboot='y'
-        log "${WARN}[SYSTEM] Kernel has been updated. A reboot is REQUIRED.${RESET}"
+        log "${WARN}[SYS] Kernel has been updated. A reboot is REQUIRED.${RESET}"
     fi
     if [[ -n "$recent_critical" ]]; then
         should_reboot='y'
-        log "${WARN}[SYSTEM] Critical system components (glibc/systemd) were updated.${RESET}"
+        log "${WARN}[SYS] Critical system components (glibc/systemd) were updated.${RESET}"
         log "${INFO}It is highly recommended to reboot to ensure system stability.${RESET}"
     fi
 
     if [[ $should_reboot == 'n' ]]; then
-        log "${INFO}[SYSTEM] System update completed successfully. Enjoy!${RESET}"
+        log "${INFO}[SYS] System update completed successfully. Enjoy!${RESET}"
     fi
 }
 

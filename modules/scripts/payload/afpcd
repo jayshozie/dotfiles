@@ -83,7 +83,7 @@ clean_prog_bar() {
 check_link() {
     local link="$1"
     if [[ ! $link == 'https://online.anyflip.com/'*'/'* ]]; then
-        logp 'AFPCD' "[ERROR] Invalid link! Please check the link you entered for errors: <${REPLY##*,}>"
+        logp 'AFPCD' "[ERROR] Invalid link! Please check the link you entered for errors: <${REPLY##*,}>" >&2
         exit 1
     fi
 }
@@ -91,7 +91,7 @@ check_link() {
 check_pages() {
     local pages="$1"
     if [[ ! "$pages" =~ ^[0-9]+$ ]]; then
-        logp 'AFPCD' "[ERROR] Please provide a valid integer. <$pages>"
+        logp 'AFPCD' "[ERROR] Please provide a valid integer. <$pages>" >&2
         exit 1
     fi
 }
@@ -99,7 +99,7 @@ check_pages() {
 check_location() {
     local location="$1"
     if [[ ! -d "$location" ]]; then
-        logp 'AFPCD' "[ERROR] Directory [$location] not found!"
+        logp 'AFPCD' "[ERROR] Directory [$location] not found!" >&2
         exit 1
     fi
 }
@@ -114,8 +114,18 @@ create_book() {
     filetype="$5"
     payload="/tmp/afpcd-book-${RANDOM}"
 
-    mkdir "$payload"
-    pushd "$payload" > /dev/null 2>&1
+    if ! mkdir "$payload" >/dev/null 2>&1; then
+        logp 'AFPCD' "[ERROR] mkdir failed with exit code <$?> while creating" \
+            "the temporary $payload directory! Either you don't have the" \
+            "correct permissions for the $payload directory, or your PC is" \
+            'out of space.' >&2
+        exit 1
+    fi
+    if ! pushd "$payload" >/dev/null 2>&1; then
+        logp 'AFPCD' "[ERROR] pushd failed with exit code <$?>! This script" \
+            "can't run without access to the $payload directory." >&2
+        exit 1
+    fi
 
     link="${link}/files/mobile"
 
@@ -136,40 +146,46 @@ create_book() {
             logp 'AFPCD' "[INFO] Will run: wget $wget_args $down_link"
 
         if ! wget $wget_args "$down_link"; then
-            local reason="$?"
-            logp 'AFPCD' "[ERROR] wget failed! [Exit Code: $reason]"
-            popd > /dev/null 2>&1
+            logp 'AFPCD' "[ERROR] wget failed with exit code <$?>!" >&2
+            popd >/dev/null 2>&1
             rm -rf "$payload"
             exit 1
         fi
 
         [[ $AFPCD_VERBOSE != '1' ]] && progress_bar "$curr" "$total"
-        sleep .25
+        if ! sleep .25; then
+            logp 'AFPCD' "[ERROR] sleep failed with exit code <$?>" >&2
+            logp 'AFPCD' '[ERROR] This script uses decimal time as argument for sleep.' >&2
+            logp 'AFPCD' "[ERROR] This is not POSIX required, but Bash implements it. You're recommend to switch to Bash." >&2
+            popd >/dev/null 2>&1
+            rm -rf "$payload"
+            exit 1
+        fi
     done
+
     [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
         logp 'AFPCD' "[INFO] Download is complete. Constructing the PDF."
 
     if ! magick "${magick_args[@]}" "${book_name}"; then
-        local reason="$?"
-        logp 'AFPCD' "[ERROR] Magick failed! [Exit Code: $reason]"
-        popd > /dev/null 2>&1
-        rm -rf "$payload"
+        logp 'AFPCD' "[ERROR] Magick failed with exit code <$?>! You can find" \
+            "the downloaded pictures in the $payload directory and construct" \
+            'the PDF yourself.' >&2
+        popd >/dev/null 2>&1
         exit 1
     fi
     [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
         logp 'AFPCD' "[INFO] PDF constructed. Located at <${payload}/${book_name}>"
 
     if ! cp "${payload}/${book_name}" "${location}/${book_name}"; then
-        local reason="$?"
-        logp 'AFPCD' "[ERROR] cp failed! [Exit Code: $reason]"
+        logp 'AFPCD' "[ERROR] cp failed with exit code <$?>!" >&2
         logp 'AFPCD' "[WARN] You're highly recommended to copy the book to" \
             'somewhere else since it will be deleted after a reboot.' \
-            "Book is located at <${payload}/${book_name}>."
-        popd > /dev/null 2>&1
+            "Book is located at <${payload}/${book_name}>." >&2
+        popd >/dev/null 2>&1
         exit 1
     fi
 
-    popd > /dev/null 2>&1
+    popd >/dev/null 2>&1
     rm -rf "$payload"
 }
 
@@ -181,29 +197,12 @@ main() {
     eval set -- "$flags"
     while true; do
         case "$1" in
-        '--')
-            shift
-            break
-            ;; # we have to assume that we're out of cli args
-        '-v' | '--verbose')
-            export AFPCD_VERBOSE='1'
-            shift
-            continue
-            ;;
-        '-d' | '-D' | '--debug')
-            export AFPCD_DEBUG='1'
-            shift
-            continue
-            ;;
-        '-h' | '--help')
-            help
-            exit 0
-            ;;
-        '-l' | '--license')
-            license
-            exit 0
-            ;;
-        *) logp 'AFPCD' "[ERROR] Unknown option [$1]!" help exit 1 >&2 >&2 ;;
+        '--') shift; break;; # we have to assume that we're out of cli args
+        '-v' | '--verbose') export AFPCD_VERBOSE='1'; shift; continue;;
+        '-d' | '-D' | '--debug') export AFPCD_DEBUG='1'; shift; continue;;
+        '-h' | '--help') help; exit 0;;
+        '-l' | '--license') license; exit 0;;
+        *) logp 'AFPCD' "[ERROR] Unknown option [$1]!" >&2; help >&2; exit 1;;
         esac
     done
 
