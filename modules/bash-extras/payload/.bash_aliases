@@ -43,7 +43,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias fd='fd -uic always'
 alias find='fd -ui'
-alias cl='clear -x'
+alias clear='clear -x'
 
 # better safe then sorry
 alias rm='rm -i'
@@ -52,6 +52,8 @@ alias cp='cp -i'
 
 # stupid stuff
 alias chomd='chmod'
+alias celar='clear'
+alias clera='clear'
 
 # easier readability
 alias df='df -h'

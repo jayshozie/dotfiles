@@ -63,11 +63,13 @@ intro() {
 
 Please make sure the link format is like this:
 E.g.: https://online.anyflip.com/uxmrl/tnef/files/mobile/10.{jpg,webp}
+
 EOF
 }
 
 outro() {
     cat <<EOF
+
            Thank you for using AFPCD!
 ==================== AFPCD ====================
 EOF
@@ -83,7 +85,7 @@ clean_prog_bar() {
 check_link() {
     local link="$1"
     if [[ ! $link == 'https://online.anyflip.com/'*'/'* ]]; then
-        logp 'AFPCD' "[ERROR] Invalid link! Please check the link you entered for errors: <${REPLY##*,}>" >&2
+        logp 'AFPCD' "${FG_L_RED}[ERROR] Invalid link! Please check the link you entered for errors: <$link>${COLOR_RESET}" >&2
         exit 1
     fi
 }
@@ -91,7 +93,7 @@ check_link() {
 check_pages() {
     local pages="$1"
     if [[ ! "$pages" =~ ^[0-9]+$ ]]; then
-        logp 'AFPCD' "[ERROR] Please provide a valid integer. <$pages>" >&2
+        logp 'AFPCD' "${FG_L_RED}[ERROR] Please provide a valid integer. <$pages>${COLOR_RESET}" >&2
         exit 1
     fi
 }
@@ -99,7 +101,7 @@ check_pages() {
 check_location() {
     local location="$1"
     if [[ ! -d "$location" ]]; then
-        logp 'AFPCD' "[ERROR] Directory [$location] not found!" >&2
+        logp 'AFPCD' "${FG_L_RED}[ERROR] Directory [$location] not found!${COLOR_RESET}" >&2
         exit 1
     fi
 }
@@ -114,17 +116,21 @@ create_book() {
     filetype="$5"
     payload="/tmp/afpcd-book-${RANDOM}"
 
-    if ! mkdir "$payload" >/dev/null 2>&1; then
-        logp 'AFPCD' "[ERROR] mkdir failed with exit code <$?> while creating" \
+    if mkdir "$payload" >/dev/null 2>&1; then
+        :
+    else
+        logp 'AFPCD' "${FG_L_RED}[ERROR] mkdir failed with exit code <$?> while creating" \
             "the temporary $payload directory! Either you don't have the" \
             "correct permissions for the $payload directory, or your PC is" \
-            'out of space.' >&2
-        exit 1
+            "out of space.${COLOR_RESET}" >&2
+        return
     fi
-    if ! pushd "$payload" >/dev/null 2>&1; then
-        logp 'AFPCD' "[ERROR] pushd failed with exit code <$?>! This script" \
-            "can't run without access to the $payload directory." >&2
-        exit 1
+    if pushd "$payload" >/dev/null 2>&1; then
+        :
+    else
+        logp 'AFPCD' "${FG_L_RED}[ERROR] pushd failed with exit code <$?>! This script" \
+            "can't run without access to the $payload directory.${COLOR_RESET}" >&2
+        return
     fi
 
     link="${link}/files/mobile"
@@ -145,44 +151,70 @@ create_book() {
         [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
             logp 'AFPCD' "[INFO] Will run: wget $wget_args $down_link"
 
-        if ! wget $wget_args "$down_link"; then
-            logp 'AFPCD' "[ERROR] wget failed with exit code <$?>!" >&2
-            popd >/dev/null 2>&1
-            rm -rf "$payload"
-            exit 1
+        if wget $wget_args "$down_link"; then
+            :
+        else
+            if [[ $? == '8' ]]; then
+                logp 'AFPCD' "${FG_L_RED}[ERROR] wget failed with exit code" \
+                    '<8>! This is likely due to filenames of the pictures' \
+                    "being different than '1,2,3,...' etc. Sadly, we don't" \
+                    'support different filename conventions. Please check the' \
+                    'filenames, the pictures should be located at' \
+                    "<$down_link> if the filenames are ordered, then you" \
+                    "probably didn't enter the correct filetype, you entered" \
+                    "<$filetype>.${COLOR_RESET}"
+                popd >/dev/null 2>&1
+                rm -rf "$payload"
+                return
+            else
+                logp 'AFPCD' "${FG_L_RED}[ERROR] wget failed with exit code" \
+                    "<$?>!${COLOR_RESET}" >&2
+                popd >/dev/null 2>&1
+                rm -rf "$payload"
+                return
+            fi
         fi
 
         [[ $AFPCD_VERBOSE != '1' ]] && progress_bar "$curr" "$total"
-        if ! sleep .25; then
-            logp 'AFPCD' "[ERROR] sleep failed with exit code <$?>" >&2
-            logp 'AFPCD' '[ERROR] This script uses decimal time as argument for sleep.' >&2
-            logp 'AFPCD' "[ERROR] This is not POSIX required, but Bash implements it. You're recommend to switch to Bash." >&2
+        if sleep .25; then
+            :
+        else
+            logp 'AFPCD' "${FG_L_RED}[ERROR] sleep failed with exit code <$?>" \
+                'This script uses decimal time as argument for sleep. This is' \
+                "not a POSIX requirement, but Bash implements it. You're" \
+                "recommended to switch to Bash.${COLOR_RESET}" >&2
             popd >/dev/null 2>&1
             rm -rf "$payload"
-            exit 1
+            return
         fi
     done
 
     [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
         logp 'AFPCD' "[INFO] Download is complete. Constructing the PDF."
 
-    if ! magick "${magick_args[@]}" "${book_name}"; then
-        logp 'AFPCD' "[ERROR] Magick failed with exit code <$?>! You can find" \
-            "the downloaded pictures in the $payload directory and construct" \
-            'the PDF yourself.' >&2
+    if magick "${magick_args[@]}" "${book_name}"; then
+        :
+    else
+        logp 'AFPCD' "${FG_L_RED}[ERROR] Magick failed with exit code <$?>!" \
+            "You can find the downloaded pictures in the $payload directory" \
+            "and construct the PDF yourself.${COLOR_RESET}" >&2
         popd >/dev/null 2>&1
-        exit 1
+        return
     fi
     [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
         logp 'AFPCD' "[INFO] PDF constructed. Located at <${payload}/${book_name}>"
 
-    if ! cp "${payload}/${book_name}" "${location}/${book_name}"; then
-        logp 'AFPCD' "[ERROR] cp failed with exit code <$?>!" >&2
-        logp 'AFPCD' "[WARN] You're highly recommended to copy the book to" \
-            'somewhere else since it will be deleted after a reboot.' \
-            "Book is located at <${payload}/${book_name}>." >&2
+    if cp "${payload}/${book_name}" "${location}/${book_name}"; then
+        :
+    else
+        logp 'AFPCD' "${FG_L_RED}[ERROR] cp failed with exit code" \
+            "<$?>!${COLOR_RESET}" >&2
+        logp 'AFPCD' "${FG_L_YELLOW}[WARN] You're highly recommended to copy" \
+            'the book to somewhere else since it will be deleted after a' \
+            "reboot. Book is located at <${payload}/${book_name}>." \
+            "${COLOR_RESET}" >&2
         popd >/dev/null 2>&1
-        exit 1
+        return
     fi
 
     popd >/dev/null 2>&1
@@ -197,12 +229,33 @@ main() {
     eval set -- "$flags"
     while true; do
         case "$1" in
-        '--') shift; break;; # we have to assume that we're out of cli args
-        '-v' | '--verbose') export AFPCD_VERBOSE='1'; shift; continue;;
-        '-d' | '-D' | '--debug') export AFPCD_DEBUG='1'; shift; continue;;
-        '-h' | '--help') help; exit 0;;
-        '-l' | '--license') license; exit 0;;
-        *) logp 'AFPCD' "[ERROR] Unknown option [$1]!" >&2; help >&2; exit 1;;
+        '--')
+            shift
+            break
+            ;; # we're out of args
+        '-v' | '--verbose')
+            export AFPCD_VERBOSE='1'
+            shift
+            continue
+            ;;
+        '-d' | '-D' | '--debug')
+            export AFPCD_DEBUG='1'
+            shift
+            continue
+            ;;
+        '-h' | '--help')
+            help
+            exit 0
+            ;;
+        '-l' | '--license')
+            license
+            exit 0
+            ;;
+        *)
+            logp 'AFPCD' "${FG_L_RED}[ERROR] Unknown option $1!${COLOR_RESET}" >&2
+            help >&2
+            exit 1
+            ;;
         esac
     done
 
@@ -212,24 +265,28 @@ main() {
     read -r link
     check_link $link
 
-    log 'Provide the total amount of pages: (e.g.: 430)'
+    log '\nProvide the total amount of pages: (e.g.: 430)'
     read -r total_pages
     check_pages $total_pages
 
-    log 'Provide the string to save the PDF as: (e.g.: v5-core-book)'
+    log '\nProvide the string to save the PDF as: (e.g.: v5-core-book)'
     read -r book_name
 
-    log 'Provide the location on your PC to save the book (e.g.: /home/user/books)'
+    log '\nProvide the location on your PC to save the book (e.g.: /home/user/books)'
     read -r location
     check_location $location
 
-    log 'Provide the filetype of the images that will be downloaded from AnyFlip: (e.g.: jpg, webp, png, etc.)'
+    log '\nProvide the filetype of the images that will be downloaded from AnyFlip: (e.g.: jpg, webp, png, etc.)'
     read -r filetype
 
     create_book $link $total_pages $book_name $location $filetype
 
     [[ $AFPCD_VERBOSE != '1' ]] && clean_prog_bar
-    log "Your file is ready. It's stored at <$location/${book_name}.pdf>"
+    if [[ $SUCCESS == '1' ]]; then
+        log "\nYour file is ready. It's stored at <$location/${book_name}.pdf>"
+    else
+        log "\nThere was an issue with the process. Please check the log messages."
+    fi
 
     outro
 }
