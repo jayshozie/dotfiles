@@ -115,11 +115,9 @@ pushd "$DEV_ENV" > /dev/null
 # Parse arguments
 if [[ $1 == '-dry' || $1 == '--dry-run' || $1 == '-d' ]]; then
     export DRY_RUN='1'
-fi
-if [[ $1 == '--audit' || $1 == '-a' ]]; then
+elif [[ $1 == '--audit' || $1 == '-a' ]]; then
     export RUN_AUDIT='1'
-fi
-if [[ $1 == '--verbose' || $1 == '-v' ]]; then
+elif [[ $1 == '--verbose' || $1 == '-v' ]]; then
     export VERBOSE='1'
 fi
 

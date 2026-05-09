@@ -15,6 +15,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # source every file in here with the same syntax
-[[ -f "${BASH_CONFIG}/.bash_env" ]] && source "${BASH_CONFIG}/.bash_env"
-[[ -f "${BASH_CONFIG}/.bash_aliases" ]] && source "${BASH_CONFIG}/.bash_aliases"
-[[ -f "${BASH_CONFIG}/.inputrc" ]] && source "${BASH_CONFIG}/.inputrc"
+
+source_bash_configs() {
+    local path file
+    while true; do
+        file="$1"
+        if [[ -n "$file" ]]; then
+            path="${BASH_CONFIG}/$file"
+            [[ -f "$path" ]] && source "$path"
+            shift
+        else
+            break
+        fi
+    done
+}
+
+source_bash_configs '.bash_env' '.bash_aliases'

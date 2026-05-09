@@ -18,8 +18,8 @@
 #  1. Idempotency Helper  #
 # ----------------------- #
 path_prepend() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        export PATH="$1:$PATH"
+    if [ -d "$1" ] && [[ ":${PATH}:" != *":${1}:"* ]]; then
+        export PATH="${1}:$PATH"
     fi
 }
 
@@ -36,7 +36,8 @@ export XDG_CACHE_HOME="${HOME}/.cache"
 # -------------------------- #
 #  3. Environment Variables  #
 # -------------------------- #
-export CLONES_DIR="$HOME/src"
+export DEV_ENV="${HOME}/dev"
+export CLONES_DIR="${HOME}/src"
 export MOZ_ENABLE_WAYLAND=1
 export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/$(id -u)/hypr/ | head -n 1)
 # export DISPLAY=:1 # uncomment if needed
@@ -46,45 +47,45 @@ export EDITOR=nvim
 export SYSTEMD_EDITOR=nvim
 export VISUAL=nvim
 export MANPAGER='nvim +Man!'
-export CLONES_DIR=$HOME/src
+export CLONES_DIR=${HOME}/src
 export GEMINI_SYSTEM_MD='~/.gemini/system.md'
 
 # -------------------- #
 #  4. Path Management  #
 # -------------------- #
 # NVM (Node Version Manager)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+export NVM_DIR="${HOME}/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "${NVM_DIR}/bash_completion"
 
 # Bun
-export BUN_INSTALL="$HOME/.bun"
-path_prepend "$BUN_INSTALL/bin"
+export BUN_INSTALL="${HOME}/.bun"
+path_prepend "${BUN_INSTALL}/bin"
 
 # Ruby Gems
-export GEM_HOME="$HOME/gems"
-path_prepend "$GEM_HOME/bin"
+export GEM_HOME="${HOME}/gems"
+path_prepend "${GEM_HOME}/bin"
 
 # Cargo
 path_prepend "${HOME}/.cargo/bin"
 
 # Local Scripts (Weather, Tmux, etc.)
-path_prepend "$HOME/.local/bin/scripts/weather"
-path_prepend "$HOME/.local/bin/scripts/tmux-sessionizer"
-path_prepend "$HOME/.local/bin/scripts"
+path_prepend "${HOME}/.local/bin/scripts/weather"
+path_prepend "${HOME}/.local/bin/scripts/tmux-sessionizer"
+path_prepend "${HOME}/.local/bin/scripts"
 
 # .local/bin
-path_prepend "$HOME/.local/bin"
+path_prepend "${HOME}/.local/bin"
 
 # -------------- #
 #  5. Linuxbrew  #
 # -------------- #
-if [[ ":$PATH:" != *":/home/linuxbrew/.linuxbrew/bin:"* ]]; then
+if [[ ":${PATH}:" != *":/home/linuxbrew/.linuxbrew/bin:"* ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # ----------------------------------- #
 #  6. Interactive Shell Integrations  #
 # ----------------------------------- #
-export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
+export STARSHIP_CONFIG="${XDG_CONFIG_HOME}/starship/starship.toml"
 eval "$(starship init bash)"

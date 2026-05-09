@@ -128,7 +128,7 @@
         "format": "󰑫 {}",
         "exec": "/home/jaysh/.local/bin/scripts/waybar-rss.sh",
         "return-type": "json",
-        "interval": 5,
+        "interval": 600,
         "on-click": "alacritty -e bulletty"
     },
 
