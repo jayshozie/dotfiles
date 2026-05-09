@@ -13,23 +13,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--------------------------------------SETS---------------------------------------
-
--- I hate the slim cursor, this looks much better.
-vim.opt.guicursor = ""
-
--- why the fuck
-vim.opt.shell = '/usr/bin/bash'
-
---
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.colorcolumn = "81"
-
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+--------------------------------CUSTOM COMMANDS---------------------------------
 
 -- C Stuff
 vim.opt.exrc = true
@@ -48,6 +32,63 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.bo.filetype = "c"
   end,
 })
+
+-- FIXME: scratch buffer implementation
+--local function create_new_buf(bufname)
+--  if not bufname or type(bufname) ~= "string" or string.len(bufname) == 0 then
+--    vim.notify("[ERROR] [TMPBUF] bufname not set", vim.log.levels.WARN)
+--    return
+--  end
+--  vim.cmd("edit " .. bufname)
+--
+--  local bufnr = vim.api.nvim_get_current_buf()
+--  vim.bo[bufnr].bufhidden = "hide"
+--  vim.bo[bufnr].buflisted = true
+--  vim.bo[bufnr].buftype = "nofile"
+--  vim.bo[bufnr].swapfile = false
+--end
+--local function switch_to_buf(bufnr)
+--  if type(bufnr) ~= "number" or bufnr < 1 then
+--    vim.notify("[ERROR] [TMPBUF] Invalid bufnr!", vim.log.levels.WARN)
+--    return
+--  end
+--  local winnum = vim.fn.bufwinnr(bufnr)
+--  if winnum ~= -1 then
+--    vim.cmd(winnum .. " wincmd w")
+--  else
+--    vim.cmd("buffer " .. bufnr)
+--  end
+--end
+--local function toggle_scratch()
+--  local bufname = vim.fn.getcwd() .. "/scratch"
+--  local bufnr = vim.fn.bufnr(bufname)
+--  if bufnr ~= -1 then
+--    switch_to_buf(bufnr)
+--  else
+--    create_new_buf(bufname)
+--  end
+--end
+--vim.api.nvim_create_user_command("Jayshtmpbuf", function(opts)
+--  toggle_scratch()
+--end, {})
+
+-------------------------------------SETS---------------------------------------
+
+-- I hate the slim cursor, this looks much better.
+vim.opt.guicursor = ""
+
+-- why the fuck
+vim.opt.shell = "/usr/bin/bash"
+
+--
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.colorcolumn = "81"
+
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 vim.opt.wrap = false
@@ -130,6 +171,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave", "TermOpen" }, {
 -- <space> is the superior leader.
 vim.g.mapleader = " "
 vim.g.localleader = " "
+
 -- I use this a lot, helps a lot too.
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 -- I hate using Ctrl for that, and got used to this to switch windows.
@@ -158,10 +200,14 @@ vim.keymap.set("n", "<M-s>", "<c-w>5-")
 
 -- tmux-sessionizer thanks to ThePrimeagen
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
--- vim.keymap.set("n", "<M-h>", "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>")
--- vim.keymap.set("n", "<M-t>", "<cmd>silent !tmux neww tmux-sessionizer -s 1<CR>")
--- vim.keymap.set("n", "<M-n>", "<cmd>silent !tmux neww tmux-sessionizer -s 2<CR>")
--- vim.keymap.set("n", "<M-s>", "<cmd>silent !tmux neww tmux-sessionizer -s 3<CR>")
+-- vim.keymap.set("n",
+--                "<M-h>", "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>")
+-- vim.keymap.set("n",
+--                "<M-t>", "<cmd>silent !tmux neww tmux-sessionizer -s 1<CR>")
+-- vim.keymap.set("n",
+--                "<M-n>", "<cmd>silent !tmux neww tmux-sessionizer -s 2<CR>")
+-- vim.keymap.set("n",
+--                "<M-s>", "<cmd>silent !tmux neww tmux-sessionizer -s 3<CR>")
 
 -- Highlight when yanking, thanks TJ.
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -208,7 +254,8 @@ vim.keymap.set(
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Opens ~/.config/nvim
--- vim.keymap.set('n', '<leader>vpp', '<cmd>e ~/dotfiles/nvim/.config/nvim/<CR>');
+-- vim.keymap.set('n',
+--                '<leader>vpp', '<cmd>e ~/dotfiles/nvim/.config/nvim/<CR>');
 -- I use this more than I'd like to admit.
 
 -- Helps a lot when rewriting the config.

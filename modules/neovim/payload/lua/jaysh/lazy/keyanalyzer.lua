@@ -36,7 +36,8 @@ return {
       },
 
       -- Keyboard layout to use
-      -- Available options are: qwerty, colemak, colemak-dh, azerty, qwertz, dvorak
+      -- Available options are:
+      --   qwerty, colemak, colemak-dh, azerty, qwertz, dvorak
       layout = "dvorak",
 
       -- Should a link to https://x.com/OtivDev be displayed?

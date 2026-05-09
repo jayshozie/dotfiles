@@ -18,7 +18,7 @@ log() {
     if [[ dry_run -eq 1 ]]; then
         printf "$timestamp [DRY]: $1\n" 2>&1
     else
-        printf "$timestamp $1\n" 2>&1 | tee --append ${HOME}/arise.log
+        printf "$timestamp $1\n" 2>&1 | tee --append "${HOME}/arise.log"
     fi
 }
 
@@ -47,10 +47,10 @@ main() {
     status=0
     for p in "${!pids[@]}"; do
         if [[ "${pids[$p]}" == '' ]]; then
-            log "[DIE] $p is not running."
+            log "[ARISE] $p is not running."
             continue
         fi
-        log "[DIE] SIGKILL $p --> ${pids[$p]}"
+        log "[ARISE] SIGKILL $p --> ${pids[$p]}"
         if [[ dry_run -eq 1 ]]; then
             log "kill -9 ${pids[$p]}"
         else
@@ -58,19 +58,19 @@ main() {
         fi
 
         # if [[ dry_run -ne 1 && ! $(pgrep $p) ]]; then
-        #     log "[DIE] Killed $p"
+        #     log "[ARISE] Killed $p"
         # else
-        #     log "[DIE] Couldn't kill ${p}."
+        #     log "[ARISE] Couldn't kill ${p}."
         #     status=1
         # fi
     done
 
     if [[ status -ne 0 ]]; then
-        log "[DIE] Couldn't kill all."
-        log "[DIE] Please manually kill them, and then re-run the script."
+        log "[ARISE] Couldn't kill all."
+        log "[ARISE] Please manually kill them, and then re-run the script."
     else
-        log "[DIE] Killed everything successfully."
-        log "[DIE] Rebooting ..."
+        log "[ARISE] Killed everything successfully."
+        log "[ARISE] Rebooting ..."
         if [[ dry_run -eq 1 ]]; then
             log "shutdown -r now"
         else

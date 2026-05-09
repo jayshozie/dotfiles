@@ -18,7 +18,7 @@ log() {
     if [[ dry_run -eq 1 ]]; then
         printf "$timestamp [DRY]: $1\n" 2>&1
     else
-        printf "$timestamp $1\n" 2>&1 | tee --append ${HOME}/arise.log
+        printf "$timestamp $1\n" 2>&1 | tee --append "${HOME}/die.log"
     fi
 }
 
@@ -29,7 +29,7 @@ main() {
         dry_run=1
     fi
 
-    log_file="${HOME}/arise.log"
+    log_file="${HOME}/die.log"
 
     if [[ ! -f $log_file ]]; then
         touch $log_file

@@ -23,6 +23,11 @@ export DRY_RUN='0'
 main() {
     local recent_critical should_reboot
     should_reboot='n'
+
+    if ! sudo pacman -Syu; then
+        log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+    fi
+
     if ! paru; then
         log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
     fi

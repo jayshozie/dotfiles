@@ -6,6 +6,7 @@ RED    := \033[0;31m
 RST    := \033[0m
 LUA_TARGETS := modules/neovim/payload/
 STYLUA_TOML := modules/lua-stuff/.stylua.toml
+LUACHECK_ARGS := --globals vim --max-line-length 80
 
 help:
 	@echo -e 'Usage:'
@@ -25,7 +26,7 @@ lua_fmt:
 
 lua_lint:
 	@echo "===> Linting"
-	luacheck $(LUA_TARGETS) --globals vim
+	luacheck $(LUA_TARGETS) $(LUACHECK_ARGS)
 
 # i think i'll use it for building/rebuilding stuff
 run:

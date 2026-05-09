@@ -53,7 +53,13 @@ return {
 
         -- if client.server_capabilities.signatureHelpProvider then
         --     vim.keymap.set("n", "K",
-        --         function() vim.lsp.buf.signature_help({ border = "rounded", width = 60 }) end, opts)
+        --         function()
+        --             vim.lsp.buf.signature_help({
+        --                 border = "rounded",
+        --                 width = 60
+        --             })
+        --         end,
+        --     opts)
         -- end
 
         if client.server_capabilities.definitionProvider then
@@ -79,7 +85,7 @@ return {
               -- 2. Clean up the filename (just the base name) and line number
               local filename_short = vim.fn.fnamemodify(filename_full, ":t")
 
-              -- 3. Remove leading whitespace from the line of code for better display
+              -- 3. Remove leading whitespace from the line of code
               local trimmed_line_text = line_text:gsub("^%s+", "")
 
               -- 4. Create the formatted display string
@@ -91,7 +97,7 @@ return {
                 trimmed_line_text
               )
 
-              -- You can optionally set 'ordinal' for fuzzy finding on the full path
+              -- Set 'ordinal' for fuzzy finding on the full path
               entry.ordinal =
                 string.format("%s:%d: %s", filename_full, lnum, line_text)
 
@@ -100,7 +106,7 @@ return {
             end
 
             require("telescope.builtin").lsp_references({
-              -- 1. Use the 'dropdown' theme for a better small-window experience
+              -- 1. Use the dropdown theme for a better small-window experience
               theme = "dropdown",
 
               -- 2. Pass the custom entry maker

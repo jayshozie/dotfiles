@@ -26,12 +26,12 @@ path_prepend() {
 # --------------------------- #
 #  2. XDG Base Specification  #
 # --------------------------- #
+# The rest are either already implemented on Arch by default, or simply not
+# needed in my case.
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 export XDG_CACHE_HOME="${HOME}/.cache"
-# The rest are either already implemented on Arch, or simply not needed in my
-# case.
 
 # -------------------------- #
 #  3. Environment Variables  #

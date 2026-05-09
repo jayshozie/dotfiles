@@ -17,3 +17,4 @@
 # source every file in here with the same syntax
 [[ -f "${BASH_CONFIG}/.bash_env" ]] && source "${BASH_CONFIG}/.bash_env"
 [[ -f "${BASH_CONFIG}/.bash_aliases" ]] && source "${BASH_CONFIG}/.bash_aliases"
+[[ -f "${BASH_CONFIG}/.inputrc" ]] && source "${BASH_CONFIG}/.inputrc"
