@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# source every file in here with the same syntax
-
 source_bash_configs() {
     local path file
     while true; do
