@@ -86,7 +86,7 @@ while true; do
 
         # check operstate
         state=$(cat "/sys/class/net/${iface}/operstate" 2>/dev/null)
-        [[ "$state" == "down" ]] && continue
+        [[ $state == "down" ]] && continue
 
         # --- Mapping ---
         case "$iface" in
