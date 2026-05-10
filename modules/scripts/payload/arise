@@ -43,6 +43,8 @@ main() {
     pids[librewolf]=$(pgrep librewolf -d ' ')
     pids[spotify]=$(pgrep spotify -d ' ')
     pids[jellyfin-deskto]=$(pgrep jellyfin-deskto -d ' ')
+    pids[xdg-document-po]=$(pgrep xdg-document-po -d ' ')
+    pids[fusermount3]=$(pgrep fusermount3 -d ' ')
 
     status=0
     for p in "${!pids[@]}"; do
