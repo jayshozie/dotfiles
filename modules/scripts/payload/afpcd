@@ -19,7 +19,7 @@ source "${DEV_ENV}/lib/log" && export -f log
 source "${DEV_ENV}/lib/progress_bar" && export -f progress_bar
 source "${DEV_ENV}/lib/ansi-escapes"
 
-help() {
+usage() {
     local prog_name="${0##*/}"
     cat <<EOF
 $prog_name - AnyFlip PDF Creator/Downloader
@@ -229,33 +229,14 @@ main() {
     eval set -- "$flags"
     while true; do
         case "$1" in
-        '--')
-            shift
-            break
-            ;; # we're out of args
-        '-v' | '--verbose')
-            export AFPCD_VERBOSE='1'
-            shift
-            continue
-            ;;
-        '-d' | '-D' | '--debug')
-            export AFPCD_DEBUG='1'
-            shift
-            continue
-            ;;
-        '-h' | '--help')
-            help
-            exit 0
-            ;;
-        '-l' | '--license')
-            license
-            exit 0
-            ;;
-        *)
-            logp 'AFPCD' "${FG_L_RED}[ERROR] Unknown option $1!${COLOR_RESET}" >&2
-            help >&2
-            exit 1
-            ;;
+        '--') shift; break;; # we're out of args
+        '-v' | '--verbose') export AFPCD_VERBOSE='1'; shift; continue;;
+        '-d' | '-D' | '--debug') export AFPCD_DEBUG='1'; shift; continue;;
+        '-h' | '--help') usage; exit 0;;
+        '-l' | '--license') license; exit 0;;
+        *) logp 'AFPCD' \
+            "${FG_L_RED}[ERROR] Unknown option $1!${COLOR_RESET}" >&2
+            usage >&2; exit 1;;
         esac
     done
 
