@@ -3,15 +3,9 @@
 export DEV_ENV=$(cd "$(dirname "$0")" && pwd)
 source "${DEV_ENV}/lib/log" && export -f log && export -f logp
 source "${DEV_ENV}/lib/ansi-escapes"
+source "${DEV_ENV}/lib/progress_bar" && export -f progress_bar
 
 SRCS="${HOME}/src/upstream"
-
-################################################################################
-################################# N E O V I M ##################################
-################################################################################
-
-NEOVIM_VERSION="v0.12.2"
-TREESITTER_VERSION="v0.10.0"
 
 usage() {
     local prog_name="${0##*/}"
@@ -72,50 +66,72 @@ run() {
     fi
 }
 
+################################################################################
+################################# N E O V I M ##################################
+################################################################################
+
+NEOVIM_VERSION="v0.12.2"
+TREESITTER_VERSION="v0.10.0"
+
 build_neovim() {
     logp 'DEV' \
-        "${FG_L_YELLOW}Building Neovim requires sudo priveleges:${COLOR_RESET}"
+        "${FG_L_BLUE}Building Neovim...${COLOR_RESET}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 0 11
     sudo -v
 
     # source
     if [[ -d "${SRCS}/nvim-treesitter" ]]; then
         pushd "${SRCS}/nvim-treesitter" > /dev/null
         run 'git fetch'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 11
     else
         logp 'DEV' \
             "${FG_L_BLUE}Treesitter is not cloned. Cloning...${COLOR_RESET}"
         pushd "$SRCS" > /dev/null
         run 'git clone git@github.com:nvim-treesitter/nvim-treesitter.git'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 11
         popd > /dev/null
         pushd "${SRCS}/nvim-treesitter"
     fi
     run "git checkout ${TREESITTER_VERSION}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 2 11
     popd > /dev/null
 
     if [[ ! -d "${SRCS}/neovim" ]]; then
         logp 'DEV' "${FG_L_BLUE}Neovim is not cloned. Cloning...${COLOR_RESET}"
         pushd "$SRCS" > /dev/null
         run 'git clone git@github.com:neovim/neovim.git'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 3 11
         popd > /dev/null
         pushd "${SRCS}/neovim" > /dev/null
     else
         pushd "${SRCS}/neovim" > /dev/null
         run 'git fetch'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 3 11
     fi
     run "git checkout ${NEOVIM_VERSION}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 4 11
 
     # dependencies
     run 'sudo pacman -S base-devel cmake ninja curl git --noconfirm'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 5 11
 
     # build
     run 'git clean -dfx'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 6 11
     run 'make distclean'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 7 11
     run 'make CMAKE_BUILD_TYPE=RelWithDebInfo'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 8 11
     run 'sudo make install'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 9 11
 
     # why waste space
     run 'git clean -dfx'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 10 11
     run 'make distclean'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 11 11
+    clean_progress_bar
 
     logp 'DEV' "${FG_L_GREEN}Neovim was built successfully! Don't forget to restart it!${COLOR_RESET}"
 
@@ -131,43 +147,57 @@ TPM_VERSION="v3.1.0"
 
 build_tmux() {
     logp 'DEV' \
-        "${FG_L_YELLOW}Building tmux requires sudo priveleges:${COLOR_RESET}"
+        "${FG_L_BLUE}Building tmux...${COLOR_RESET}"
     sudo -v
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 0 10
 
     # source
     if [[ ! -d "${XDG_CONFIG_HOME}/tmux/plugins/tpm" ]]; then
         pushd "${XDG_CONFIG_HOME}/tmux/plugins/" > /dev/null
         run 'git clone git@github:tmux-plugins/tpm.git'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 10
     else
         pushd "${XDG_CONFIG_HOME}/tmux/plugins/tpm" > /dev/null
         run 'git fetch'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 10
     fi
     run "git checkout ${TPM_VERSION}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 2 10
     popd > /dev/null
 
     if [[ ! -d "${SRCS}/tmux" ]]; then
         logp 'DEV' "${FG_L_BLUE}tmux is not cloned. Cloning...${COLOR_RESET}"
         pushd "$SRCS" > /dev/null
         run 'git clone git@github.com:tmux/tmux.git'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 3 10
         popd > /dev/null
         pushd "${SRCS}/tmux" > /dev/null
     else
         pushd "${SRCS}/tmux" > /dev/null
         run 'git fetch'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 3 10
     fi
     run "git checkout ${TMUX_VERSION}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 4 10
 
     # dependencies
     run 'sudo pacman -S libevent ncurses gcc automake autoconf pkg-config bison libutempter --noconfirm'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 5 10
 
     # build
     run 'git clean -dfx'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 6 10
     run 'sh autogen.sh'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 7 10
     run './configure' && run 'make'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 8 10
     run 'sudo make install'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 9 10
 
     # why waste space
     run 'git clean -dfx'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 10 10
+    clean_progress_bar
 
     logp 'DEV' "${FG_L_GREEN}tmux was built successfully! Don't forget to restart it!${COLOR_RESET}"
 
@@ -182,8 +212,9 @@ ALACRITTY_VERSION="v0.16.1"
 
 build_alacritty() {
     logp 'DEV' \
-        "${FG_L_YELLOW}Building Alacritty requires sudo priveleges:${COLOR_RESET}"
+        "${FG_L_BLUE}Building Alacritty...${COLOR_RESET}"
     sudo -v
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 0 10
 
     # source
     if [[ ! -d "${SRCS}/alacritty" ]]; then
@@ -191,30 +222,42 @@ build_alacritty() {
             "${FG_L_BLUE}Alacritty is not cloned. Cloning...${COLOR_RESET}"
         pushd "$SRCS" > /dev/null
         run 'git clone git@github.com:alacritty/alacritty.git'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 10
         popd > /dev/null
         pushd "${SRCS}/alacritty"
     else
         pushd "${SRCS}/alacritty" > /dev/null
         run 'git fetch'
+        [[ $DEV_VERBOSE == '1' ]] || progress_bar 1 10
     fi
     run "git checkout ${ALACRITTY_VERSION}"
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 2 10
 
     # dependencies
     run 'sudo pacman -S rust cmake freetype2 fontconfig pkg-config make libxcb libxkbcommon python --noconfirm'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 3 10
 
     # build
     run 'cargo clean'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 4 10
     run 'cargo build --release --no-default-features --features=wayland'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 5 10
 
     # Install new binary (creates a NEW inode)
     run 'sudo install -m 755 target/release/alacritty /usr/local/bin/alacritty'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 6 10
 
     run 'sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 7 10
     run 'sudo desktop-file-install extra/linux/Alacritty.desktop'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 8 10
     run 'sudo update-desktop-database'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 9 10
 
     # why waste space
     run 'cargo clean'
+    [[ $DEV_VERBOSE == '1' ]] || progress_bar 10 10
+    clean_progress_bar
 
     logp 'DEV' "${FG_L_GREEN}Alacritty was built successfully! Don't forget to restart it!${COLOR_RESET}"
 
@@ -240,6 +283,8 @@ main() {
     local long_flags='verbose,help,dry-run,license,neovim,nvim,tmux,alacritty,all'
     local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
     [[ $DEV_DEBUG == '1' ]] && LOG_DEBUG='1' logp 'DEV' "args: [$flags]"
+    logp 'DEV' \
+        "${FG_L_YELLOW}This script requires sudo priveleges:${COLOR_RESET}"
     eval set -- "$flags"
     while true; do
         case "$1" in

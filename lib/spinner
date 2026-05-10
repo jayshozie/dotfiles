@@ -21,18 +21,18 @@ THEME=default
 CHARS=
 
 themes() {
-    cat <<-EOF
+    cat <<EOF
 Themes:
   default : (\|/-)
   dots    : (⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏)
   pong    : (▐       ⠂▌) (goes left and right with a dots inside)
-  updown  : (⠐⠈⠐⠠)       (every dot goes up and down in a wave)
+  updown  : (⠐⠈⠐⠠)       (every dot goes up and visualizing a wave)
 EOF
 }
 
 usage() {
 	local prog=${0##*/}
-	cat <<-EOF
+	cat <<EOF
 Usage: $prog [options] <cmd>
 
 Run a command with an animated spinner.
@@ -55,19 +55,11 @@ main_loop() {
 	done
 }
 
-debug() {
-	if $DEBUG; then
-		echo "[$$] $*" >&2
-	fi
-}
-
 cleanup() {
 	if [[ -n $SPINNER_PID ]]; then
-		debug "killing spinner ($SPINNER_PID)"
 		kill "$SPINNER_PID"
 	fi
     tput cnorm
-	debug 'finished spinner'
 }
 
 load-theme() {
@@ -131,13 +123,12 @@ load-theme() {
 spinner() {
 	local opt OPTIND OPTARG
     OPTIND=
-	while getopts 'dhlt:' opt; do
+	while getopts 'hlt:' opt; do
 		case "$opt" in
-			d) DEBUG=true;;
-			h) usage; return 0;;
-            l) themes; return 0;;
-			t) THEME=$OPTARG;;
-			*) usage >&2; return 1;;
+        h) usage; return 0;;
+        l) themes; return 0;;
+        t) THEME=$OPTARG;;
+        *) usage >&2; return 1;;
 		esac
 	done
 	shift "$((OPTIND - 1))"
@@ -151,12 +142,8 @@ spinner() {
 
 	trap cleanup EXIT
 
-	debug 'starting spinner'
     tput civis
 	main_loop &
 	SPINNER_PID=$!
-
-	debug "SPINNER_PID=$SPINNER_PID"
-
-	bash -c "$@"
+	$@
 }

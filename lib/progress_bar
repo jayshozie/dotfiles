@@ -9,14 +9,16 @@
 # - Dave Eddy <ysap@daveeddy.com>
 # - Emir Baha Yıldırım <jayshozie@gmail.com>
 #
-# Original Source: <https://github.com/bahamas10/ysap/blob/e10c3f3f0a4a69f436ba19956cfe5271b21bc486/code/2025-08-21-progress-bar/progress-bar>
+# Original Source: <https://github.com/bahamas10/ysap/blob/6b585b69c3f7197432e61acec646e5e9aa2c47e8/code/2025-09-03-progress-bar-2/progress-bar>
 
 BAR_CHAR='#'
 EMPTY_CHAR=' '
 
-fatal() {
-    echo '[FATAL]' "$@" >&2
-    exit 1
+clean_progress_bar() {
+    printf '\e7'                         # save the cursor location
+    printf '\e[%d;%dH' "$(tput lines)" 0 # move cursor to the bottom line
+    printf '\e[0K'                       # clear the line
+    printf '\e8'                         # restore the cursor location
 }
 
 progress_bar() {
@@ -41,9 +43,9 @@ progress_bar() {
     s+=']'
     s+=$suffix
 
-    printf '\e7'                  # save the cursor location
-    printf '\e[%d;%dH' "$LINES" 0 # move cursor to the bottom line
-    printf '\e[0K'                # clear the line
-    printf '%s' "$s"              # print the progress bar
-    printf '\e8'                  # restore the cursor location
+    printf '\e7'                         # save the cursor location
+    printf '\e[%d;%dH' "$(tput lines)" 0 # move cursor to the bottom line
+    printf '\e[0K'                       # clear the line
+    printf '%s' "$s"                     # print the progress bar
+    printf '\e8'                         # restore the cursor location
 }
