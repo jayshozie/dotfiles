@@ -8,35 +8,30 @@ source "${DEV_ENV}/lib/progress_bar" && export -f progress_bar
 SRCS="${HOME}/src/upstream"
 
 usage() {
-    local prog_name="${0##*/}"
-    cat <<EOF
-
-$prog_name - Jayshozie's Autobuilder
-Usage: $prog_name [-v|--verbose]
-                  [-h|--help]
-                  [-d|--dry-run]
-                  [-l|--license]
-                  [-n|--nvim|--neovim]
-                  [-t|--tmux]
-                  [-a|--alacritty]
-                  [-A|--all]
+    printf "${FG_L_MAGENTA}dev - Jayshozie's Autobuilder${COLOR_RESET}
+Usage: ${FG_L_MAGENTA}dev ${FG_L_YELLOW}[-v|--verbose]
+           [-h|[-]-help]
+           [-d|[-]-dry-run]
+           [-A|[-]-all]
+           [-n|[-]-nvim|[-]-neovim]
+           [-t|[-]-tmux]
+           [-a|[-]-alacritty]
+           [--license] ${COLOR_RESET}
 
 Options:
-  -v  --verbose           Shows extra info, runs all commands in verbose modes if applicable
-  -h  --help              Shows this message
-  -d  --dry-run           Doesn't run any commands, show what would've been run instead
-  -l  --license           Shows the program's license
-  -n  [--neovim|--nvim]   Build Neovim
-  -t  --tmux              Build tmux
-  -a  --alacritty         Build Alacritty
-  -A  --all               Build all programs
-
-EOF
+  ${FG_L_YELLOW}-v  [-]-verbose             ${FG_L_BLUE}Runs commands loudly
+  ${FG_L_YELLOW}-h  [-]-help                ${FG_L_BLUE}Shows this message
+  ${FG_L_YELLOW}-d  [-]-dry-run             ${FG_L_BLUE}Doesn't run any commands, show what would be run instead
+  ${FG_L_YELLOW}-A  [-]-all                 ${FG_L_BLUE}Build all programs
+  ${FG_L_YELLOW}-n  [[-]-neovim|[-]-nvim]   ${FG_L_BLUE}Build Neovim
+  ${FG_L_YELLOW}-t  [-]-tmux                ${FG_L_BLUE}Build tmux
+  ${FG_L_YELLOW}-a  [-]-alacritty           ${FG_L_BLUE}Build Alacritty
+  ${FG_L_YELLOW}--license                   ${FG_L_BLUE}Shows the program's license${COLOR_RESET}
+"
 }
 
 license() {
     cat <<EOF
-
 Copyright (C)  2026  Emir Baha YILDIRIM
 
 This program is free software: you can redistribute it and/or modify
@@ -51,7 +46,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 EOF
 }
 
@@ -278,13 +272,16 @@ build_all() {
 ################################### M A I N ####################################
 ################################################################################
 
+sudo_msg() {
+    logp 'DEV' \
+        "${FG_L_YELLOW}This script requires sudo priveleges:${COLOR_RESET}"
+}
+
 main() {
-    local short_flags='vhdDlntaA'
+    local short_flags='vhdDntaA'
     local long_flags='verbose,help,dry-run,license,neovim,nvim,tmux,alacritty,all'
     local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
     [[ $DEV_DEBUG == '1' ]] && LOG_DEBUG='1' logp 'DEV' "args: [$flags]"
-    logp 'DEV' \
-        "${FG_L_YELLOW}This script requires sudo priveleges:${COLOR_RESET}"
     eval set -- "$flags"
     while true; do
         case "$1" in
@@ -299,13 +296,13 @@ main() {
         '-l'|'--license'|'-license')
             license; exit 0;;
         '-n'|'--neovim'|'--nvim'|'-neovim'|'-nvim')
-            build_neovim; shift; continue;;
+            sudo_msg; build_neovim; shift; continue;;
         '-t'|'--tmux'|'-tmux')
-            build_tmux; shift; continue;;
+            sudo_msg; build_tmux; shift; continue;;
         '-a'|'--alacritty'|'-alacritty')
-            build_alacritty; shift; continue;;
+            sudo_msg; build_alacritty; shift; continue;;
         '-A'|'--all'|'-all')
-            build_all; shift; continue;;
+            sudo_msg; build_all; shift; continue;;
         *) logp 'DEV' "${FG_L_RED}[ERR] Unknown option ${1}!${COLOR_RESET}" >&2
             usage >&2; exit 1;;
         esac
