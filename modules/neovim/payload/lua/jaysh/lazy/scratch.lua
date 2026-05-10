@@ -3,7 +3,7 @@ return {
   name = "scratch.nvim",
   lazy = true,
   keys = {
-    { "<leader>.", "<cmd>ScratchToggle<cr>", desc = "Toggle Scratch Buffer" },
+    { "<M-.>", "<cmd>ScratchToggle<cr>", desc = "Toggle Scratch Buffer" },
   },
   cmd = {
     "ScratchToggle",
