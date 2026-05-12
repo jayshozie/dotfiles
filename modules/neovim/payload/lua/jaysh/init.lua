@@ -80,10 +80,19 @@ vim.opt.guicursor = ""
 -- why the fuck
 vim.opt.shell = "/usr/bin/bash"
 
---
 vim.opt.number = true
 vim.opt.relativenumber = true
+
 vim.opt.colorcolumn = "81"
+-- Git colorcolumn Fix
+vim.api.nvim_create_augroup("GitColorColumnFixGroup", {})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = "GitColorColumnFixGroup",
+  pattern = "gitcommit",
+  callback = function()
+    vim.opt.colorcolumn = "73"
+  end,
+})
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
