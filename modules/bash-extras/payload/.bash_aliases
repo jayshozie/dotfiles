@@ -62,7 +62,7 @@ alias tree='tree -aC -I ".git"'
 
 # sometimes it feels better to look at diffs, logs, and status in a text editor
 alias utils='./utils.sh'
-alias dev-commit="git add . && git commit -m 'wip: automated dev-commit' && git push"
+alias acp="git add . && git commit -m 'wip: automated dev-commit' && git push"
 
 # you wouldn't even believe how much i make changes to these files
 alias dev='cd ~/dev && nv'
