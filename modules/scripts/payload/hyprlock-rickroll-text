@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+main() {
+    if ! pgrep -f 'mpv --no-video /home/jaysh/multimedia/rickroll.mp3' > /dev/null 2>&1; then
+        printf '<b><u>CLICK ME TO UNLOCK THE PC!</u></b>'
+    else
+        printf '<b>bruh 💀</b>'
+    fi
+}
+main "$@"
