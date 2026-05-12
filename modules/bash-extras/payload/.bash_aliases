@@ -29,7 +29,7 @@ alias calc='qalc --exrates --color --interactive'
 alias gem='gemini'
 alias crosscc='x86_64-elf-gcc'
 alias crossld='x86_64-elf-ld'
-alias linux-sync='git fetch && git reset --hard origin/master'
+alias master-sync='git fetch; sleep 1; git reset --hard origin/master'
 alias project-tracker='systemctl enable postgresql.service || systemctl start postgresql.service && pgcli project_tracker'
 alias bat-update='bat cache --build'
 alias test-gpg='gpg-connect-agent reloadagent /bye && echo "test" | gpg --clearsign > /dev/null'
@@ -53,6 +53,7 @@ alias cp='cp -i'
 # stupid stuff
 alias chomd='chmod'
 alias celar='clear'
+alias claer='clear'
 alias clera='clear'
 
 # easier readability
