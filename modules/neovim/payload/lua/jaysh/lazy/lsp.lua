@@ -334,13 +334,13 @@ return {
         vim.lsp.enable("rust-analyzer")
       end
 
-      vim.lsp.config['haskell-language-server-wrapper'] = {
-          cmd = { "haskell-language-server-wrapper", "--lsp" },
-          filetypes = { "haskell" },
-          on_attach = on_attach,
-          capabilities = capabilities,
-          -- root_markers
-          -- settings
+      vim.lsp.config["haskell-language-server-wrapper"] = {
+        cmd = { "haskell-language-server-wrapper", "--lsp" },
+        filetypes = { "haskell" },
+        on_attach = on_attach,
+        capabilities = capabilities,
+        -- root_markers
+        -- settings
       }
       if vim.fn.executable("haskell-language-server-wrapper") == 1 then
         vim.lsp.enable("haskell-language-server-wrapper")

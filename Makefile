@@ -4,7 +4,7 @@ GREEN  := $(shell tput -Txterm setaf 2)
 RESET  := $(shell tput -Txterm sgr0)
 RED    := \033[0;31m
 RST    := \033[0m
-LUA_TARGETS := modules/neovim/payload/
+LUA_TARGETS := modules/neovim/payload/ modules/hyprland/payload/
 STYLUA_TOML := modules/lua-stuff/.stylua.toml
 LUACHECK_ARGS := --globals vim --max-line-length 80
 
