@@ -1,4 +1,8 @@
+- [ ] Hyprland just switched to Lua for its configuration. Current config will
+work for a few releases, but we need to switch ASAP.
+
 # Refactor TODOs
+
 
 - [ ] (probably not) git accepts **ANY** URL as the remote. so, technically
 speaking we could use git to sync the files. it auto-detects renaming, deletion,
