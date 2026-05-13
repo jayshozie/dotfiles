@@ -88,8 +88,7 @@ get_lyrics() {
         cleanup_http_header "$http_header"
         local did_err=$(cat "$http_header")
         if [[ -n "$did_err" ]]; then
-            echo -e 'Non-zero $did_err' > "$lyrics_file"
-            # echo -e 'No lyrics found.\n' > "$lyrics_file"
+            echo -e 'No lyrics found.\n' > "$lyrics_file"
         fi
         rm -f "$http_header"
     fi
