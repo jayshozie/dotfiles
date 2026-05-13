@@ -72,32 +72,26 @@ local waybar = src .. "/upstream/waybar/build/waybar"
 ---------------
 -- Autostart --
 ---------------
+-- stylua: ignore start
 hl.on("hyprland.start", function()
   ---@TODO: Remove the following line after uncommenting the hyprsession line.
   hl.exec_cmd("alacritty -e tmux")
-  hl.exec_cmd(
-    "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-  )
+  hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
   hl.exec_cmd(waybar)
   hl.exec_cmd("mako") -- notification daemon
   hl.exec_cmd("/usr/bin/rofi-polkit-agent") -- auth agent
   hl.exec_cmd("hyprpaper")
   hl.exec_cmd("hypridle")
-  hl.exec_cmd(
-    'pushd "${XDG_DATA_HOME}/actual-budgeting" && actual-server && popd'
-  )
+  hl.exec_cmd('pushd "${XDG_DATA_HOME}/actual-budgeting" && actual-server && popd')
   hl.exec_cmd("actual-server") -- budgeting program's server
   hl.exec_cmd("wl-paste --watch cliphist store") -- cliphist
   hl.exec_cmd("sleep 3 && bluetoothctl connect 8C:0D:D9:19:43:B3")
-  hl.exec_cmd(
-    'gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"'
-  ) -- for GTK3 apps
-  hl.exec_cmd(
-    'gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"'
-  ) -- for GTK4 apps
+  hl.exec_cmd('gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"') -- for GTK3 apps
+  hl.exec_cmd('gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"') -- for GTK4 apps
   ---@TODO: Uncomment the line below when support is added.
   -- hl.exec_cmd('hyprsession')
 end)
+-- stylua: ignore end
 
 ---------------------------
 -- Environment Variables --
@@ -306,8 +300,8 @@ hl.bind(
 --     hl.dsp.exec_cmd('')
 -- )
 hl.bind(
-    mainMod .. " + SHIFT + L",
-    hl.dsp.exec_cmd("hyprlock")
+  mainMod .. " + SHIFT + L",
+  hl.dsp.exec_cmd("hyprlock")
 )
 hl.bind(
   "switch:on:Lid Switch",

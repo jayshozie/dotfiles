@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+export DEV_ENV='/home/jaysh/dev'
+export DEV_LIB="${DEV_ENV}/lib"
+source "${DEV_LIB}/log" && export -f log && export -f logp
+source "${DEV_LIB}/progress_bar" && export -f progress_bar
+source "${DEV_LIB}/ansi-escapes"
+
+
+main() {
+    local cwd=$(pwd)
+    local short_flags='d'
+    local long_flags='verbose,help,dry-run,license'
+    local flags=$(getopt -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
+    [[ "$INSTALL_DEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AFPCD' "args: [$flags]"
+    eval set -- "$flags"
+    while true; do
+        case "$1" in
+        '--') shift; break;; # we're out of args
+        '-v' | '--verbose') export AFPCD_VERBOSE='1'; shift; continue;;
+        '-d' | '-D' | '--debug') export AFPCD_DEBUG='1'; shift; continue;;
+        '-h' | '--help') usage; exit 0;;
+        '-l' | '--license') license; exit 0;;
+        *) logp 'AFPCD' \
+            "${FG_L_RED}[ERROR] Unknown option $1!${COLOR_RESET}" >&2
+            usage >&2; exit 1;;
+        esac
+    done
+
+
+    if [[ $1 == '--debug' || $1 == '-d' ]]; then
+        export INSTALL_DEBUG='1'
+    elif [[ $1
+    fi
+
+    local i=1
+    while read file; do
+        [[ $INSTALL_DEBUG == '1' ]] && logp 'INSTALL' "[DEBUG] SERVICE $i : $file"
+
+        local services=$(systemctl list-unit-files | \grep '.service')
+
+        # systemctl
+
+        echo $i
+        (( i++ ))
+    done <<< $(eza -1)
+}
+
+main "$@"

@@ -20,6 +20,7 @@ logp() {
         prog_name="${prog_name^^}"
     fi
 
+    local i
     if [[ $LOG_DRY_RUN == '1' ]]; then
         i=1
         for msg in "$@"; do

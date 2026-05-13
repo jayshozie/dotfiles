@@ -1,0 +1,14 @@
+[Unit]
+Description=Actual Budgeting Server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/jaysh/.local/share/actual-budgeting
+Environment="NODE_ENV=production"
+ExecStart=/usr/bin/actual-server
+SyslogIdentifier=actual-server
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=default.target

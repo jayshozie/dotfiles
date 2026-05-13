@@ -16,6 +16,10 @@
 # Customizing the prompt format
 add_newline = false
 
+[git_branch]
+always_show_remote = true
+format = 'on [$symbol$branch/$remote_name]($style) '
+
 [character]
 success_symbol = '[➜](bold green)'
 error_symbol = '[➜](bold red)'
