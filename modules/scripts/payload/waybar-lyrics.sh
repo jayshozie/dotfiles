@@ -19,7 +19,8 @@
 #        that can do the same thing.
 
 export DEV_ENV='/home/jaysh/dev'
-source "${DEV_ENV}/lib/urlencode" && export -f urlencode
+source "${DEV_ENV}/lib/urlencode" && \
+    export -f urlencode
 
 cleanup_http_header() {
     local header="$1"
@@ -59,10 +60,10 @@ get_lyrics() {
     local artist_name=$(urlencode "$1")
     local track_name=$(urlencode "$2")
     local album_name=$(urlencode "$3")
-    local duration=$4 # given in seconds
+    local duration=$4 # this is already given in seconds
 
-    local api_pid_file="${LYRICS_D}/.${track_name}-${artist_name}.pid.id"
-    local http_header="${LYRICS_D}/.${track_name}-${artist_name}.http.header"
+    local api_pid_file="${LYRICS_D}/.${artist_name}-${track_name}.pid.id"
+    local http_header="${LYRICS_D}/.${artist_name}-${track_name}.http.header"
     local lyrics_file="${LYRICS_D}/${artist_name}-${album_name}-${track_name}.lyrics"
     local fetching_msg='Fetching lyrics...'
     local uri="https://lrclib.net/api/get?artist_name=${artist_name}&track_name=${track_name}&album_name=${album_name}&duration=${duration}"
@@ -88,7 +89,7 @@ get_lyrics() {
         cleanup_http_header "$http_header"
         local did_err=$(cat "$http_header")
         if [[ -n "$did_err" ]]; then
-            echo -e 'No lyrics found.\n' > "$lyrics_file"
+             echo -e 'No lyrics found.\n' > "$lyrics_file"
         fi
         rm -f "$http_header"
     fi
