@@ -18,7 +18,7 @@ add_newline = false
 
 [git_branch]
 always_show_remote = true
-format = 'on [$symbol$branch/$remote_name]($style) '
+format = 'on [$symbol$remote_name/$branch]($style) '
 
 [character]
 success_symbol = '[➜](bold green)'
