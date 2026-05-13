@@ -61,8 +61,8 @@ get_lyrics() {
     local album_name=$(urlencode "$3")
     local duration=$4 # given in seconds
 
-    local api_pid_file="${LYRICS_D}/.pid.id"
-    local http_header="${LYRICS_D}/.http.header"
+    local api_pid_file="${LYRICS_D}/.${track_name}-${artist_name}.pid.id"
+    local http_header="${LYRICS_D}/.${track_name}-${artist_name}.http.header"
     local lyrics_file="${LYRICS_D}/${artist_name}-${album_name}-${track_name}.lyrics"
     local fetching_msg='Fetching lyrics...'
     local uri="https://lrclib.net/api/get?artist_name=${artist_name}&track_name=${track_name}&album_name=${album_name}&duration=${duration}"

@@ -103,7 +103,6 @@
         "on-click-middle": "playerctl --player=spotify previous",
     },
 
-
     "custom/kb": {
         "exec": "/home/jaysh/.local/bin/scripts/waybar-kb.sh",
         "return-type": "json",
