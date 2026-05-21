@@ -82,7 +82,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("/usr/bin/rofi-polkit-agent") -- auth agent
   hl.exec_cmd("hyprpaper")
   hl.exec_cmd("hypridle")
-  hl.exec_cmd('pushd "${XDG_DATA_HOME}/actual-budgeting" && actual-server && popd')
+  hl.exec_cmd('cd "${XDG_DATA_HOME}/actual-budgeting" && actual-server')
   hl.exec_cmd("actual-server") -- budgeting program's server
   hl.exec_cmd("wl-paste --watch cliphist store") -- cliphist
   hl.exec_cmd("sleep 3 && bluetoothctl connect 8C:0D:D9:19:43:B3")
