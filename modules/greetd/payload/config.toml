@@ -17,5 +17,5 @@
 vt = 2
 
 [default_session]
-command = "tuigreet --cmd start-hyprland --time --time-format '%I:%M %p | %a • %h | %F' --greeting 'Welcome to the ARCH OMEN, Jayshozie' --asterisks --window-padding 2 --container-padding 3 --remember --kb-power 12 --kb-sessions 1"
+command = "tuigreet --cmd 'start-hyprland' --time --time-format '%I:%M %p | %a • %h | %F' --greeting 'Welcome to the ARCH OMEN, Jayshozie' --asterisks --window-padding 2 --container-padding 3 --remember --kb-power 12 --kb-sessions 1"
 user = "greeter"

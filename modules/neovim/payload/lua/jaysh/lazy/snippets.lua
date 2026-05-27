@@ -52,8 +52,15 @@ return {
       }),
     }
 
+    local emdash = {
+      ls.snippet("emdash", {
+        ls.text_node("—"),
+      }),
+    }
+
     ls.add_snippets("c", debug_c_cpp)
     ls.add_snippets("cpp", debug_c_cpp)
+    ls.add_snippets("markdown", emdash)
 
     -------------
     -- Keymaps --

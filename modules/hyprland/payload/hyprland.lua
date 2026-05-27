@@ -96,6 +96,7 @@ end)
 ---------------------------
 -- Environment Variables --
 ---------------------------
+hl.env("AQ_DRM_DEVICES", "/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu")
 hl.env("GRIM_DEFAULT_DIR", screenshots)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
