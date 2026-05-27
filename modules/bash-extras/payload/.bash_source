@@ -28,4 +28,4 @@ source_bash_configs() {
     done
 }
 
-source_bash_configs '.bash_env' '.bash_aliases'
+source_bash_configs '.bash_env' '.bash_aliases' '.location'
