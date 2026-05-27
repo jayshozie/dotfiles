@@ -57,6 +57,18 @@ logp() {
             fi
             (( i++ ))
         done
+    elif [[ $LOG_ERROR == '1' ]]; then
+        i=1
+        for msg in "$@"; do
+            if (( i == 1 )); then
+                echo -en "[$prog_name] [ERROR] "
+            elif (( i >= $# )); then
+                echo -e "$msg"
+            else
+                echo -en "$msg "
+            fi
+            (( i++ ))
+        done
     else
         i=1
         for msg in "$@"; do

@@ -74,9 +74,9 @@ main() {
         log "[DIE] Killed everything successfully."
         log "[DIE] Shutting down ..."
         if [[ dry_run -eq 1 ]]; then
-            log "shutdown now"
+            log "hyprshutdown -t 'Shutting down...' --post-cmd 'shutdown now'"
         else
-            shutdown now
+            hyprshutdown -t 'Shutting down...' --post-cmd 'shutdown now'
         fi
     fi
 }

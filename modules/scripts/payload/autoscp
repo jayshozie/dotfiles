@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+export DEV_ENV='/home/jaysh/dev'
+source "${DEV_ENV}/lib/log" && export -f log
+source "${DEV_ENV}/lib/ansi-escapes"
+
+usage() {
+    local prog_name="${0##*/}"
+    cat <<EOF
+$prog_name - Automatic SCP Fetcher
+Usage: $prog_name [-d|-D|--debug] [ARGS]
+                  [-h|--help]
+                  [-l|--license]
+
+Options:
+  -[d|D] --debug    Runs the script in debug mode and shows the debug messages
+  -h     --help     Shows this message
+  -l     --license  Shows the program's license
+EOF
+}
+
+license() {
+    cat <<EOF
+Copyright (C)  2026  Emir Baha YILDIRIM
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+EOF
+}
+
+# scp foundation format:
+# scp 001-999: https://scp-wiki.wikidot.com/scp-xxx
+# rest         https://scp-wiki.wikidot.com/scp-xxxx
+
+clear_num() {
+    local num="$1"
+
+    local num_length=0
+    if (( num >= 1 )) && (( num < 10000 )); then
+        num_length=3
+    else
+        LOG_ERROR='1' logp 'AUTOSCP' "Invalid SCP! [$num]"
+        REPLY='error'
+        return 1
+    fi
+    while (( ${#num} < $num_length )); do
+        num="0${num}"
+    done
+
+    REPLY="$num"
+    return 0;
+}
+
+create_url() {
+    if ! clear_num "$1"; then
+        REPLY='error'
+        return 1
+    fi
+    local num="$REPLY"
+
+    local link="https://scp-wiki.wikidot.com/scp-${num}"
+    REPLY="$link"
+    return 0;
+}
+
+check_if_exists() {
+    local content="$1"
+    local scp_num="$2"
+    if [[ $content == *"This page doesn't exist."* ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+fetch_scp() {
+    local num="$1"
+    if ! create_url "$num"; then
+        REPLY='error'
+        return 1
+    fi
+    local link="$REPLY"
+
+    local original_content=$(curl -s "$link" | pup --plain --indent 4 '#page-content')
+    local content=$(curl -s "$link" | pup --plain --indent 4 '#page-content' | pandoc -f html -t markdown | grep -vE ':::|.image|.number|.rate-points|WIKIDOT.modules|.btn-default')
+    if ! check_if_exists "$content" "$num"; then
+        LOG_ERROR='1' logp 'AUTOSCP' "SCP-${num} doesn't exist!"
+        REPLY='error'
+        return 1
+    fi
+    # LOG_DEBUG='1' logp 'AUTOSCP' "Link: $link"
+    # LOG_DEBUG='1' logp 'AUTOSCP' "Original Content:\n$original_content"
+    LOG_DEBUG='1' logp 'AUTOSCP' "Content:\n$content"
+    # LOG_DEBUG='1' logp 'AUTOSCP' "Would run: [curl $link | pup --plain --indent 4 | pandoc -f html -t markdown | ...]"
+
+    exit 0
+}
+
+main() {
+    local short_flags='hldD'
+    local long_flags='help,license,debug'
+    local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
+    declare scps=()
+    [[ "$ASCPDEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AUTOSCP' "args: [$flags]"
+    eval set -- "$flags"
+    while true; do
+        case "$1" in
+        '--') shift; break;; # end of args
+        '-h'|'--help') usage; exit 0;;
+        '-l'|'--license') license; exit 0;;
+        '-d'|'-D'|'--debug') export ASCPDEBUG='1'; shift; continue;;
+        *) usage; LOG_ERROR='1' logp 'AUTOSCP' "Unknown option! [$1]"; exit 1;;
+        esac
+    done
+
+    while [[ -n "$1" ]]; do
+        LOG_DEBUG='1' logp 'AUTOSCP' "Current arg: [$1]"
+        if ! fetch_scp "$1"; then
+            LOG_ERROR='1' logp 'AUTOSCP' "Something went wrong! Check the logs above."
+        fi
+        shift
+    done
+}
+
+main "$@"

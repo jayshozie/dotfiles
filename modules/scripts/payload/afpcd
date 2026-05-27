@@ -141,7 +141,7 @@ create_book() {
     fi
 
     magick_args=()
-    i=0
+    local i=0
     for ((curr = 1; curr <= total; curr++)); do
         img_file="${curr}.${filetype}"
         magick_args[$i]="$img_file"
@@ -224,7 +224,7 @@ create_book() {
 main() {
     local short_flags='vhDdl'
     local long_flags='verbose,help,debug,license'
-    local flags=$(getopt -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
+    local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
     [[ "$AFPCD_DEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AFPCD' "args: [$flags]"
     eval set -- "$flags"
     while true; do

@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+# Copyright (C)  2026  Emir Baha YILDIRIM
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+export DEV_ENV='/home/jaysh/dev'
+source "${DEV_ENV}/lib/log" && export -f log
+source "${DEV_ENV}/lib/progress_bar" && export -f progress_bar
+source "${DEV_ENV}/lib/urlencode" && export -f urlencode
+source "${DEV_ENV}/lib/ansi-escapes"
+
+usage() {
+    local prog_name="${0##*/}"
+    cat <<EOF
+$prog_name - A wrapper for definitions, synonyms, antonyms, and word search
+Usage: $prog_name [OPTIONS] [WORD...|DEFINITION...]
+
+Options:
+  -h    --help          Show this message
+  -l    --license       Show the program's license
+  -d    --definition    Search in definition mode
+EOF
+}
+
+license() {
+    cat <<EOF
+Copyright (C)  2026  Emir Baha YILDIRIM
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+EOF
+}
+
+main() {
+    local definition
+    local shorts='hlDd:'
+    local longs='help,license,debug,definition:'
+    local args=$(getopt -U -a -o ${shorts} --long ${longs} -n "$0" -- "$@")
+    [[ "$WHATDEBUG" == '1' ]] && LOG_DEBUG='1' logp 'WHAT' "args: [${args}]" >&2
+    eval set -- "$args"
+    while true; do
+        case "$1" in
+        '--') shift; break;; # out of args
+        '-h'|'--help') usage; exit 0;;
+        '-l'|'--license') license; exit 0;;
+        '-D'|'--debug') WHATDEBUG='1'; shift; continue;;
+        '-d'|'--definition')
+            case "$2" in
+            '')
+                DEF_MODE='0'
+                LOG_ERROR='1' logp 'WHAT' "No definition provided." >&2;;
+            *)
+                DEF_MODE='1'
+                definition="$2"
+            esac
+            shift 2
+            continue;;
+        *) LOG_ERROR='1' logp 'WHAT' "Unknown option [$1]." >&2; exit 1;;
+        esac
+    done
+
+    if [[ $DEF_MODE == '1' ]]; then
+        [[ $WHATDEBUG == '1' ]] \
+            && echo && LOG_DEBUG='1' logp 'WHAT' "Definition: ${definition}"
+
+        local encoded=$(urlencode "$definition")
+        [[ $WHATDEBUG == '1' ]] \
+            && LOG_DEBUG='1' logp 'WHAT' "URL Encoded Definition: ${encoded}"
+
+        local uri="https://api.datamuse.com/words?ml=${encoded}"
+        [[ $WHATDEBUG == '1' ]] \
+            && LOG_DEBUG='1' logp 'WHAT' "URL: ${uri}"
+
+        local matches=$(curl -s --url "$uri" | jq -r '.[0:30][].word' | pr -t -T -c3 -w 60 -l 10 -S' | ' - )
+        if [[ -z "$matches" ]]; then
+            LOG_ERROR='1' logp 'WHAT' "No match found: '$definition'"
+        else
+            log "\n${F_BOLD}${FG_L_YELLOW}Definition:${COLOR_RESET}\n${definition}"
+            log "${F_BOLD}Matches:${COLOR_RESET}\n$matches"
+        fi
+    else
+        for arg in $args; do
+            [[ $arg == '-'* ]] && continue;
+            arg=$(echo "$arg" | sed "s/'//g")
+            [[ $WHATDEBUG == '1' ]] \
+                && echo && LOG_DEBUG='1' logp 'WHAT' "\nArg: [$arg]"
+
+            local encoded=$(urlencode "$arg")
+            [[ $WHATDEBUG == '1' ]] \
+                && LOG_DEBUG='1' logp 'WHAT' "Encoded: [$encoded]"
+
+            local uri_syn="https://api.datamuse.com/words?rel_syn=${encoded}"
+            local uri_ant="https://api.datamuse.com/words?rel_ant=${encoded}"
+            [[ $WHATDEBUG == '1' ]] \
+                && LOG_DEBUG='1' logp 'WHAT' "uri_syn:\n${uri_syn}"
+            [[ $WHATDEBUG == '1' ]] \
+                && LOG_DEBUG='1' logp 'WHAT' "uri_ant:\n${uri_ant}"
+
+            local syns=$(curl -s --url "$uri_syn" | jq -r '.[0:30][].word')
+            local ants=$(curl -s --url "$uri_ant" | jq -r '.[0:30][].word')
+            [[ $WHATDEBUG == '1' && -n "$syns" ]] \
+                && LOG_DEBUG='1' logp 'WHAT' "Synonyms:\n${syns}"
+            [[ $WHATDEBUG == '1' && -n "$ants" ]] \
+                && LOG_DEBUG='1' logp 'WHAT' "Antonyms:\n${ants}"
+            log "\n${F_BOLD}${FG_L_YELLOW}Word:${COLOR_RESET} $arg"
+            if [[ -z "$syns" ]]; then
+                log "${F_BOLD}${FG_L_GREEN}Synonyms:${COLOR_RESET}\nNo synonyms found."
+            else
+                log "${F_BOLD}${FG_L_GREEN}Synonyms:${COLOR_RESET}\n$(echo "$syns" | pr -t -T -c3 -w 60 -l 10 -S' | ' -)"
+            fi
+            if [[ -z "$ants" ]]; then
+                log "${F_BOLD}${FG_L_RED}Antonyms:${COLOR_RESET}\nNo antonyms found."
+            else
+                log "${F_BOLD}${FG_L_RED}Antonyms:${COLOR_RESET}\n$(echo "$ants" | pr -t -T -c3 -w 60 -l 10 -S' | ' -)"
+            fi
+        done
+        # @TODO: Implement
+    fi
+}
+
+main "$@"
+
+
+# FUNCTION WordWrapper(arguments):
+#     Initialize variables for Mode (Define, Thesaurus, Reverse) and Target_String
+#     Parse arguments to determine Mode and Target_String
+#
+#     IF Target_String is empty:
+#         Exit with usage instructions
+#
+#     IF Mode is REVERSE_DICTIONARY:
+#         Format Target_String (replace spaces with '+')
+#         Build URI: "https://api.datamuse.com/words?ml=" + Target_String
+#         Execute HTTP GET
+#         Pipe stream to JSON Parser
+#         Extract 'word' field from the top 5 results
+#
+#     ELSE IF Mode is THESAURUS:
+#         Build URI for Synonyms: ".../words?rel_syn=" + Target_String
+#         Build URI for Antonyms: ".../words?rel_ant=" + Target_String
+#         Execute HTTP GETs
+#         Pipe streams to JSON Parser
+#         Print formatted lists
+#
+#     ELSE (Mode is DEFINE):
+#         Execute standard dictionary lookup (e.g., via Free Dictionary API)
+#         Pipe to JSON Parser and format output

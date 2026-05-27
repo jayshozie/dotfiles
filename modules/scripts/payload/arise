@@ -74,9 +74,9 @@ main() {
         log "[ARISE] Killed everything successfully."
         log "[ARISE] Rebooting ..."
         if [[ dry_run -eq 1 ]]; then
-            log "shutdown -r now"
+            log "hyprshutdown -t 'Restarting...' --post-cmd 'shutdown -r now'"
         else
-            shutdown -r now
+            hyprshutdown -t 'Shutting down...' --post-cmd 'shutdown -r now'
         fi
     fi
 }
