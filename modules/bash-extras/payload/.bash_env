@@ -41,6 +41,7 @@ export DEV_ENV="${HOME}/dev"
 export CLONES_DIR="${HOME}/src"
 export MOZ_ENABLE_WAYLAND=1
 export HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/$(id -u)/hypr/ | head -n 1)
+export RCLONE_PASSWORD_COMMAND="pass rclone"
 # export DISPLAY=:1 # uncomment if needed
 
 # Editors & Pagers
