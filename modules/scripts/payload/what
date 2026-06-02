@@ -92,13 +92,15 @@ main() {
         [[ $WHATDEBUG == '1' ]] \
             && LOG_DEBUG='1' logp 'WHAT' "URL: ${uri}"
 
-        local matches=$(curl -s --url "$uri" | jq -r '.[0:30][].word' | pr -t -T -c3 -w 60 -l 10 -S' | ' - )
+        local matches=$(curl -s --url "$uri" | jq -r '.[0:30][].word' | pr -t -T --columns=3 -w 60 -l 10 -S' | ' - )
         if [[ -z "$matches" ]]; then
             LOG_ERROR='1' logp 'WHAT' "No match found: '$definition'"
         else
             log "\n${F_BOLD}${FG_L_YELLOW}Definition:${COLOR_RESET}\n${definition}"
             log "${F_BOLD}Matches:${COLOR_RESET}\n$matches"
         fi
+    elif [[ $WHAT == '1' ]]; then
+
     else
         for arg in $args; do
             [[ $arg == '-'* ]] && continue;

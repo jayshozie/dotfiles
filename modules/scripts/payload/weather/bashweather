@@ -191,12 +191,12 @@ check_structure() {
         echo 'Would you like to create it yourself, or do you want the script to do it for you?'
         select opt in 'I would like to do it myself.' 'Do it for me.'; do
             case $opt in
-                'I would like to do it myself.')
+                1|'I would like to do it myself.')
                     echo "Please create $DAILY_API_CALLS_FILE."
                     echo "IMPORTANT: It should be empty."
                     break
                     ;;
-                'Do it for me.')
+                2|'Do it for me.')
                     echo 0 > $DAILY_API_CALLS_FILE
                     break
                     ;;
@@ -276,7 +276,7 @@ api_call_current_weather
 JQ_FILTER='[ .name, .main.temp, .main.feels_like, .main.humidity, .weather[0].main, .weather[0].description, .weather[0].id, .wind.speed, .wind.deg, (.wind.gust // "N/A"), .sys.country ] | @tsv'
 
 # Save IFS to restore it later
-local SAVE_IFS=$IFS
+SAVE_IFS=$IFS
 # Set IFS to the tab character to ensure read splits only on tabs from @tsv
 IFS=$'\t'
 # Get all the data parsed through jq. Use double quotes to preserve the string.

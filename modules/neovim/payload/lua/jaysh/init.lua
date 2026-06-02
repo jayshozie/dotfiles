@@ -182,7 +182,7 @@ vim.g.mapleader = " "
 vim.g.localleader = " "
 
 -- I use this a lot, helps a lot too.
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>pv", "<CMD>Oil<CR>")
 -- I hate using Ctrl for that, and got used to this to switch windows.
 vim.keymap.set("n", "<leader>w", "<C-w>")
 

@@ -74,8 +74,8 @@ local waybar = src .. "/upstream/waybar/build/waybar"
 ---------------
 -- stylua: ignore start
 hl.on("hyprland.start", function()
-  ---@TODO: Remove the following line after uncommenting the hyprsession line.
-  hl.exec_cmd("alacritty -e tmux")
+  hl.exec_cmd("tmux start")
+  hl.exec_cmd("alacritty -e tmux new-session -A -s dev")
   hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
   hl.exec_cmd(waybar)
   hl.exec_cmd("mako") -- notification daemon
@@ -238,7 +238,7 @@ hl.gesture({
 local mainMod = "SUPER"
 hl.bind(
   mainMod .. " + T",
-  hl.dsp.exec_cmd(terminal .. ' -e sh -c "tmux attach || tmux"')
+  hl.dsp.exec_cmd(terminal .. ' -e tmux new-session -A -s dev')
 )
 hl.bind(
   mainMod .. " + SHIFT + T",
