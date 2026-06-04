@@ -75,12 +75,13 @@ return {
       ["`"] = { "actions.cd", mode = "n" },
       ["g~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
       ["gs"] = { "actions.change_sort", mode = "n" },
-      ["gx"] = { callback = function()
-              local o = require("oil")
-              -- print(vim.fn.system(o.get_current_dir() .. vim.fn.expand("<cfile>")), vim.log.levels.INFO)
-              print(vim.fn.system(o.get_current_dir() .. vim.fn.expand("<cfile>")))
-          end,
-          desc = "Run the entry under the cursor (no sudo support)",
+      ["gx"] = {
+        callback = function()
+          local o = require("oil")
+          -- print(vim.fn.system(o.get_current_dir() .. vim.fn.expand("<cfile>")), vim.log.levels.INFO)
+          print(vim.fn.system(o.get_current_dir() .. vim.fn.expand("<cfile>")))
+        end,
+        desc = "Run the entry under the cursor (no sudo support)",
       },
 
       ["g."] = { "actions.toggle_hidden", mode = "n" },

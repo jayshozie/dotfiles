@@ -455,6 +455,23 @@ hl.bind("XF86AudioPause",
     locked = true,
   }
 )
+---@TODO: Doesn't work, because spotify-launcher is explicitly XWayland. Uncomment when available.
+------------------------
+-- Special Workspaces --
+------------------------
+-- hl.workspace_rule({
+--   workspace = "special:spotify",
+--   default = false,
+--   default_name = "Spotify",
+--   gaps_in = 10,
+--   gaps_out = 20,
+-- })
+-- hl.bind(mainMod .. " + SHIFT + M",
+--   hl.dsp.window.move({ workspace = "special:spotify" })
+-- )
+-- hl.bind(mainMod .. " + S",
+--   hl.dsp.workspace.toggle_special("spotify"),
+-- )
 -- stylua: ignore end
 
 ----------------------------
