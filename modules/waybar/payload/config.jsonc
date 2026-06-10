@@ -32,6 +32,7 @@
         "custom/net",
         "bluetooth",
         "battery",
+        "tray",
     ],
 
     "hyprland/workspaces": {
@@ -169,4 +170,9 @@
         "format-charging": "󱐥 {capacity}%",
         "format-icons": ["", "", "", "", ""]
     },
+
+    "tray": {
+        "icon-size": 11,
+        "spacing": 5,
+    }
 }

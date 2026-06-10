@@ -60,6 +60,10 @@ export NVM_DIR="${HOME}/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "${NVM_DIR}/bash_completion"
 
+# Android SDK Tools
+export ANDROID_HOME="${HOME}/.android-sdk"
+path_prepend "${ANDROID_HOME}/cmdline-tools/latest/bin"
+
 # Bun
 export BUN_INSTALL="${HOME}/.bun"
 path_prepend "${BUN_INSTALL}/bin"

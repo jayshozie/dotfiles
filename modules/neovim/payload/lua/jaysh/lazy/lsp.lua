@@ -299,6 +299,7 @@ return {
       if vim.fn.executable("clangd") == 1 then
         vim.lsp.enable("clangd")
       end
+
       -----------------------
       -- rust-analyzer (Rust)
       -----------------------
@@ -333,6 +334,11 @@ return {
       if vim.fn.executable("rust-analyzer") == 1 then
         vim.lsp.enable("rust-analyzer")
       end
+
+      -----------------------
+      -- jdtls (Java)
+      -----------------------
+      ---@IMPORTANT: nvim-jdtls handles this LSP.
 
       vim.lsp.config["haskell-language-server-wrapper"] = {
         cmd = { "haskell-language-server-wrapper", "--lsp" },
@@ -372,7 +378,6 @@ return {
           "javascriptreact",
           "typescriptreact",
           "vue",
-          "json",
         },
         root_markers = { ".git" },
         on_attach = on_attach,
@@ -380,6 +385,28 @@ return {
       }
       if vim.fn.executable("vtsls") == 1 then
         vim.lsp.enable("vtsls")
+      end
+
+      ---------------------
+      -- just-lsp (Just) --
+      ---------------------
+      vim.lsp.config["just-lsp"] = {
+        cmd = { "just-lsp" },
+        filetypes = {
+          "just",
+        },
+        root_markers = { ".git" },
+        init_options = {
+          -- formatting = {
+          -- },
+          -- rules = {
+          -- },
+        },
+        on_attach = on_attach,
+        capabilities = capabilities,
+      }
+      if vim.fn.executable("just-lsp") == 1 then
+        vim.lsp.enable("just-lsp")
       end
 
       -----------------------
