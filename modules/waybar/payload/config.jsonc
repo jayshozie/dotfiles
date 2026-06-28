@@ -29,6 +29,7 @@
         // "custom/rec",
         "custom/rss",
         "wireplumber",
+        // "network",
         "custom/net",
         "bluetooth",
         "battery",
@@ -137,6 +138,10 @@
         "exec": "/home/jaysh/.local/bin/scripts/waybar-net.sh",
         "return-type": "json",
         "inteval": 1,
+    },
+
+    "network": {
+        "format": "{ifname}",
     },
 
     "wireplumber": {

@@ -78,6 +78,7 @@ while true; do
     ##############
     #  Ethernet  #
     ##############
+    iface_count=0
     for iface in $(ls /sys/class/net); do
         # --- Filters ---
         [[ $iface == "lo" ]] && continue
@@ -90,24 +91,44 @@ while true; do
 
         # --- Mapping ---
         case "$iface" in
-            # "$tb_back")
-            #     ethernet_text+='  Rear'
-            #     tooltip+="${tooltip} | Ethernet: Thunderbolt Rear\n"
-            #     ;;
-            # "$tb_front")
-            #     ethernet_text+='  Front'
-            #     tooltip+="${tooltip} | Ethernet: Thunderbolt Front\n"
-            #     ;;
+            "$tb_back")
+                if [[ iface_count -eq 0 ]]; then
+                    ethernet_text='  Rear'
+                    tooltip="${tooltip}Ethernet: Thunderbolt Rear"
+                else
+                    ethernet_text+=' |   Rear'
+                    tooltip+="\nEthernet: Thunderbolt Rear"
+                fi
+                ;;
+            "$tb_front")
+                if [[ iface_count -eq 0 ]]; then
+                    ethernet_text='  Front'
+                    tooltip="${tooltip}Ethernet: Thunderbolt Front"
+                else
+                    ethernet_text+=' |   Front'
+                    tooltip+="\nEthernet: Thunderbolt Front"
+                fi
+                ;;
             "$rj45_back")
-                ethernet_text+='󰈀  RJ45'
-                tooltip+="${tooltip} | Ethernet: RJ45 Back\n"
+                if [[ iface_count -eq 0 ]]; then
+                    ethernet_text='󰈀  RJ45'
+                    tooltip="${tooltip}Ethernet: RJ45 Back"
+                else
+                    ethernet_text+=' | 󰈀  RJ45'
+                    tooltip+="\nEthernet: RJ45 Back"
+                fi
                 ;;
             *)
-                ethernet_text='󰈀  Ext'
-                tooltip+="${tooltip} | Ethernet: External ($iface)\n"
+                if [[ iface_count -eq 0 ]]; then
+                    ethernet_text='󰈀  Ext'
+                    tooltip="${tooltip}Ethernet: External ($iface)"
+                else
+                    ethernet_text+=' | 󰈀  Ext'
+                    tooltip+="\nEthernet: External ($iface)"
+                fi
                 ;;
         esac
-        break
+        (( iface_count++ ))
     done
 
     if [[ $wifi_text == '' ]]; then
