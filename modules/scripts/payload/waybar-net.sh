@@ -90,21 +90,21 @@ while true; do
 
         # --- Mapping ---
         case "$iface" in
-            "$tb_back")
-                ethernet_text='  Rear'
-                tooltip="${tooltip} | Ethernet: Thunderbolt Rear"
-                ;;
-            "$tb_front")
-                ethernet_text='  Front'
-                tooltip="${tooltip} | Ethernet: Thunderbolt Front"
-                ;;
+            # "$tb_back")
+            #     ethernet_text+='  Rear'
+            #     tooltip+="${tooltip} | Ethernet: Thunderbolt Rear\n"
+            #     ;;
+            # "$tb_front")
+            #     ethernet_text+='  Front'
+            #     tooltip+="${tooltip} | Ethernet: Thunderbolt Front\n"
+            #     ;;
             "$rj45_back")
-                ethernet_text='󰈀  RJ45'
-                tooltip="${tooltip} | Ethernet: RJ45 Back"
+                ethernet_text+='󰈀  RJ45'
+                tooltip+="${tooltip} | Ethernet: RJ45 Back\n"
                 ;;
             *)
                 ethernet_text='󰈀  Ext'
-                tooltip="${tooltip} | Ethernet: External ($iface)"
+                tooltip+="${tooltip} | Ethernet: External ($iface)\n"
                 ;;
         esac
         break

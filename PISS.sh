@@ -305,6 +305,10 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     git clone https://github.com/fish-shell/fish-shell.git fish
     git clone https://gcc.gnu.org/git/gcc.git gcc
     git clone https://gitlab.freedesktop.org/libevdev/hid-tools.git hid-tools
+    git clone git@github.com:aneliya-abdimalik/Introduction-to-Operating-Systems.git github-abdimalik/intro-to-operating-systems
+    git clone git@github.com:aneliya-abdimalik/Introduction-to-Embedded-Systems-Development.git github-abdimalik/intro-to-embedded-systems-dev
+    git clone git@github.com:kkKaan/metu-ceng-THEs github-kkKaan/metu-take-home-exams
+    git clone git://sourceware.org/git/glibc.git glibc
     git clone git@github.com:limine-bootloader/limine.git limine
     git clone git@github.com:limine-bootloader/limine-protocol/ limine-protocol
     git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux
@@ -319,6 +323,7 @@ sudo -u "$TARGET_USRNAME" bash <<EOF
     # src/upstream
     pushd "${HOMEDIR}/src/upstream"
     git clone git@github.com:alacritty/alacritty.git alacritty
+    git clone git@github.com:tsoding/boomer tsoding/boomer
     git clone git@github.com:atusy/kakehashi.git kakehashi
     git clone git@github.com:neovim/neovim.git neovim
     git clone git@github.com:nvim-treesitter/nvim-treesitter.git nvim-treesitter

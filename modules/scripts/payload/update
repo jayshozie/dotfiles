@@ -26,10 +26,12 @@ main() {
 
     if ! sudo pacman -Syu; then
         log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+        return;
     fi
 
     if ! paru; then
         log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+        return;
     fi
 
     # this looks at the pacman log for specific heavy-hitters

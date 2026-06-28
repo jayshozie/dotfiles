@@ -238,7 +238,7 @@ hl.gesture({
 local mainMod = "SUPER"
 hl.bind(
   mainMod .. " + T",
-  hl.dsp.exec_cmd(terminal .. ' -e tmux new-session -A -s dev')
+  hl.dsp.exec_cmd(terminal .. ' -e tmux attach')
 )
 hl.bind(
   mainMod .. " + SHIFT + T",
