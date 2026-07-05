@@ -94,7 +94,7 @@ while true; do
             "$tb_back")
                 if [[ iface_count -eq 0 ]]; then
                     ethernet_text='  Rear'
-                    tooltip="${tooltip}Ethernet: Thunderbolt Rear"
+                    tooltip="Ethernet: Thunderbolt Rear"
                 else
                     ethernet_text+=' |   Rear'
                     tooltip+="\nEthernet: Thunderbolt Rear"
@@ -103,7 +103,7 @@ while true; do
             "$tb_front")
                 if [[ iface_count -eq 0 ]]; then
                     ethernet_text='  Front'
-                    tooltip="${tooltip}Ethernet: Thunderbolt Front"
+                    tooltip="Ethernet: Thunderbolt Front"
                 else
                     ethernet_text+=' |   Front'
                     tooltip+="\nEthernet: Thunderbolt Front"
@@ -112,7 +112,7 @@ while true; do
             "$rj45_back")
                 if [[ iface_count -eq 0 ]]; then
                     ethernet_text='󰈀  RJ45'
-                    tooltip="${tooltip}Ethernet: RJ45 Back"
+                    tooltip="Ethernet: RJ45 Back"
                 else
                     ethernet_text+=' | 󰈀  RJ45'
                     tooltip+="\nEthernet: RJ45 Back"
@@ -121,7 +121,7 @@ while true; do
             *)
                 if [[ iface_count -eq 0 ]]; then
                     ethernet_text='󰈀  Ext'
-                    tooltip="${tooltip}Ethernet: External ($iface)"
+                    tooltip="Ethernet: External ($iface)"
                 else
                     ethernet_text+=' | 󰈀  Ext'
                     tooltip+="\nEthernet: External ($iface)"
