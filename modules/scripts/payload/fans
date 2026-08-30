@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
 main () {
-    local fan_perc=$1
-    sudo omen-fan-control fan-control --mode manual --value ${fan_perc}%
+    if [[ $1 == 'auto' ]]; then
+        sudo omen-fan-control fan-control --mode auto
+    elif [[ $1 == 'curve' ]]; then
+        sudo omen-fan-control fan-control --mode curve
+    else
+        sudo omen-fan-control fan-control --mode manual --value ${1}%
+    fi
 }
 
 main "$@"
