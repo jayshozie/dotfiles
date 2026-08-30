@@ -39,7 +39,7 @@ hl.monitor({
 hl.monitor({
   output = "HDMI-A-1",
   mode = "1920x1080@60",
-  position = "auto-right",
+  position = "auto-left",
   scale = 1,
   transform = 0,
 })
@@ -88,6 +88,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("sleep 3 && bluetoothctl connect 8C:0D:D9:19:43:B3")
   hl.exec_cmd('gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"') -- for GTK3 apps
   hl.exec_cmd('gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"') -- for GTK4 apps
+  -- hl.exec_cmd('protonvpn-app')
   ---@TODO: Uncomment the line below when support is added.
   -- hl.exec_cmd('hyprsession')
 end)
@@ -199,9 +200,10 @@ hl.config({
 
     follow_mouse = 1,
 
-    sensitivity = 0,
-
+    sensitivity = 0.0,
     accel_profile = "adaptive",
+    force_no_accel = false,
+
 
     touchpad = {
       natural_scroll = true,
@@ -225,11 +227,11 @@ hl.gesture({
 -------------
 -- Devices --
 -------------
--- Example:
--- hl.device({
---     name = '',
---     sensitivity = -0.5,
--- })
+hl.device({
+    name = 'e-signal-usb-gaming-mouse',
+    sensitivity = -0.093,
+    accel_profile = "flat",
+})
 
 -- stylua: ignore start
 -----------------

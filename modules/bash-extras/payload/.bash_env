@@ -71,6 +71,7 @@ path_prepend "${BUN_INSTALL}/bin"
 # Ruby Gems
 export GEM_HOME="${HOME}/gems"
 path_prepend "${GEM_HOME}/bin"
+path_prepend "${XDG_DATA_HOME}/gem/ruby/3.4.0/bin"
 
 # Cargo
 path_prepend "${HOME}/.cargo/bin"

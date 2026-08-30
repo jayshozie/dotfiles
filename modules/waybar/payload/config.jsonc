@@ -42,7 +42,6 @@
         "format": "{name}",
         "on-click": "activate"
     },
-
     // "hyprland/window": {
     //     "format": "|  {class} ",
     //     "expand": false,
@@ -54,7 +53,6 @@
     //     },
     //     "icon": false,
     // },
-
     /* OLD CLOCK BLOCK
     "clock": {
         "format": "{:%H:%M  |  %b %d, %a}",
@@ -73,9 +71,9 @@
         },
     },
     */
-
     "clock": {
         "format": "󰣇  {:%H:%M}",
+        "locale": "en_GB.UTF-8",
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
             "mode"          : "year",
@@ -96,7 +94,6 @@
             "on-click-middle": "mode",
         }
     },
-
     "custom/spotify": {
         "exec": "/home/jaysh/.local/bin/scripts/waybar-spotify.sh",
         "return-type": "json",
@@ -104,19 +101,16 @@
         "on-click-right": "playerctl --player=spotify next",
         "on-click-middle": "playerctl --player=spotify previous",
     },
-
     "custom/kb": {
         "exec": "/home/jaysh/.local/bin/scripts/waybar-kb.sh",
         "return-type": "json",
         "on-click": "hyprctl switchxkblayout all next",
         "restart-interval": 1
     },
-
     /*
     "hyprland/language": {
     },
     */
-
     // "custom/rec": {
     //     "format": "{}",
     //     "exec": "/home/jaysh/.local/bin/scripts/waybar-rec.sh",
@@ -124,7 +118,6 @@
     //     "on-click": "/home/jaysh/.local/bin/scripts/waybar-rec.sh toggle",
     //     "restart-interval": 1
     // },
-
     "custom/rss": {
         "format": "󰑫 {}",
         "exec": "/home/jaysh/.local/bin/scripts/waybar-rss.sh",
@@ -132,25 +125,21 @@
         "interval": 600,
         "on-click": "alacritty -e bulletty"
     },
-
     "custom/net": {
         "format": "{}",
         "exec": "/home/jaysh/.local/bin/scripts/waybar-net.sh",
         "return-type": "json",
         "inteval": 1,
     },
-
     "network": {
         "format": "{ifname}",
     },
-
     "wireplumber": {
         "format": "{icon}  {node_name} {volume}%",
         "format-muted": "  Muted",
         "format-icons": ["", "", ""],
         "on-click": "pavucontrol"
     },
-
     "bluetooth": {
         "format": "",
         "format-connected": " {device_alias}",
@@ -165,7 +154,6 @@
         "on-click-middle": "bluetoothctl power off",
         "on-click-right": "bluetoothctl power on",
     },
-
     "battery": {
         "states": {
             "warning": 30,
@@ -175,7 +163,6 @@
         "format-charging": "󱐥 {capacity}%",
         "format-icons": ["", "", "", "", ""]
     },
-
     "tray": {
         "icon-size": 11,
         "spacing": 5,
