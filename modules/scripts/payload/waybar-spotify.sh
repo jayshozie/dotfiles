@@ -80,12 +80,21 @@ while true; do
     # duration is in seconds
     # return is in /tmp/${artist_url}-${album_url}-${track_url}.lyrics"
     get_lyrics "$artist" "$track" "$album" "$dur"
-    track_url=$(urlencode "$track")
+
+    # about the pattern substitution:
+    # LRCLIB made a change in their API, now spaces are not the standard `%20`
+    # but `+` characters instead, so we have to manually change them.
     artist_url=$(urlencode "$artist")
+    artist_url=${artist_url//%20/+}
     album_url=$(urlencode "$album")
+    album_url=${album_url//%20/+}
+    track_url=$(urlencode "$track")
+    track_url=${track_url//%20/+}
+
     if [[ ! -d "$LYRICS_D" ]]; then
         mkdir -p "$LYRICS_D"
     fi
+
     lyrics_file="${LYRICS_D}/${artist_url}-${album_url}-${track_url}.lyrics"
     lyrics=$(cat "$lyrics_file")
 
