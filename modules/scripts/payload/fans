@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+main () {
+    local fan_perc=$1
+    sudo omen-fan-control fan-control --mode manual --value ${fan_perc}%
+}
+
+main "$@"
