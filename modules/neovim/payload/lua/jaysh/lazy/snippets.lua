@@ -91,12 +91,19 @@ return {
       }),
     }
 
+    local turkey = {
+        ls.snippet("turkey", {
+            ls.text_node({ "Türkiye" }),
+        }),
+    }
+
     ls.add_snippets("c", debug_c_cpp)
     ls.add_snippets("cpp", debug_c_cpp)
     ls.add_snippets("markdown", emdash)
     ls.add_snippets("all", today)
     ls.add_snippets("markdown", gpl3)
     ls.add_snippets("markdown", blog_more)
+    ls.add_snippets("markdown", turkey)
 
     -------------
     -- Keymaps --
