@@ -58,9 +58,45 @@ return {
       }),
     }
 
+    local today = {
+      ls.snippet("today", {
+        ls.text_node(os.date("%Y-%m-%d")),
+      }),
+    }
+
+    local gpl3 = {
+      ls.snippet("gpl3", {
+        ls.text_node({
+          "Copyright (C)  2026  Emir Baha YILDIRIM",
+          "",
+          "This program is free software: you can redistribute it and/or modify",
+          "it under the terms of the GNU General Public License as published by",
+          "the Free Software Foundation, either version 3 of the License, or",
+          "(at your option) any later version.",
+          "",
+          "This program is distributed in the hope that it will be useful,",
+          "but WITHOUT ANY WARRANTY; without even the implied warranty of",
+          "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
+          "GNU General Public License for more details.",
+          "",
+          "You should have received a copy of the GNU General Public License",
+          "along with this program.  If not, see <https://www.gnu.org/licenses/>.",
+        }),
+      }),
+    }
+
+    local blog_more = {
+      ls.snippet("blog_more", {
+        ls.text_node({ "<!-- more -->" }),
+      }),
+    }
+
     ls.add_snippets("c", debug_c_cpp)
     ls.add_snippets("cpp", debug_c_cpp)
     ls.add_snippets("markdown", emdash)
+    ls.add_snippets("all", today)
+    ls.add_snippets("markdown", gpl3)
+    ls.add_snippets("markdown", blog_more)
 
     -------------
     -- Keymaps --

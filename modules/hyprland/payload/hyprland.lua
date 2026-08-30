@@ -204,7 +204,6 @@ hl.config({
     accel_profile = "adaptive",
     force_no_accel = false,
 
-
     touchpad = {
       natural_scroll = true,
     },
@@ -228,9 +227,9 @@ hl.gesture({
 -- Devices --
 -------------
 hl.device({
-    name = 'e-signal-usb-gaming-mouse',
-    sensitivity = -0.093,
-    accel_profile = "flat",
+  name = "e-signal-usb-gaming-mouse",
+  sensitivity = -0.093,
+  accel_profile = "flat",
 })
 
 -- stylua: ignore start
