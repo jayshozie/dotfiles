@@ -23,13 +23,14 @@ source "${DEV_ENV}/lib/urlencode" && \
     export -f urlencode
 
 api_call() {
-    local uri="$1"
-    local lyrics_file="$2"
+    local uri lyrics_file raw_resp tmp_file http_code
+    uri="$1"
+    lyrics_file="$2"
 
     coproc 'API_PIPELINE' {
-        local raw_resp="${lyrics_file}.raw"
-        local tmp_file="${lyrics_file}.tmp"
-        local http_code=$(curl -s -w "%{http_code}" -o "$raw_resp" "$uri")
+        raw_resp="${lyrics_file}.raw"
+        tmp_file="${lyrics_file}.tmp"
+        http_code=$(curl -s -w "%{http_code}" -o "$raw_resp" "$uri")
         if [[ "$http_code" == "200" ]]; then
             jq -r '.plainLyrics // ""' "$raw_resp" | \
                 iconv -t ASCII//TRANSLIT | \
@@ -55,19 +56,22 @@ api_call() {
 #   album        = City of Evil
 #   duration (s) = 311
 get_lyrics() {
-    local artist_name=$(urlencode "$1")
-    artist_name=${artist_name//%20/+}
-    local track_name=$(urlencode "$2")
-    track_name=${track_name//%20/+}
-    local album_name=$(urlencode "$3")
-    album_name=${album_name//%20/+}
-    local duration=$4 # this is already given in seconds
+    local artist_name track_name album_name duration api_pid_file lyrics_file \
+          uri api_pid
 
-    local api_pid_file="${LYRICS_D}/.${artist_name}-${track_name}.pid.id"
-    local lyrics_file="${LYRICS_D}/${artist_name}-${album_name}-${track_name}.lyrics"
-    local fetching_msg='Fetching lyrics...'
-    local uri="https://lrclib.net/api/get?artist_name=${artist_name}&track_name=${track_name}&album_name=${album_name}&duration=${duration}"
-    local api_pid=''
+    artist_name=$(urlencode "$1")
+    artist_name=${artist_name//%20/+}
+    track_name=$(urlencode "$2")
+    track_name=${track_name//%20/+}
+    album_name=$(urlencode "$3")
+    album_name=${album_name//%20/+}
+    duration=$4 # this is already given in seconds
+
+    api_pid_file="${LYRICS_D}/.${artist_name}-${track_name}.pid.id"
+    lyrics_file="${LYRICS_D}/${artist_name}-${album_name}-${track_name}.lyrics"
+    fetching_msg='Fetching lyrics...'
+    uri="https://lrclib.net/api/get?artist_name=${artist_name}&track_name=${track_name}&album_name=${album_name}&duration=${duration}"
+    api_pid=''
 
     if [[ -f "$api_pid_file" ]]; then
         api_pid=$(cat "$api_pid_file")

@@ -16,9 +16,9 @@
 
 log() {
     if [[ dry_run -eq 1 ]]; then
-        printf "$timestamp [DRY]: $1\n" 2>&1
+        printf "%s [DRY]: $1\n" "$timestamp" 2>&1
     else
-        printf "$timestamp $1\n" 2>&1 | tee --append "${HOME}/arise.log"
+        printf "%s $1\n" 2>&1 "$timestamp" | tee --append "${HOME}/arise.log"
     fi
 }
 
@@ -32,7 +32,7 @@ main() {
     log_file="${HOME}/arise.log"
 
     if [[ ! -f $log_file ]]; then
-        touch $log_file
+        touch "$log_file"
     fi
 
     timestamp=$(date '+%Y/%m/%d %H:%M:%S')
@@ -56,7 +56,7 @@ main() {
         if [[ dry_run -eq 1 ]]; then
             log "kill -9 ${pids[$p]}"
         else
-            kill -9 ${pids[$p]}
+            kill -9 "${pids[$p]}"
         fi
 
         # if [[ dry_run -ne 1 && ! $(pgrep $p) ]]; then

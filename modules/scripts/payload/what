@@ -100,7 +100,7 @@ main() {
             log "${F_BOLD}Matches:${COLOR_RESET}\n$matches"
         fi
     elif [[ $WHAT == '1' ]]; then
-
+        : # @TODO: what the hell is this?
     else
         for arg in $args; do
             [[ $arg == '-'* ]] && continue;

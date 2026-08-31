@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Copyright (C)  2026  Emir Baha YILDIRIM
 #
 # This program is free software: you can redistribute it and/or modify

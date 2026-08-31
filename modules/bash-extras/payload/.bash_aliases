@@ -43,6 +43,7 @@ alias egrep='egrep --color=auto'
 alias fd='fd -uic always'
 alias find='fd -ui'
 alias clear='clear -x'
+alias cal='cal -m'
 
 # better safe then sorry
 alias rm='rm -i'

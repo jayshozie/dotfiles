@@ -53,7 +53,7 @@ clear_num() {
         REPLY='error'
         return 1
     fi
-    while (( ${#num} < $num_length )); do
+    while (( ${#num} < "$num_length" )); do
         num="0${num}"
     done
 
@@ -75,7 +75,6 @@ create_url() {
 
 check_if_exists() {
     local content="$1"
-    local scp_num="$2"
     if [[ $content == *"This page doesn't exist."* ]]; then
         return 1
     else
@@ -84,15 +83,16 @@ check_if_exists() {
 }
 
 fetch_scp() {
-    local num="$1"
+    local content num link
+    num="$1"
     if ! create_url "$num"; then
         REPLY='error'
         return 1
     fi
-    local link="$REPLY"
+    link="$REPLY"
 
-    local original_content=$(curl -s "$link" | pup --plain --indent 4 '#page-content')
-    local content=$(curl -s "$link" | pup --plain --indent 4 '#page-content' | pandoc -f html -t markdown | grep -vE ':::|.image|.number|.rate-points|WIKIDOT.modules|.btn-default')
+    # local original_content=$(curl -s "$link" | pup --plain --indent 4 '#page-content')
+    content=$(curl -s "$link" | pup --plain --indent 4 '#page-content' | pandoc -f html -t markdown | grep -vE ':::|.image|.number|.rate-points|WIKIDOT.modules|.btn-default')
     if ! check_if_exists "$content" "$num"; then
         LOG_ERROR='1' logp 'AUTOSCP' "SCP-${num} doesn't exist!"
         REPLY='error'
@@ -107,10 +107,10 @@ fetch_scp() {
 }
 
 main() {
-    local short_flags='hldD'
-    local long_flags='help,license,debug'
-    local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
-    declare scps=()
+    local short_flags long_flags flags
+    short_flags='hldD'
+    long_flags='help,license,debug'
+    flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n "$0" -- "$@")
     [[ "$ASCPDEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AUTOSCP' "args: [$flags]"
     eval set -- "$flags"
     while true; do

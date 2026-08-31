@@ -154,7 +154,8 @@ create_book() {
         if wget $wget_args "$down_link"; then
             :
         else
-            if [[ $? == '8' ]]; then
+            local exit_code=$?
+            if [[ $exit_code == '8' ]]; then
                 logp 'AFPCD' "${FG_L_RED}[ERROR] wget failed with exit code" \
                     '<8>! This is likely due to filenames of the pictures' \
                     "being different than '1,2,3,...' etc. Sadly, we don't" \
@@ -163,13 +164,13 @@ create_book() {
                     "<$down_link> if the filenames are ordered, then you" \
                     "probably didn't enter the correct filetype, you entered" \
                     "<$filetype>.${COLOR_RESET}"
-                popd >/dev/null 2>&1
+                popd >/dev/null 2>&1 || exit 1
                 rm -rf "$payload"
                 return
             else
                 logp 'AFPCD' "${FG_L_RED}[ERROR] wget failed with exit code" \
-                    "<$?>!${COLOR_RESET}" >&2
-                popd >/dev/null 2>&1
+                    "<$exit_code>!${COLOR_RESET}" >&2
+                popd >/dev/null 2>&1 || exit 1
                 rm -rf "$payload"
                 return
             fi
@@ -183,7 +184,7 @@ create_book() {
                 'This script uses decimal time as argument for sleep. This is' \
                 "not a POSIX requirement, but Bash implements it. You're" \
                 "recommended to switch to Bash.${COLOR_RESET}" >&2
-            popd >/dev/null 2>&1
+            popd >/dev/null 2>&1 || exit 1
             rm -rf "$payload"
             return
         fi
@@ -198,7 +199,7 @@ create_book() {
         logp 'AFPCD' "${FG_L_RED}[ERROR] Magick failed with exit code <$?>!" \
             "You can find the downloaded pictures in the $payload directory" \
             "and construct the PDF yourself.${COLOR_RESET}" >&2
-        popd >/dev/null 2>&1
+        popd >/dev/null 2>&1 || exit 1
         return
     fi
     [[ $AFPCD_DEBUG == '1' ]] && LOG_DEBUG='1' \
@@ -213,18 +214,19 @@ create_book() {
             'the book to somewhere else since it will be deleted after a' \
             "reboot. Book is located at <${payload}/${book_name}>." \
             "${COLOR_RESET}" >&2
-        popd >/dev/null 2>&1
+        popd >/dev/null 2>&1 || exit 1
         return
     fi
 
-    popd >/dev/null 2>&1
+    popd >/dev/null 2>&1 || exit 1
     rm -rf "$payload"
 }
 
 main() {
-    local short_flags='vhDdl'
-    local long_flags='verbose,help,debug,license'
-    local flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n ${0} -- ${@})
+    local flags short_flags long_flags
+    short_flags='vhDdl'
+    long_flags='verbose,help,debug,license'
+    flags=$(getopt -U -a -o ${short_flags} --long ${long_flags} -n "$0" -- "$@")
     [[ "$AFPCD_DEBUG" == '1' ]] && LOG_DEBUG='1' logp 'AFPCD' "args: [$flags]"
     eval set -- "$flags"
     while true; do
@@ -244,23 +246,23 @@ main() {
 
     log 'Provide the AnyFlip Link: (e.g.: https://online.anyflip.com/uxmrl/tnef)'
     read -r link
-    check_link $link
+    check_link "$link"
 
     log '\nProvide the total amount of pages: (e.g.: 430)'
     read -r total_pages
-    check_pages $total_pages
+    check_pages "$total_pages"
 
     log '\nProvide the string to save the PDF as: (e.g.: v5-core-book)'
     read -r book_name
 
     log '\nProvide the location on your PC to save the book (e.g.: /home/user/books)'
     read -r location
-    check_location $location
+    check_location "$location"
 
     log '\nProvide the filetype of the images that will be downloaded from AnyFlip: (e.g.: jpg, webp, png, etc.)'
     read -r filetype
 
-    create_book $link $total_pages $book_name $location $filetype
+    create_book "$link" "$total_pages" "$book_name" "$location" "$filetype"
 
     [[ $AFPCD_VERBOSE != '1' ]] && clean_prog_bar
     if [[ $SUCCESS == '1' ]]; then

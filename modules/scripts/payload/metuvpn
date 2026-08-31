@@ -22,7 +22,8 @@ if via-cli vpn status 2>/dev/null | grep -iq "not connected"; then
 
     via-cli vpn connect --username e267561@metu.edu.tr --userpass "$(pass metu)" > /dev/null 2>&1
 
-    if [[ $? -eq 0 ]]; then
+    exit_code=$?
+    if [[ $exit_code -eq 0 ]]; then
         notify-send "VPN" "Connected to METU"
     else
         notify-send "VPN" "Connection Failed"

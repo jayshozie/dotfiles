@@ -58,6 +58,12 @@ return {
       }),
     }
 
+    local endash = {
+        ls.snippet("endash", {
+            ls.text_node("–"),
+        }),
+    }
+
     local today = {
       ls.snippet("today", {
         ls.text_node(os.date("%Y-%m-%d")),
@@ -100,8 +106,9 @@ return {
     ls.add_snippets("c", debug_c_cpp)
     ls.add_snippets("cpp", debug_c_cpp)
     ls.add_snippets("markdown", emdash)
+    ls.add_snippets("markdown", endash)
     ls.add_snippets("all", today)
-    ls.add_snippets("markdown", gpl3)
+    ls.add_snippets("all", gpl3)
     ls.add_snippets("markdown", blog_more)
     ls.add_snippets("markdown", turkey)
 

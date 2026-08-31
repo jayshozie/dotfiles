@@ -6,7 +6,7 @@ main () {
     elif [[ $1 == 'curve' ]]; then
         sudo omen-fan-control fan-control --mode curve
     else
-        sudo omen-fan-control fan-control --mode manual --value ${1}%
+        sudo omen-fan-control fan-control --mode manual --value "$1"%
     fi
 }
 

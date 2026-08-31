@@ -265,7 +265,7 @@ handle_session_cmd() {
 
 handle_window_session_cmd() {
     local current_session="$1"
-    start_index=$((69 + $session_idx))
+    start_index=$((69 + session_idx))
     target="$current_session:$start_index"
 
     log "target: $target command $session_cmd has-session=$(tmux has-session -t="$target" 2> /dev/null)"
@@ -273,18 +273,19 @@ handle_window_session_cmd() {
         switch_to "$target"
     else
         log "executing session command: tmux neww -dt $target $session_cmd"
-        tmux neww -dt $target "$session_cmd"
+        tmux neww -dt "$target" "$session_cmd"
         hydrate "$target" "$selected"
-        tmux select-window -t $target
+        tmux select-window -t "$target"
     fi
 }
 
 handle_split_session_cmd() {
-    local current_session="$1"
+    local existing_pane_id current_session new_pane_id
+    current_session="$1"
     cleanup_dead_panes
 
     # Check if pane already exists
-    local existing_pane_id=$(get_pane_id "$session_idx" "$split_type")
+    existing_pane_id=$(get_pane_id "$session_idx" "$split_type")
 
     if [[ -n "$existing_pane_id" ]] && tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -q "^${existing_pane_id}$"; then
         log "switching to existing pane $existing_pane_id"
@@ -304,7 +305,7 @@ handle_split_session_cmd() {
         fi
 
         log "creating new split: tmux split-window $split_flag -c $(pwd) $session_cmd"
-        local new_pane_id=$(tmux split-window $split_flag -c "$(pwd)" -P -F "#{pane_id}" "$session_cmd")
+        new_pane_id=$(tmux split-window $split_flag -c "$(pwd)" -P -F "#{pane_id}" "$session_cmd")
 
         if [[ -n "$new_pane_id" ]]; then
             set_pane_id "$session_idx" "$split_type" "$new_pane_id"

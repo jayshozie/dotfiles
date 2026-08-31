@@ -54,7 +54,7 @@ if [[ "$1" == "toggle" ]]; then
         sleep 0.5
         makoctl mode -s dnd
 
-        wf-recorder $WF_OPTS --file="$video_path" &
+        wf-recorder "$WF_OPTS" --file="$video_path" &
         vid_pid=$!
 
         ffmpeg -v quiet -f pulse -i default -ac 2 "$audio_path" &
