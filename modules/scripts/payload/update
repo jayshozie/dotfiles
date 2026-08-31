@@ -35,11 +35,11 @@ main() {
     fi
 
     # this looks at the pacman log for specific heavy-hitters
-    recent_critical=$(grep -e "$(date +'%y-%m-%d %h')" /var/log/pacman.log | \
-                      grep -e "upgraded (glibc|systemd|dbus|wayland|hyprland)")
+    recent_critical=$(grep -F "[$(date +'%Y-%m-%dT')" /var/log/pacman.log | \
+                      grep -E "upgraded (glibc|systemd|dbus|wayland|hyprland)")
 
     # if /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
-    if [[ ! -d "/usr/lib/modules/$(uname -r)" ]]; then
+    if [[ ! -f "/usr/lib/modules/$(uname -r)/pkgbase" ]]; then
         should_reboot='y'
         log "${WARN}[SYS] Kernel has been updated. A reboot is REQUIRED.${RESET}"
     fi
