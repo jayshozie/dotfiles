@@ -64,8 +64,9 @@ run() {
 ################################# N E O V I M ##################################
 ################################################################################
 
-NEOVIM_VERSION="v0.11.7"
-TREESITTER_VERSION="v0.10.0"
+NEOVIM_VERSION='v0.12.5'
+# TREESITTER_VERSION='v0.10.0'
+TREESITTER_VERSION='main'
 
 build_neovim() {
     logp 'DEV' \
@@ -88,6 +89,7 @@ build_neovim() {
         pushd "${SRCS}/nvim-treesitter"
     fi
     run "git checkout ${TREESITTER_VERSION}"
+    run 'git pull --rebase'
     [[ $DEV_VERBOSE == '1' ]] || progress_bar 2 11
     popd > /dev/null
 
@@ -136,8 +138,8 @@ build_neovim() {
 ################################### T M U X ####################################
 ################################################################################
 
-TMUX_VERSION="3.6a"
-TPM_VERSION="v3.1.0"
+TMUX_VERSION='3.6a'
+TPM_VERSION='v3.1.0'
 
 build_tmux() {
     logp 'DEV' \
@@ -202,7 +204,7 @@ build_tmux() {
 ############################# A L A C R I T T Y ################################
 ################################################################################
 
-ALACRITTY_VERSION="v0.17.0"
+ALACRITTY_VERSION='v0.17.0'
 
 build_alacritty() {
     logp 'DEV' \

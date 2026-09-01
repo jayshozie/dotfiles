@@ -290,6 +290,7 @@ return {
           "--background-index",
           "--clang-tidy",
           "--log=error",
+          "--experimental-modules-support",
         },
         root_markers = { ".git", ".clangd", "compile_flags.txt" },
         filetypes = { "c", "cpp", "objc", "objcpp" },

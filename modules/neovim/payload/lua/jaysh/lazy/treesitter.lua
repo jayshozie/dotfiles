@@ -14,49 +14,47 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 return {
-  dir = "~/src/upstream/nvim-treesitter",
-  name = "nvim-treesitter",
+  -- dir = "~/src/upstream/nvim-treesitter",
+  -- name = "nvim-treesitter",
+  "nvim-treesitter/nvim-treesitter",
   lazy = false,
   build = ":TSUpdate",
   config = function()
-    require("nvim-treesitter.configs").setup({
-      ensure_installed = {
-        "asm",
-        "bash",
-        "c",
-        "cmake",
-        "cpp",
-        "gitcommit",
-        "git_config",
-        "gitignore",
-        "git_rebase",
-        "hyprlang",
-        "latex",
-        "lua",
-        "make",
-        "markdown",
-        "markdown_inline",
-        "nasm",
-        "python",
-        "query",
-        "vim",
-        "vimdoc",
-        -- 'x86asm',
-      },
-      sync_install = true,
-      auto_install = true,
-      highlight = {
-        enable = true,
-        disable = function(lang, buf)
-          local max_filesize = 100 * 1024
-          local ok, stats =
-            pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-          if ok and stats and stats.size > max_filesize then
-            return true
-          end
-        end,
-        additional_vim_regex_highlighting = false,
-      },
+    require("nvim-treesitter").setup({})
+    require("nvim-treesitter").install({
+      "asm",
+      "bash",
+      "c",
+      "cmake",
+      "cpp",
+      "gitcommit",
+      "git_config",
+      "gitignore",
+      "git_rebase",
+      "hyprlang",
+      "latex",
+      "lua",
+      "make",
+      "markdown",
+      "markdown_inline",
+      "nasm",
+      "python",
+      "query",
+      "vim",
+      "vimdoc",
+    }):wait(300000)
+
+    -- Native replacement for the large file highlight disabler
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("large_file_treesitter", { clear = true }),
+      callback = function(args)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+        if ok and stats and stats.size > max_filesize then
+          vim.cmd("captreesitter stop") -- or vim.treesitter.stop(args.buf) depending on exact 0.12 API
+          return true
+        end
+      end,
     })
   end,
 }
