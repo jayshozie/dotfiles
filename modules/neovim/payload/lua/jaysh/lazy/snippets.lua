@@ -73,7 +73,7 @@ return {
     local gpl3 = {
       ls.snippet("gpl3", {
         ls.text_node({
-          "Copyright (C)  2026  Emir Baha YILDIRIM",
+          "Copyright (C)  2026  Emir Baha YILDIRIM <jayshozie@gmail.com>",
           "",
           "This program is free software: you can redistribute it and/or modify",
           "it under the terms of the GNU General Public License as published by",
