@@ -14,47 +14,71 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 return {
-  -- dir = "~/src/upstream/nvim-treesitter",
-  -- name = "nvim-treesitter",
-  "nvim-treesitter/nvim-treesitter",
-  lazy = false,
-  build = ":TSUpdate",
-  config = function()
-    require("nvim-treesitter").setup({})
-    require("nvim-treesitter").install({
-      "asm",
-      "bash",
-      "c",
-      "cmake",
-      "cpp",
-      "gitcommit",
-      "git_config",
-      "gitignore",
-      "git_rebase",
-      "hyprlang",
-      "latex",
-      "lua",
-      "make",
-      "markdown",
-      "markdown_inline",
-      "nasm",
-      "python",
-      "query",
-      "vim",
-      "vimdoc",
-    }):wait(300000)
+    -- dir = "~/src/upstream/nvim-treesitter",
+    -- name = "nvim-treesitter",
+    "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+        require("nvim-treesitter").setup({})
+        require("nvim-treesitter").install({
+            "asm",
+            "bash",
+            "c",
+            "cmake",
+            "cpp",
+            "gitcommit",
+            "git_config",
+            "gitignore",
+            "git_rebase",
+            "hyprlang",
+            "latex",
+            "lua",
+            "make",
+            "markdown",
+            "markdown_inline",
+            "nasm",
+            "python",
+            "query",
+            "vim",
+            "vimdoc",
+        })
 
-    -- Native replacement for the large file highlight disabler
-    vim.api.nvim_create_autocmd("FileType", {
-      group = vim.api.nvim_create_augroup("large_file_treesitter", { clear = true }),
-      callback = function(args)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
-        if ok and stats and stats.size > max_filesize then
-          vim.cmd("captreesitter stop") -- or vim.treesitter.stop(args.buf) depending on exact 0.12 API
-          return true
-        end
-      end,
-    })
-  end,
+        -- Unified autocmd for safe Treesitter attachment and large file handling
+        vim.api.nvim_create_autocmd("FileType", {
+            group = vim.api.nvim_create_augroup("treesitter_auto_attach", { clear = true }),
+            pattern = "*",
+            callback = function(args)
+                -- 1. Check file size to avoid locking up the editor on massive files
+                local max_filesize = 100 * 1024 -- 100 KB
+                local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+                if ok and stats and stats.size > max_filesize then
+                    -- Abort Tree-sitter attachment for large files
+                    return
+                end
+
+                -- 2. Safely attempt to start Tree-sitter
+                -- pcall catches the missing parser error, allowing a quiet fallback
+                pcall(vim.treesitter.start, args.buf)
+            end,
+        })
+
+        -- vim.api.nvim_create_autocmd('FileType', {
+        --     pattern = { '*' },
+        --     callback = function() vim.treesitter.start() end,
+        -- })
+
+        -- Native replacement for the large file highlight disabler
+        -- vim.api.nvim_create_autocmd("FileType", {
+        --   group = vim.api.nvim_create_augroup("large_file_treesitter", { clear = true }),
+        --   callback = function(args)
+        --     local max_filesize = 100 * 1024 -- 100 KB
+        --     local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+        --     if ok and stats and stats.size > max_filesize then
+        --       vim.cmd("captreesitter stop") -- or vim.treesitter.stop(args.buf) depending on exact 0.12 API
+        --       return true
+        --     end
+        --   end,
+        -- })
+    end,
 }
