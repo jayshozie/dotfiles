@@ -17,7 +17,7 @@
 export DEV_ENV="/home/jaysh/dev"
 source "${DEV_ENV}/lib/log"
 source "${DEV_ENV}/lib/ansi-escapes"
-export -f log
+export -f logp
 export DRY_RUN='0'
 
 main() {
@@ -25,12 +25,12 @@ main() {
     should_reboot='n'
 
     if ! sudo pacman -Syu; then
-        log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+        logp 'SYS' "${ERR}Update failed! Please check the above log.${RESET}"
         return;
     fi
 
     if ! paru; then
-        log "${ERR}[SYS] Update failed! Please check the above log.${RESET}"
+        logp 'SYS' "${ERR}Update failed! Please check the above log.${RESET}"
         return;
     fi
 
@@ -41,16 +41,16 @@ main() {
     # if /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
     if [[ ! -f "/usr/lib/modules/$(uname -r)/pkgbase" ]]; then
         should_reboot='y'
-        log "${WARN}[SYS] Kernel has been updated. A reboot is REQUIRED.${RESET}"
+        logp 'SYS' "${WARN}The Kernel has been updated.${RESET}"
     fi
     if [[ -n "$recent_critical" ]]; then
         should_reboot='y'
-        log "${WARN}[SYS] Critical system components (glibc/systemd) were updated.${RESET}"
-        log "${INFO}It is highly recommended to reboot to ensure system stability.${RESET}"
+        logp 'SYS' "${WARN}Critical system components were updated.${RESET}"
+        logp 'SYS' "${WARN}It is highly recommended to reboot to ensure system stability.${RESET}"
     fi
 
     if [[ $should_reboot == 'n' ]]; then
-        log "${INFO}[SYS] System update completed successfully. Enjoy!${RESET}"
+        logp 'SYS' "${INFO}System update completed successfully. Enjoy!${RESET}"
     fi
 }
 
