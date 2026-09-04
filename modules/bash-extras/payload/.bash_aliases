@@ -20,6 +20,16 @@ alias src='source ~/.bashrc && hash -r'
 # netrw
 alias nv='nvim .'
 
+# git
+alias g='git'
+alias gs='git ss'
+alias ga='git add'
+alias gc='git commit -s'
+alias gsw='git switch'
+alias gst='git stash'
+alias gd='git diff'
+alias gds='git diff --staged'
+
 # programs
 alias img='imv'
 alias vid='mpv'

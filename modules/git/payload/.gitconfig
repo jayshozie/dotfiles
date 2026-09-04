@@ -33,7 +33,7 @@
     # diff = false
 [alias]
 	pr = pull --rebase
-    ss = status -s
+    ss = status -sb
     stag = tag -s
     stash-all = stash --all
 [commit]
