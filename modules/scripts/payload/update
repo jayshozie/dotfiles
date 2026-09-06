@@ -26,17 +26,17 @@ main() {
 
     if ! sudo pacman -Syu; then
         logp 'SYS' "${ERR}Update failed! Please check the above log.${RESET}"
-        return;
+        return
     fi
 
     if ! paru; then
         logp 'SYS' "${ERR}Update failed! Please check the above log.${RESET}"
-        return;
+        return
     fi
 
     # this looks at the pacman log for specific heavy-hitters
-    recent_critical=$(grep -F "[$(date +'%Y-%m-%dT')" /var/log/pacman.log | \
-                      grep -E "upgraded (glibc|systemd|dbus|wayland|hyprland)")
+    recent_critical=$(grep -F "[$(date +'%Y-%m-%dT')" /var/log/pacman.log |
+        grep -E "upgraded (glibc|systemd|dbus|wayland|hyprland)")
 
     # if /usr/lib/modules/$(uname -r) is missing, the kernel was upgraded.
     if [[ ! -f "/usr/lib/modules/$(uname -r)/pkgbase" ]]; then
@@ -46,6 +46,8 @@ main() {
     if [[ -n "$recent_critical" ]]; then
         should_reboot='y'
         logp 'SYS' "${WARN}Critical system components were updated.${RESET}"
+    fi
+    if [[ $should_reboot == 'y' ]]; then
         logp 'SYS' "${WARN}It is highly recommended to reboot to ensure system stability.${RESET}"
     fi
 
