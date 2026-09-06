@@ -44,7 +44,6 @@ while true; do
         if ! pidof 'spotify' > /dev/null 2>&1; then
             echo ''
             sleep 3
-            continue
         fi
     }
 
