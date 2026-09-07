@@ -82,6 +82,7 @@ vim.opt.shell = "/usr/bin/bash"
 
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.cursorline = true
 
 vim.opt.colorcolumn = "81"
 -- Git colorcolumn Fix
